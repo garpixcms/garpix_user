@@ -22,6 +22,7 @@ garpix-qa = "*"
 django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
 garpix-notify = "*"
 garpix-utils = "*"
+garpix-notify = "*"
 
 [dev-packages]
 

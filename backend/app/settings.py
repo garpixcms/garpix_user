@@ -53,6 +53,7 @@ DEBUG = env.bool('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'user',
     'garpix_auth',
     'garpix_qa',
     # for auth
@@ -108,6 +110,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -121,6 +124,7 @@ DATABASES = {
         'PORT': env.int('POSTGRES_PORT'),
     },
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -139,6 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -199,6 +204,8 @@ MIGRATION_MODULES = {
     'garpix_auth': 'app.migrations.garpix_auth',
     'garpix_notify': 'app.migrations.garpix_notify',
 }
+
+AUTH_USER_MODEL = 'user.User'
 
 NOTIFY_EVENTS = {}
 
