@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'user',
     'garpix_auth',
     'garpix_qa',
     # for auth
@@ -64,7 +65,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'oauth2_provider',
     'social_django',
-    'rest_framework_social_oauth2',
+    'rest_framework_social_oauth2'
 ]
 
 MIDDLEWARE = [
@@ -192,3 +193,5 @@ GARPIX_REFRESH_TOKEN_TTL_SECONDS = 0  # infinity
 MIGRATION_MODULES = {
     'garpix_auth': 'app.migrations.garpix_auth',
 }
+
+AUTH_USER_MODEL = 'user.User'
