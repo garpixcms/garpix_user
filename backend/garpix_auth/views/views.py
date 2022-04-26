@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.views.generic.base import RedirectView
 from django.views.generic import FormView
 from django.http import HttpResponse
-from .forms import LoginForm
+from garpix_auth.forms import LoginForm
 
 
 class LogoutView(RedirectView):

@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'user',
     'garpix_auth',
     'garpix_qa',
+    'ckeditor',
     # for auth
     'rest_framework',
     'rest_framework.authtoken',
@@ -224,3 +225,15 @@ GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
 GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = False
 
 GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = False
+
+
+# ckeditor
+
+CKEDITOR_UPLOAD_PATH = ''
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'width': '100%',
+    },
+}
