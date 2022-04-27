@@ -1,13 +1,9 @@
 from django.urls import path
 from rest_framework import routers
 
-from garpix_auth.rest.obtain_auth_token import obtain_auth_token
-from garpix_auth.rest.refresh_token_view import refresh_token_view
-from garpix_auth.rest.logout_view import logout_view
-from garpix_auth.views import RegistrationView
+from garpix_auth.views import RegistrationView, obtain_auth_token, refresh_token_view, logout_view
 
-from garpix_auth.rest.confirm.viewsets import EmailConfirmationViewSet, PhoneConfirmationViewSet
-from garpix_auth.rest.restore_password.restore_password_viewset import RestorePasswordViewSet
+from garpix_auth.viewsets import EmailConfirmationViewSet, PhoneConfirmationViewSet, RestorePasswordViewSet
 
 urlpatterns = [
     path('login/', obtain_auth_token, name='api_login'),

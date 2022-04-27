@@ -206,7 +206,6 @@ MIGRATION_MODULES = {
     'garpix_notify': 'app.migrations.garpix_notify',
 }
 
-AUTH_USER_MODEL = 'user.User'
 
 NOTIFY_EVENTS = {}
 
@@ -226,6 +225,9 @@ GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = False
 
 GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = False
 
+GARPIX_USER_USERSESSION_MIXIN = "user.models.user_session_mixin.UserSessionMixin"
+
+AUTH_USER_MODEL = 'user.User'
 
 # ckeditor
 

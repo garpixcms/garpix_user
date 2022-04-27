@@ -1,16 +1,14 @@
-from django.contrib.auth import get_user_model
+from django.conf import settings as user_settings
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from garpix_auth import settings
-from garpix_auth.models.confirm import EmailConfirm
-from garpix_auth.rest.confirm.serializers.email_confirmation_serializer import (EmailConfirmSendSerializer,
-                                                                                EmailConfirmCheckCodeSerializer,
-                                                                                EmailPreConfirmCheckCodeSerializer,
-                                                                                EmailPreConfirmSendSerializer)
+from garpix_auth.models.confirm import UserEmailConfirmMixin
+from garpix_auth.serializers import (EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
+                                     EmailPreConfirmCheckCodeSerializer, EmailPreConfirmSendSerializer)
 
-User = get_user_model()
+User = user_settings.AUTH_USER_MODEL
 
 
 class EmailConfirmationViewSet(viewsets.ViewSet):
@@ -33,7 +31,7 @@ class EmailConfirmationViewSet(viewsets.ViewSet):
                        'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
                 serializer = EmailPreConfirmSendSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
-                result = EmailConfirm().send_confirmation_code(serializer.data['email'])
+                result = UserEmailConfirmMixin().send_confirmation_code(serializer.data['email'])
             else:
                 return Response({'Учетные данные не были предоставлены'}, status=401)
         return Response(result)
@@ -50,8 +48,8 @@ class EmailConfirmationViewSet(viewsets.ViewSet):
                        'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
                 serializer = EmailPreConfirmCheckCodeSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
-                result = EmailConfirm().check_confirmation_code(serializer.data['email'],
-                                                                serializer.data['email_confirmation_code'])
+                result = UserEmailConfirmMixin().check_confirmation_code(serializer.data['email'],
+                                                                         serializer.data['email_confirmation_code'])
             else:
                 return Response({'Учетные данные не были предоставлены'}, status=401)
         return Response(result)

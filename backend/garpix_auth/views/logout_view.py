@@ -1,11 +1,11 @@
 from rest_framework import parsers, renderers
-from ..models.access_token import AccessToken as Token
+from garpix_auth.models.access_token import AccessToken as Token
 from oauth2_provider.models import AccessToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..models.refresh_token import RefreshToken
+from garpix_auth.models.refresh_token import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from .utils import get_token_from_request
+from garpix_auth.utils import get_token_from_request
 
 
 class LogoutView(APIView):

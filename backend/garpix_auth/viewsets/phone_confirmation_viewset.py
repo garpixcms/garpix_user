@@ -1,16 +1,13 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from garpix_auth.models.confirm import PhoneConfirm
-from garpix_auth.rest.confirm.serializers.phone_confirmation_serializer import (PhoneConfirmSendSerializer,
-                                                                                PhoneConfirmCheckCodeSerializer,
-                                                                                PhonePreConfirmCheckCodeSerializer,
-                                                                                PhonePreConfirmSendSerializer)
+from garpix_auth.serializers import (PhoneConfirmSendSerializer, PhoneConfirmCheckCodeSerializer, \
+                                     PhonePreConfirmCheckCodeSerializer, PhonePreConfirmSendSerializer)
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 class PhoneConfirmationViewSet(viewsets.ViewSet):

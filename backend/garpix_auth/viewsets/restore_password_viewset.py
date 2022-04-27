@@ -1,15 +1,12 @@
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from garpix_auth.rest.restore_password.restore_passwrod_serializer import (RestoreCommonSerializer,
-                                                                           RestoreByEmailSerializer,
-                                                                           RestoreByPhoneSerializer,
-                                                                           RestoreSetPasswordByEmailSerializer,
-                                                                           RestoreSetPasswordByPhoneSerializer)
+from garpix_auth.serializers import (RestoreCommonSerializer, RestoreByEmailSerializer, RestoreByPhoneSerializer, \
+                                     RestoreSetPasswordByEmailSerializer, RestoreSetPasswordByPhoneSerializer)
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 class RestorePasswordViewSet(viewsets.ViewSet):

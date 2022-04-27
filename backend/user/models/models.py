@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from garpix_notify.mixins import UserNotifyMixin
+from garpix_auth.models.confirm.email_confirm import UserEmailConfirmMixin
 
 
-class User(AbstractUser, UserNotifyMixin):
+class User(AbstractUser, UserNotifyMixin, UserEmailConfirmMixin):
     pass
 
     class Meta:

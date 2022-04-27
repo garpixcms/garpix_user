@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import HomeView, CurrentUserView
-from garpix_auth.views import LogoutView, LoginView
+from garpix_auth.views.views import LogoutView, LoginView
 
 urlpatterns = [
     path('', HomeView.as_view()),

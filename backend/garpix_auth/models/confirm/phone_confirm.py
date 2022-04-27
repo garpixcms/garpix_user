@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.db import models
 from garpix_notify.models import Notify
 from garpix_utils.string import get_random_string
@@ -12,7 +11,7 @@ from rest_framework import serializers
 
 from uuid import uuid4
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 CONFIRM_CODE_LENGTH = settings.GARPIX_CONFIRM_CODE_LENGTH if hasattr(settings,
