@@ -68,12 +68,15 @@ INSTALLED_APPS = [
     'garpix_auth',
     'garpix_qa',
     'ckeditor',
+    'celery',
     # for auth
     'rest_framework',
     'rest_framework.authtoken',
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
+    'drf_multiple_model',
+    'drf_spectacular',
     # for notify
     'fcm_django',
     'garpix_notify'
@@ -218,6 +221,7 @@ NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
 CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
 
 GARPIX_CONFIRM_CODE_LENGTH = 6
+GARPIX_TIME_LAST_REQUEST = 1
 GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
 GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
 

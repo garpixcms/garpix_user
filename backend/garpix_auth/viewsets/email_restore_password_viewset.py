@@ -1,17 +1,14 @@
-from django.conf import settings
+from user.models import User
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from ..rest.restore_password import (RestoreByEmailSerializer,
-                           RestoreSetPasswordByEmailSerializer,
-                           RestoreCheckCodeByEmailSerializer)
-
-User = settings.AUTH_USER_MODEL
+from garpix_auth.serializers import RestoreCommonSerializer, RestoreByEmailSerializer, \
+    RestoreSetPasswordByEmailSerializer, RestoreCheckCodeByEmailSerializer
 
 
-class RestorePasswordViewSet(viewsets.ViewSet):
+class RestoreEmailPasswordViewSet(viewsets.ViewSet):
 
     def get_serializer_class(self):
         if self.action == 'send_code':
@@ -23,7 +20,6 @@ class RestorePasswordViewSet(viewsets.ViewSet):
     @extend_schema(summary='Восстановление пароля по email. Этап 1')
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
-
         serializer = RestoreByEmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -39,7 +35,8 @@ class RestorePasswordViewSet(viewsets.ViewSet):
         serializer = RestoreCheckCodeByEmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = User().check_restore_code(serializer.data['email'], serializer.data['confirmation_code'])
+        result = User().check_restore_code(email=serializer.data['email'],
+                                           confirmation_code=serializer.data['confirmation_code'])
 
         if not result['result']:
             raise serializers.ValidationError(result['message'])
@@ -52,8 +49,8 @@ class RestorePasswordViewSet(viewsets.ViewSet):
         serializer = RestoreSetPasswordByEmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = User().restore_password(serializer.data['email'], serializer.data['token'],
-                                         serializer.data['new_password'])
+        result = User().restore_password(email=serializer.data['email'], token=serializer.data['token'],
+                                         new_password=serializer.data['new_password'])
 
         if not result['result']:
             raise serializers.ValidationError(result['message'])

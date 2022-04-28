@@ -1,9 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from garpix_notify.mixins import UserNotifyMixin
 from garpix_auth.models.confirm.email_confirm import UserEmailConfirmMixin
+from garpix_auth.models import  RestorePasswordMixin
 
 
-class User(AbstractUser, UserNotifyMixin, UserEmailConfirmMixin):
+class User(AbstractUser, UserNotifyMixin, UserEmailConfirmMixin, RestorePasswordMixin):
     pass
 
     class Meta:

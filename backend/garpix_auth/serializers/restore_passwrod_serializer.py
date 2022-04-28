@@ -29,20 +29,30 @@ class RestoreCommonSerializer(serializers.Serializer):
 
 
 class RestoreByEmailSerializer(serializers.Serializer):
-    restore_value = serializers.EmailField(required=True)
+    email = serializers.EmailField(required=True)
 
 
 class RestoreByPhoneSerializer(serializers.Serializer):
-    restore_value = PhoneNumberField(required=True)
+    phone = PhoneNumberField(required=True)
 
 
 class RestoreSetPasswordByEmailSerializer(serializers.Serializer):
-    restore_value = serializers.EmailField(required=True)
-    confirmation_code = serializers.CharField(max_length=15, required=True)
+    email = serializers.EmailField(required=True)
+    token = serializers.CharField(max_length=150, required=True)
     new_password = serializers.CharField(max_length=255, required=True)
 
 
 class RestoreSetPasswordByPhoneSerializer(serializers.Serializer):
-    restore_value = PhoneNumberField(required=True)
-    confirmation_code = serializers.CharField(max_length=15, required=True)
+    phone = PhoneNumberField(required=True)
+    token = serializers.CharField(max_length=150, required=True)
     new_password = serializers.CharField(max_length=255, required=True)
+
+
+class RestoreCheckCodeByEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    confirmation_code = serializers.CharField(max_length=15, required=True)
+
+
+class RestoreCheckCodeByPhoneSerializer(serializers.Serializer):
+    phone = PhoneNumberField(required=True)
+    confirmation_code = serializers.CharField(max_length=15, required=True)

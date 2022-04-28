@@ -6,4 +6,5 @@ from .refresh_token_serializer import RefreshTokenSerializer
 from .phone_confirmation_serializer import PhoneConfirmSendSerializer, PhonePreConfirmSendSerializer, \
     PhoneConfirmCheckCodeSerializer, PhonePreConfirmCheckCodeSerializer
 from .restore_passwrod_serializer import RestoreCommonSerializer, RestoreByPhoneSerializer, \
-    RestoreSetPasswordByPhoneSerializer, RestoreSetPasswordByEmailSerializer, RestoreByEmailSerializer
+    RestoreSetPasswordByPhoneSerializer, RestoreSetPasswordByEmailSerializer, RestoreByEmailSerializer, \
+    RestoreCheckCodeByEmailSerializer, RestoreCheckCodeByPhoneSerializer

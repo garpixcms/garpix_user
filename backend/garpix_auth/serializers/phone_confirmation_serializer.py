@@ -1,5 +1,3 @@
-#from rest_user.User.user_permissionsframework import serializers
-
 from rest_framework import serializers
 from phonenumber_field.serializerfields import PhoneNumberField
 
