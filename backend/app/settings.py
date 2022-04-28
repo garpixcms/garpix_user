@@ -79,7 +79,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     # for notify
     'fcm_django',
-    'garpix_notify'
+    'garpix_notify',
+    'solo',
 ]
 
 MIDDLEWARE = [

@@ -1,5 +1,5 @@
-from garpix_auth.models.confirm.email_confirm import UserSessionEmailConfirmMixin
+#from garpix_auth.models.confirm.email_confirm import UserSessionEmailConfirmMixin
 
 
-class UserSessionMixin(UserSessionEmailConfirmMixin):
-    pass
+#class UserSessionMixin(UserSessionEmailConfirmMixin):
+#    pass

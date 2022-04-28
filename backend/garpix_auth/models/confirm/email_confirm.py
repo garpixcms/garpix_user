@@ -10,7 +10,6 @@ from datetime import timedelta
 from uuid import uuid4
 from django.utils.translation import ugettext_lazy as _
 
-
 User = settings.AUTH_USER_MODEL
 
 GARPIX_CONFIRM_CODE_LENGTH = getattr(settings, 'GARPIX_CONFIRM_CODE_LENGTH', 6)
@@ -20,12 +19,15 @@ GARPIX_TIME_LAST_REQUEST = getattr(settings, 'GARPIX_TIME_LAST_REQUEST', 1)
 
 class UserEmailConfirmMixin(models.Model):
     """
-    Миксин для подтверждения email после регистрации
+    Миксин для подтверждения email до/после регистрации
     """
     is_email_confirmed = models.BooleanField(default=False, verbose_name="Email подтвержден")
-    email_confirmation_code = models.CharField(max_length=15, verbose_name='Код подтверждения email',
-                                               blank=True, null=True)
+    email_confirmation_code = models.CharField(max_length=255, verbose_name="Код подтверждения email", blank=True,
+                                               null=True)
+    email_code_send_date = models.DateTimeField(auto_now=True, verbose_name="Дата изменения", blank=True, null=True)
     new_email = models.EmailField(blank=True, null=True, verbose_name="Новый email")
+
+    # Подтверждение после регистрации
 
     def send_email_confirmation_code(self, email=None):
 
@@ -37,7 +39,7 @@ class UserEmailConfirmMixin(models.Model):
         if not anybody_have_this_email.exists() or anybody_have_this_email == self:
             confirmation_code = get_random_string(GARPIX_CONFIRM_CODE_LENGTH, string.digits)
 
-            self.new_email = email
+            self.email = self.new_email
             self.email_confirmation_code = confirmation_code
 
             Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
@@ -64,18 +66,7 @@ class UserEmailConfirmMixin(models.Model):
         self.save()
         return {"result": True}
 
-    class Meta:
-        abstract = True
-
-
-class UserSessionEmailConfirmMixin(models.Model):
-    """
-    Миксин для подтверждения email до регистрации
-    """
-    email = models.EmailField(unique=True, verbose_name="Email")
-    is_email_confirmed = models.BooleanField(default=False, verbose_name="Email подтвержден")
-    email_confirmation_code = models.CharField(max_length=255, verbose_name="Код подтверждения email")
-    email_code_send_date = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
+    # Подтверждение до регистрации:
 
     @classmethod
     def send_confirmation_code(cls, email):
