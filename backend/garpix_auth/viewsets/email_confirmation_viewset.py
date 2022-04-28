@@ -5,8 +5,8 @@ from rest_framework.response import Response
 
 from garpix_auth import settings
 from garpix_auth.models.confirm import UserEmailConfirmMixin
-from garpix_auth.serializers import (EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
-                                     EmailPreConfirmCheckCodeSerializer, EmailPreConfirmSendSerializer)
+from garpix_auth.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
+    EmailPreConfirmCheckCodeSerializer, EmailPreConfirmSendSerializer
 
 User = user_settings.AUTH_USER_MODEL
 
