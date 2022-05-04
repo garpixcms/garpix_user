@@ -1,7 +1,11 @@
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
-from user.models import User
+from django.contrib.auth import get_user_model
+from rest_framework.generics import CreateAPIView
+
 
 from garpix_auth.serializers import RegistrationSerializer
+
+
+User = get_user_model()
 
 
 class RegistrationView(CreateAPIView):

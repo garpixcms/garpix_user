@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 from garpix_notify.models import Notify
 from garpix_utils.string import get_random_string
@@ -10,7 +11,7 @@ from datetime import timedelta
 from uuid import uuid4
 from django.utils.translation import ugettext_lazy as _
 
-User = settings.AUTH_USER_MODEL
+User = get_user_model()
 
 GARPIX_CONFIRM_CODE_LENGTH = getattr(settings, 'GARPIX_CONFIRM_CODE_LENGTH', 6)
 GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = getattr(settings, 'GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME', 6)

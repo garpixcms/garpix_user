@@ -1,4 +1,4 @@
-from django.conf import settings as user_settings
+from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,7 +8,7 @@ from garpix_auth.models.confirm import UserEmailConfirmMixin
 from garpix_auth.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
     EmailPreConfirmCheckCodeSerializer, EmailPreConfirmSendSerializer
 
-User = user_settings.AUTH_USER_MODEL
+User = get_user_model()
 
 
 class EmailConfirmationViewSet(viewsets.ViewSet):

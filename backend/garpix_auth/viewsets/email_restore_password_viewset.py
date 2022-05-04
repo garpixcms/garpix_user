@@ -1,4 +1,4 @@
-from user.models import User
+from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from garpix_auth.serializers import RestoreCommonSerializer, RestoreByEmailSerializer, \
     RestoreSetPasswordByEmailSerializer, RestoreCheckCodeByEmailSerializer
 
+User = get_user_model()
 
 class RestoreEmailPasswordViewSet(viewsets.ViewSet):
 
