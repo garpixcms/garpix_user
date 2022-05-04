@@ -12,8 +12,6 @@ from rest_framework import serializers
 
 from uuid import uuid4
 
-User = get_user_model()
-
 
 CONFIRM_CODE_LENGTH = settings.GARPIX_CONFIRM_CODE_LENGTH if hasattr(settings,
                                                                      'GARPIX_CONFIRM_CODE_LENGTH') else 6
@@ -33,6 +31,7 @@ class UserPhoneConfirmMixin(models.Model):
     new_phone = PhoneNumberField(unique=True, blank=True, null=True, verbose_name="Новый номер телефона")
 
     def send_phone_confirmation_code(self, phone=None):
+        User = get_user_model()
         if not phone:
             phone = self.phone
 

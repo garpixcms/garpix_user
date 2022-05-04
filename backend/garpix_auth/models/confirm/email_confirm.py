@@ -11,7 +11,6 @@ from datetime import timedelta
 from uuid import uuid4
 from django.utils.translation import ugettext_lazy as _
 
-User = get_user_model()
 
 GARPIX_CONFIRM_CODE_LENGTH = getattr(settings, 'GARPIX_CONFIRM_CODE_LENGTH', 6)
 GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = getattr(settings, 'GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
@@ -31,6 +30,7 @@ class UserEmailConfirmMixin(models.Model):
     # Подтверждение после регистрации
 
     def send_email_confirmation_code(self, email=None):
+        User = get_user_model()
 
         if not email:
             email = self.email
@@ -71,6 +71,7 @@ class UserEmailConfirmMixin(models.Model):
 
     @classmethod
     def send_confirmation_code(cls, email):
+        User = get_user_model()
 
         anybody_have_this_email = User.objects.filter(email=email, is_email_confirmed=True).count() > 0
         if not anybody_have_this_email:
