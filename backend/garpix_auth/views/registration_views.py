@@ -4,7 +4,6 @@ from rest_framework.generics import CreateAPIView
 
 from garpix_auth.serializers import RegistrationSerializer
 
-
 User = get_user_model()
 
 

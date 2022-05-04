@@ -9,6 +9,7 @@ from garpix_auth.serializers import RestoreCommonSerializer, RestoreByEmailSeria
 
 User = get_user_model()
 
+
 class RestoreEmailPasswordViewSet(viewsets.ViewSet):
 
     def get_serializer_class(self):

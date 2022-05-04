@@ -1,16 +1,17 @@
-from datetime import datetime, timezone
+import string
+from uuid import uuid4
+from datetime import datetime, timezone, timedelta
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import models
-from garpix_notify.models import Notify
-from garpix_utils.string import get_random_string
-import string
 from django.core.exceptions import ValidationError
-from rest_framework import serializers
-from datetime import timedelta
-from uuid import uuid4
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework import serializers
+
+from garpix_notify.models import Notify
+from garpix_utils.string import get_random_string
 
 GARPIX_CONFIRM_CODE_LENGTH = getattr(settings, 'GARPIX_CONFIRM_CODE_LENGTH', 6)
 GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = getattr(settings, 'GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
@@ -24,8 +25,12 @@ class UserEmailConfirmMixin(models.Model):
     is_email_confirmed = models.BooleanField(default=False, verbose_name="Email подтвержден")
     email_confirmation_code = models.CharField(max_length=255, verbose_name="Код подтверждения email", blank=True,
                                                null=True)
+    token = models.CharField(max_length=40, verbose_name="Токен", blank=True,
+                             null=True)
     email_code_send_date = models.DateTimeField(auto_now=True, verbose_name="Дата изменения", blank=True, null=True)
     new_email = models.EmailField(blank=True, null=True, verbose_name="Новый email")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
     # Подтверждение после регистрации
 
@@ -81,19 +86,21 @@ class UserEmailConfirmMixin(models.Model):
             if not email_confirmation_instance.updated_at or email_confirmation_instance.updated_at + timedelta(
                     minutes=GARPIX_TIME_LAST_REQUEST) < datetime.now(
                 email_confirmation_instance.email_code_send_date.tzinfo):
-                email_confirmation_instance.save()
-                Notify.send(settings.CONFIRM_EMAIL_EVENT, {
-                    'confirmation_key': confirmation_code
-                }, email=email)
-
+                email_confirmation_instance.email = email
                 email_confirmation_instance.email_confirmation_code = confirmation_code
                 email_confirmation_instance.token = uuid4()
 
+                Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
+                    'confirmation_key': confirmation_code
+                }, email=email)
+
                 try:
-                    email_confirmation_instance.full_clean()
+                    email_confirmation_instance.clean()
                 except ValidationError as e:
                     return serializers.ValidationError(e)
                 email_confirmation_instance.check_date = datetime.now(timezone.utc)
+                email_confirmation_instance.save()
+                email_confirmation_instance.username = 'not_confirmed_user_' + f'{email_confirmation_instance.id}'
                 email_confirmation_instance.save()
                 return {"result": True}
             else:
