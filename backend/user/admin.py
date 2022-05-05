@@ -22,13 +22,7 @@ class UserAdmin(UserAdmin):
                         'fields': ('telegram_chat_id', 'telegram_secret', 'get_telegram_connect_user_help'),
                     }),
                     ('Confim_information', {
-                        'fields': ('is_phone_confirmed', 'phone_confirmation_code', 'new_phone'),
+                        'fields': ('is_email_confirmed', 'email_confirmation_code', 'new_email'),
                     }),
                 ) + UserAdmin.fieldsets
     readonly_fields = ['telegram_secret', 'get_telegram_connect_user_help'] + list(UserAdmin.readonly_fields)
-
-    def response_change(self, request, obj):
-        if (obj.new_email and "_send_confirm_code" in request.POST) or (obj.email and "_send_confirm_code" in request.POST):
-            print('Тут должен отправиться код')
-            return HttpResponseRedirect(".")
-        return super().response_change(request, obj)
