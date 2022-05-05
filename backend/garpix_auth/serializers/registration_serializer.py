@@ -1,8 +1,22 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils.module_loading import import_string
 from rest_framework import serializers
 
 
 User = get_user_model()
+
+try:
+    Config = import_string(settings.GARPIX_USER_CONFIG)
+    MIN_LENGTH_PASSWORD = Config.get_solo().min_length_password
+    MIN_DIGITS_PASSWORD = Config.get_solo().min_digits_password
+    MIN_CHARS_PASSWORD = Config.get_solo().min_chars_password
+    MIN_UPPERCASE_PASSWORD = Config.get_solo().min_uppercase_password
+except Exception:
+    MIN_LENGTH_PASSWORD = getattr(settings, 'MIN_LENGTH_PASSWORD', 8)
+    MIN_DIGITS_PASSWORD = getattr(settings, 'MIN_DIGITS_PASSWORD', 2)
+    MIN_CHARS_PASSWORD = getattr(settings, 'MIN_CHARS_PASSWORD', 2)
+    MIN_UPPERCASE_PASSWORD = getattr(settings, 'MIN_UPPERCASE_PASSWORD', 1)
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -10,10 +24,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
     password_2 = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        min_length = 8
-        min_digits = 2
-        min_chars = 2
-        min_uppercase = 1
+        min_length = MIN_LENGTH_PASSWORD
+        min_digits = MIN_DIGITS_PASSWORD
+        min_chars = MIN_CHARS_PASSWORD
+        min_uppercase = MIN_UPPERCASE_PASSWORD
 
         queryset = User.objects.filter(email=data['email']).first()
         if queryset is not None:

@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
-    'drf_multiple_model',
+    #'drf_multiple_model',
     'drf_spectacular',
     # for notify
     'fcm_django',
@@ -246,4 +246,9 @@ CKEDITOR_CONFIGS = {
 GARPIX_USER_CONFIG = 'garpix_auth.models.users_config.GarpixUserConfig'
 GARPIX_USE_REGISTRATION_PHONE_CONFIRMATION = 2
 GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION = 2
+
+MIN_LENGTH_PASSWORD = 8
+MIN_DIGITS_PASSWORD = 2
+MIN_CHARS_PASSWORD = 2
+MIN_UPPERCASE_PASSWORD = 1
 
