@@ -68,6 +68,7 @@ class UserEmailLinkPreConfirmMixin(models.Model):
     """
     Миксин для подтверждения email до регистрации
     """
+    email = models.EmailField(unique=True, verbose_name='Почта', null=True, blank=True)
     is_email_confirmed = models.BooleanField(default=False, verbose_name="Email подтвержден")
     email_confirmation_code = models.CharField(max_length=255, verbose_name="Код подтверждения email", blank=True,
                                                null=True)
