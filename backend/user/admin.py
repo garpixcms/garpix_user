@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 
 from .models import User
+from garpix_auth.models import UserSession
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -26,3 +27,8 @@ class UserAdmin(UserAdmin):
                     }),
                 ) + UserAdmin.fieldsets
     readonly_fields = ['telegram_secret', 'get_telegram_connect_user_help'] + list(UserAdmin.readonly_fields)
+
+
+@admin.register(UserSession)
+class UserSessionMixinAdmin(admin.ModelAdmin):
+    pass

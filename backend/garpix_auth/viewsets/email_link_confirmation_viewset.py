@@ -9,14 +9,9 @@ from rest_framework.response import Response
 from garpix_auth import settings
 from garpix_auth.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
     EmailPreConfirmCheckCodeSerializer, EmailPreConfirmSendSerializer
+from garpix_auth.models import UserSession
 
 User = get_user_model()
-
-try:
-    Config = import_string(settings.GARPIX_USER_CONFIG)
-    GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION = Config.get_solo().registration_type
-except Exception:
-    GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION = getattr(settings, 'GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION', 2)
 
 
 class EmailLinkConfirmationViewSet(viewsets.ViewSet):
@@ -28,44 +23,32 @@ class EmailLinkConfirmationViewSet(viewsets.ViewSet):
 
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
-        if GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION != 0 and settings.GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION:
-            try:
+        user = request.user
+        if user.is_authenticated:
+            serializer = EmailConfirmSendSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            email = request.data['email']
+            user = User.objects.filter(email=email).first()
+            result = user.send_confirmation_link(email)
+        else:
+            if hasattr(settings, 'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') \
+                    and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
                 serializer = EmailPreConfirmSendSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
-                email = request.data['email']
-                user = User.objects.filter(email=email).first()
-                result = user.send_confirmation_link(email)
-            except Exception as e:
-                return Response(e, status=401)
-        else:
-            return Response({'Функция подтверждения пользователя отключена'}, status=401)
-        return Response(result)
-
-    @action(methods=['POST'], detail=False)
-    def send_code(self, request, *args, **kwargs):
-        user = request.user
-        if GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION != 0 and settings.GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION:
-            if user.is_authenticated:
-                serializer = EmailConfirmSendSerializer(data=request.data)
-                serializer.is_valid(raise_exception=True)
-                email = request.data['email']
-                user = User.objects.filter(email=email).first()
-                result = user.send_confirmation_link(email)
+                result = User().send_link_email(serializer.data['email'])
             else:
-                if GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION == 1 and settings.GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION:
-                    serializer = EmailPreConfirmSendSerializer(data=request.data)
-                    serializer.is_valid(raise_exception=True)
-                    result = User().send_link_email(serializer.data['email'])
-                else:
-                    return Response({'Учетные данные не были предоставлены'}, status=401)
-        else:
-            return Response({'Функция подтверждения пользователя отключена'}, status=401)
+                return Response({'Учетные данные не были предоставлены'}, status=401)
+
         return Response(result)
 
     @api_view(['GET'])
     def activate(self, token, confirmation_code):
         User = get_user_model()
-        if GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION == 2 and settings.GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION:
+        if hasattr(settings, 'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') \
+                and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
+            result = UserSession().check_link_email(token=token, email_confirmation_code=confirmation_code)
+            return Response(result)
+        else:
             try:
                 uid = force_text(urlsafe_base64_decode(token))
                 user_info = User.objects.get(pk=uid, email_confirmation_code=confirmation_code)
@@ -77,9 +60,3 @@ class EmailLinkConfirmationViewSet(viewsets.ViewSet):
                 return Response({'Почта подтверждена'}, status=200)
             else:
                 return Response({'Пользователь не подтвержден!'}, status=401)
-        elif GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION == 1 and settings.GARPIX_USE_REGISTRATION_EMAIL_CONFIRMATION:
-            result = User().check_link_email(token=token, email_confirmation_code=confirmation_code)
-            return Response(result)
-        else:
-            return Response({'Подтверждение отключено'}, status=401)
-

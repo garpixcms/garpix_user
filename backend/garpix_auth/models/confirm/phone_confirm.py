@@ -14,28 +14,23 @@ from rest_framework import serializers
 
 from uuid import uuid4
 
-
 CONFIRM_CODE_LENGTH = settings.GARPIX_CONFIRM_CODE_LENGTH if hasattr(settings,
                                                                      'GARPIX_CONFIRM_CODE_LENGTH') else 6
-
-CONFIRM_PHONE_CODE_LIFE_TIME = settings.GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME if hasattr(settings,
-                                                                                       'GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME') else 6
+CONFIRM_PHONE_CODE_LIFE_TIME = settings.GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME if \
+    hasattr(settings, 'GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME') else 6
 
 
 class UserPhoneConfirmMixin(models.Model):
     """
-    Модель для подтверждения номера телефона до/после регистрации
+    Миксин для подтверждения номера телефона после регистрации
     """
-    #phone = PhoneNumberField(unique=True, verbose_name="Телефон")
+    phone = PhoneNumberField(unique=True, blank=True, default='', verbose_name="Номер телефона")
     is_phone_confirmed = models.BooleanField(default=False, verbose_name="Номер телефона подтвержден")
     phone_confirmation_code = models.CharField(max_length=15, verbose_name='Код подтверждения номера телефона',
                                                blank=True, null=True)
     new_phone = PhoneNumberField(unique=True, blank=True, null=True, verbose_name="Новый номер телефона")
-    token = models.CharField(max_length=40, verbose_name="Токен", blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
-    # Подтверждение до регистрации
+    # Подтверждение после регистрации
 
     def send_phone_confirmation_code(self, phone=None):
         User = get_user_model()
@@ -74,6 +69,18 @@ class UserPhoneConfirmMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class UserPhonePreConfirmMixin(models.Model):
+    """
+    Миксин для подтверждения номера телефона до регистрации
+    """
+    phone = PhoneNumberField(unique=True, verbose_name="Телефон")
+    is_phone_confirmed = models.BooleanField(default=False, verbose_name="Номер телефона подтвержден")
+    phone_confirmation_code = models.CharField(max_length=15, verbose_name='Код подтверждения номера телефона')
+    token = models.CharField(max_length=40, verbose_name="Токен")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
     # Подтверждение после регистрации
 

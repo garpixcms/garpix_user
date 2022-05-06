@@ -21,7 +21,7 @@ GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = getattr(settings, 'GARPIX_CONFIRM_EMAIL_CO
 GARPIX_TIME_LAST_REQUEST = getattr(settings, 'GARPIX_TIME_LAST_REQUEST', 1)
 
 
-class UserEmailConfirmMixin(models.Model):
+class UserEmailLinkConfirmMixin(models.Model):
     """
     Миксин для подтверждения email после регистрации
     """
@@ -30,51 +30,41 @@ class UserEmailConfirmMixin(models.Model):
                                                blank=True, null=True)
     new_email = models.EmailField(blank=True, null=True, verbose_name="Новый email")
 
-    # Подтверждение после регистрации
+    # Подтверждение пользователя по ссылке после регистрации
 
-    def send_email_confirmation_code(self, email=None):
+    def send_confirmation_link(self, email):
         User = get_user_model()
 
         if not email:
             email = self.email
 
         anybody_have_this_email = User.objects.filter(email=email, is_email_confirmed=True).count() > 0
+        if anybody_have_this_email is not True:
+            confirmation_code = get_random_string(GARPIX_CONFIRM_CODE_LENGTH)
 
-        if not anybody_have_this_email.exists() or anybody_have_this_email == self:
-            confirmation_code = get_random_string(GARPIX_CONFIRM_CODE_LENGTH, string.digits)
-
-            self.email = self.new_email
+            if self.new_email:
+                self.email = self.new_email
             self.email_confirmation_code = confirmation_code
+            self.save()
+            uid = urlsafe_base64_encode(force_bytes(self.pk))
+            link = f'http://{settings.SITE_URL}/api/auth/activate_link/{uid}/{confirmation_code}/'
 
-            Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
-                'confirmation_code': confirmation_code
-            }, email=email)
+            try:
+                Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
+                    'link': link
+                }, email=email)
+            except Exception as e:
+                return {'message': e}
 
             return {"result": True}
 
         return {"result": False, "message": "User with such email already exists"}
 
-    def check_email_confirmation_code(self, email_confirmation_code):
-
-        time_is_up = (datetime.now(
-            timezone.utc) - self.updated_at).days > GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME
-
-        if time_is_up:
-            return {"result": False, "message": "Code has expired"}
-
-        if self.email_confirmation_code != email_confirmation_code:
-            return {"result": False, "message": "Code is incorrect"}
-
-        self.is_email_confirmed = True
-        self.email = self.new_email
-        self.save()
-        return {"result": True}
-
     class Meta:
         abstract = True
 
 
-class UserEmailPreConfirmMixin(models.Model):
+class UserEmailLinkPreConfirmMixin(models.Model):
     """
     Миксин для подтверждения email до регистрации
     """
@@ -88,9 +78,10 @@ class UserEmailPreConfirmMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
-    # Подтверждение до регистрации c помощью кода:
+    # Подтверждение по ссылке до регистрации:
+
     @classmethod
-    def send_confirmation_code(cls, email):
+    def send_link_email(cls, email):
         User = get_user_model()
 
         anybody_have_this_email = User.objects.filter(email=email, is_email_confirmed=True).count() > 0
@@ -105,8 +96,10 @@ class UserEmailPreConfirmMixin(models.Model):
                 email_confirmation_instance.email_confirmation_code = confirmation_code
                 email_confirmation_instance.token = uuid4()
 
+                link = f'http://{settings.SITE_URL}/api/auth/activate_link/{email_confirmation_instance.token}/{confirmation_code}/'
+
                 Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
-                    'confirmation_key': confirmation_code
+                    'link': link
                 }, email=email)
 
                 try:
@@ -124,12 +117,12 @@ class UserEmailPreConfirmMixin(models.Model):
         return {"result": False, "message": _("Пользователь с таким email уже зарегистрирован")}
 
     @classmethod
-    def check_confirmation_code(cls, email, email_confirmation_code):
-        email_confirmation_instance = cls.objects.filter(email=email,
-                                                         email_confirmation_code=email_confirmation_code).first()
+    def check_link_email(cls, token, email_confirmation_code):
+        email_confirmation_instance = cls.objects.filter(Q(token=token,
+                                                           email_confirmation_code=email_confirmation_code)).first()
 
         if not email_confirmation_instance:
-            return {"result": False, "message": _("Неверный код или email")}
+            return {"result": False, "message": _("Некорректная ссылка")}
 
         time_is_up = (datetime.now(
             email_confirmation_instance.email_code_send_date.tzinfo) - email_confirmation_instance.email_code_send_date).seconds / 60 > GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME

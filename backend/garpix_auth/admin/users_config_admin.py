@@ -5,5 +5,14 @@ from ..models import GarpixUserConfig
 
 @admin.register(GarpixUserConfig)
 class GarpixUserConfigAdmin(SingletonModelAdmin):
-    pass
+    fieldsets = (
+        ('Сложность пароля при регистрации', {
+            'fields': (
+                'min_length_password',
+                'min_digits_password',
+                'min_chars_password',
+                'min_uppercase_password',
+
+            )
+        }),)
 
