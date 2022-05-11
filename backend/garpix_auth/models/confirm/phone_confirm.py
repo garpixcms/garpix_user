@@ -1,25 +1,23 @@
+import string
 from datetime import datetime, timezone
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.exceptions import ValidationError
+
 from garpix_notify.models import Notify
 from garpix_utils.string import get_random_string
-import string
-from django.core.exceptions import ValidationError
+
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework import serializers
 
 from uuid import uuid4
 
-User = get_user_model()
-
-
 CONFIRM_CODE_LENGTH = settings.GARPIX_CONFIRM_CODE_LENGTH if hasattr(settings,
                                                                      'GARPIX_CONFIRM_CODE_LENGTH') else 6
-
-CONFIRM_PHONE_CODE_LIFE_TIME = settings.GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME if hasattr(settings,
-                                                                                       'GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME') else 6
+CONFIRM_PHONE_CODE_LIFE_TIME = settings.GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME if \
+    hasattr(settings, 'GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME') else 6
 
 
 class UserPhoneConfirmMixin(models.Model):
@@ -32,7 +30,10 @@ class UserPhoneConfirmMixin(models.Model):
                                                blank=True, null=True)
     new_phone = PhoneNumberField(unique=True, blank=True, null=True, verbose_name="Новый номер телефона")
 
+    # Подтверждение после регистрации
+
     def send_phone_confirmation_code(self, phone=None):
+        User = get_user_model()
         if not phone:
             phone = self.phone
 
@@ -70,9 +71,9 @@ class UserPhoneConfirmMixin(models.Model):
         abstract = True
 
 
-class PhoneConfirm(models.Model):
+class UserPhonePreConfirmMixin(models.Model):
     """
-    Модель для подтверждения номера телефона до регистрации
+    Миксин для подтверждения номера телефона до регистрации
     """
     phone = PhoneNumberField(unique=True, verbose_name="Телефон")
     is_phone_confirmed = models.BooleanField(default=False, verbose_name="Номер телефона подтвержден")
@@ -81,22 +82,28 @@ class PhoneConfirm(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
+    # Подтверждение после регистрации
+
     @classmethod
     def send_confirmation_code(cls, phone):
+        User = get_user_model()
 
         anybody_have_this_phone = User.objects.filter(phone=phone, is_phone_confirmed=True).count() > 0
         if not anybody_have_this_phone:
             phone_confirmation_instance = cls.objects.filter(phone=phone).first() or cls(phone=phone)
 
             confirmation_code = get_random_string(CONFIRM_CODE_LENGTH, string.digits)
+            phone_confirmation_instance.phone = phone
             phone_confirmation_instance.phone_confirmation_code = confirmation_code
             phone_confirmation_instance.token = uuid4()
 
             try:
-                phone_confirmation_instance.full_clean()
+                phone_confirmation_instance.clean()
             except ValidationError as e:
                 return serializers.ValidationError(e)
 
+            phone_confirmation_instance.save()
+            phone_confirmation_instance.username = 'not_confirmed_user_' + f'{phone_confirmation_instance.id}'
             phone_confirmation_instance.save()
 
             Notify.send(settings.PHONE_CONFIRMATION_EVENT, {
@@ -135,8 +142,4 @@ class PhoneConfirm(models.Model):
         return False
 
     class Meta:
-        verbose_name = 'Код подтверждения по смс'
-        verbose_name_plural = 'Коды подтверждения по смс'
-        if not hasattr(settings,
-                       'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') or not settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
-            abstract = True
+        abstract = True

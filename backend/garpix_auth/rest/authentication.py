@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
-from .utils import get_token_from_request
+from garpix_auth.utils import get_token_from_request
 
 
 def get_user_by_token(token):

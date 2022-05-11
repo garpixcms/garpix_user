@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 from environs import Env
 
-from garpix_auth.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
+from garpix_auth.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM, EMAIL_LINK_CONFIRMATION_EVENT_ITEM  # noqa
 from garpix_auth.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
 from garpix_auth.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
 from garpix_auth.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
@@ -67,15 +67,20 @@ INSTALLED_APPS = [
     'user',
     'garpix_auth',
     'garpix_qa',
+    'ckeditor',
+    'celery',
     # for auth
     'rest_framework',
     'rest_framework.authtoken',
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
+    #'drf_multiple_model',
+    'drf_spectacular',
     # for notify
     'fcm_django',
-    'garpix_notify'
+    'garpix_notify',
+    'solo',
 ]
 
 MIDDLEWARE = [
@@ -205,7 +210,6 @@ MIGRATION_MODULES = {
     'garpix_notify': 'app.migrations.garpix_notify',
 }
 
-AUTH_USER_MODEL = 'user.User'
 
 NOTIFY_EVENTS = {}
 
@@ -214,15 +218,37 @@ NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
 
 NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
 NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
+NOTIFY_EVENTS.update(EMAIL_LINK_CONFIRMATION_EVENT_ITEM)
 
 CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
 
 GARPIX_CONFIRM_CODE_LENGTH = 6
+GARPIX_TIME_LAST_REQUEST = 1
 GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
 GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
 
-GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = False
-
-GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = False
-
 GARPIX_USER_USERSESSION_MIXIN = "user.models.user_session_mixin.UserSessionMixin"
+
+AUTH_USER_MODEL = 'user.User'
+
+# ckeditor
+
+CKEDITOR_UPLOAD_PATH = ''
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'width': '100%',
+    },
+}
+
+# registration
+GARPIX_USER_CONFIG = 'garpix_auth.models.users_config.GarpixUserConfig'
+GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = True
+GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = True
+
+MIN_LENGTH_PASSWORD = 8
+MIN_DIGITS_PASSWORD = 2
+MIN_CHARS_PASSWORD = 2
+MIN_UPPERCASE_PASSWORD = 1
+

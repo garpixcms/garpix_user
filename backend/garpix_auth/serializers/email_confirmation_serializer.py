@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 
 class EmailConfirmSendSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(required=True)
 
 
 class EmailConfirmCheckCodeSerializer(serializers.Serializer):

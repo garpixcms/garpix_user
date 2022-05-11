@@ -16,14 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import HomeView, CurrentUserView
-from garpix_auth.views import LogoutView, LoginView
+from garpix_auth.views.views import LogoutView, LoginView
 
 urlpatterns = [
     path('', HomeView.as_view()),
     path('admin/', admin.site.urls),
     path('api/current-user/', CurrentUserView.as_view(), name='current-user'),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     # garpix_auth
     path('logout/', LogoutView.as_view(url='/'), name="logout"),
     path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
     path('api/auth/', include(('garpix_auth.urls', 'garpix_auth'), namespace='garpix_auth')),
+
 ]

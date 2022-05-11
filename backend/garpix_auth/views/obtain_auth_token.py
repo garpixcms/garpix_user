@@ -1,10 +1,10 @@
 from rest_framework import parsers, renderers
-from ..models.access_token import AccessToken as Token
-from .auth_token_serializer import AuthTokenSerializer
+from garpix_auth.models.access_token import AccessToken as Token
+from garpix_auth.serializers.auth_token_serializer import AuthTokenSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
-from ..models.refresh_token import RefreshToken
+from garpix_auth.models.refresh_token import RefreshToken
 
 
 class ObtainAuthToken(APIView):
