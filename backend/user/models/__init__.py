@@ -1,2 +1,2 @@
-from .models import User
-from .user_session_mixin import UserSessionMixin
+from .user import User  # noqa
+from .user_session_mixin import UserSessionMixin  # noqa

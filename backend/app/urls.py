@@ -14,18 +14,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+
+from garpix_user.views.referral_links_view import ReferralLinkView
 from .views import HomeView, CurrentUserView
-from garpix_auth.views.views import LogoutView, LoginView
+from garpix_user.views.views import LogoutView, LoginView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.conf import settings
 
 urlpatterns = [
     path('', HomeView.as_view()),
     path('admin/', admin.site.urls),
     path('api/current-user/', CurrentUserView.as_view(), name='current-user'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    # garpix_auth
+    # garpix_user
     path('logout/', LogoutView.as_view(url='/'), name="logout"),
     path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
-    path('api/auth/', include(('garpix_auth.urls', 'garpix_auth'), namespace='garpix_auth')),
-
+    path('api/user/', include(('user.urls', 'user'), namespace='user')),
+    re_path(r'hash/^(?P<hash>.*?)/$', ReferralLinkView.as_view(), name='referral_link'),
+    re_path(r'hash/^(?P<hash>.*?)$', ReferralLinkView.as_view(), name='referral_link')
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += [
+        path(f'{settings.API_URL}/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path(f'{settings.API_URL}/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    ]
