@@ -1,4 +1,4 @@
-# Garpix Auth
+# Garpix User
 
 Auth module for Django/DRF projects. Part of GarpixCMS.
 
@@ -14,24 +14,24 @@ Used packages:
 Install with pip:
 
 ```bash
-pip install garpix_auth
+pip install garpix_user
 ```
 
-Add the `garpix_auth` to your `INSTALLED_APPS`:
+Add the `garpix_user` to your `INSTALLED_APPS`:
 
 ```python
 # settings.py
 
 INSTALLED_APPS = [
     # ...
-    'garpix_auth',
+    'garpix_user',
 ]
 ```
 
 Add to `urls.py`:
 
 ```
-from garpix_auth.views import LogoutView, LoginView
+from garpix_user.views import LogoutView, LoginView
 
 urlpatterns = [
     # ...
@@ -46,7 +46,7 @@ For custom auth with phone and email use this in `settings.py`:
 ```
 AUTHENTICATION_BACKENDS = (
     # Django
-    'garpix_auth.models.CustomAuthenticationBackend',
+    'garpix_user.models.CustomAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 ```
@@ -108,12 +108,10 @@ from django.urls import path, include
 
 urlpatterns = [
     # ...
-    path('api/auth/', include(('garpix_auth.urls', 'garpix_auth'), namespace='garpix_auth')),
+    path('api/auth/', include(('garpix_user.urls', 'garpix_auth'), namespace='garpix_auth')),
     # ...
 ]
 ```
-
-See `garpix_auth/tests/test_api.py` for examples.
 
 
 To use email and phone confirmation or (and) restore password functionality add the `garpix_notify` to your `INSTALLED_APPS`:
@@ -137,31 +135,36 @@ MIGRATION_MODULES = {
 ```
 
 Add corresponding mixin(s) to your User model:
+
 ```python
-from garpix_auth.models import UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin  # noqa
+from garpix_user.models import UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin  # noqa
 ```
 
-You also need import email or(and) phone confirmation notify events:
-```python
-from garpix_auth.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
-from garpix_auth.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
+You also need import email or (and) phone confirmation notify events:
 
-NOTIFY_EVENTS = {}  #  if you haven't any notifications in your project
+```python
+from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
+from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
+
+NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
 
 NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
 NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
 
 ```
+
 The same notification events to restore password:
 ```python
-from garpix_auth.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-from garpix_auth.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-NOTIFY_EVENTS = {}  #  if you haven't any notifications in your project
+from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+
+NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
 
 NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
 NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
 
 ```
+
 You can specify email and phone code length and lifetime:
 ```python
 GARPIX_CONFIRM_CODE_LENGTH = 6
@@ -175,6 +178,11 @@ GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = True
 
 GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = True
 ```
+
+Also add the corresponding mixins to UserSession model.
+
+
+See `garpix_user/tests/test_api.py` for examples.
 
 # Changelog
 
