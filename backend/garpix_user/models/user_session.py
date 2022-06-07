@@ -119,8 +119,8 @@ class UserSession(UserSessionMixin, models.Model):
         )
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Пользователь системы'
+        verbose_name_plural = 'Пользователи системы'
 
     def __str__(self):
         return f'{self.pk}'

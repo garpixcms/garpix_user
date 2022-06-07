@@ -15,7 +15,7 @@ from pathlib import Path
 from environs import Env
 
 from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM, \
-    EMAIL_LINK_CONFIRMATION_EVENT_ITEM  # noqa
+    EMAIL_LINK_CONFIRMATION_EVENT_ITEM, EMAIL_LINK_CONFIRMATION_EVENT  # noqa
 from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
 from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
 from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
@@ -234,8 +234,6 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-EMAIL_CONFIRM_LINK = 'http://127.0.0.1:8000/confirm-email'
-
 MIN_LENGTH_PASSWORD = 8
 MIN_DIGITS_PASSWORD = 2
 MIN_CHARS_PASSWORD = 2
@@ -247,11 +245,13 @@ API_URL = 'api'
 GARPIX_USER = {
     # base settings
     'USER_CONFIG': 'garpix_user.models.users_config.GarpixUserConfig',
-    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
-    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_REFERRAL_LINKS': False,
     'REFERRAL_REDIRECT_URL': '/',
-    # confirmation codes
+    # email/phone confirmation
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
+    'USE_EMAIL_LINK_CONFIRMATION': True,
+    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
     'CONFIRM_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes

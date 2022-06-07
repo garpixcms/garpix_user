@@ -26,8 +26,3 @@ class UserAdmin(UserAdmin):
                     }),
                 ) + UserAdmin.fieldsets
     readonly_fields = ['telegram_secret', 'get_telegram_connect_user_help'] + list(UserAdmin.readonly_fields)
-
-
-@admin.register(UserSession)
-class UserSessionAdmin(admin.ModelAdmin):
-    pass

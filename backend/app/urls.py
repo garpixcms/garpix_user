@@ -18,7 +18,7 @@ from django.urls import path, include, re_path
 
 from garpix_user.views.referral_links_view import ReferralLinkView
 from .views import HomeView, CurrentUserView
-from garpix_user.views.views import LogoutView, LoginView
+from garpix_user.views.login_views import LogoutView, LoginView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.conf import settings
 
