@@ -1,14 +1,16 @@
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework import routers
 from garpix_user.urls import urlpatterns
-from garpix_user.views.registration_views import registration_view
-from garpix_user.views.user_session import UserSessionView
+from garpix_user.views.registration_view import registration_view
+from garpix_user.views.user_session_view import UserSessionView
 
 from garpix_user.views import EmailConfirmationView, PhoneConfirmationView, RestoreEmailPasswordView, \
-    RestorePhonePasswordView
+    RestorePhonePasswordView, EmailConfirmationLinkView
 
 urlpatterns += [
-    path('registration/', registration_view, name='registration')
+    path('registration/', registration_view, name='registration'),
+    re_path(r'hash/^(?P<hash>.*?)/$', EmailConfirmationLinkView.as_view(), name='email_confirmation_link'),
+    re_path(r'hash/^(?P<hash>.*?)$', EmailConfirmationLinkView.as_view(), name='email_confirmation_link')
 ]
 router = routers.DefaultRouter()
 router.register(r'user_session', UserSessionView, basename='api_user_session')
