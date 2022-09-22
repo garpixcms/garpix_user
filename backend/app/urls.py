@@ -14,11 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 
-from garpix_user.views.referral_links_view import ReferralLinkView
 from .views import HomeView, CurrentUserView
-from garpix_user.views.login_views import LogoutView, LoginView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.conf import settings
 
@@ -28,11 +26,7 @@ urlpatterns = [
     path('api/current-user/', CurrentUserView.as_view(), name='current-user'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     # garpix_user
-    path('logout/', LogoutView.as_view(url='/'), name="logout"),
-    path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
-    path('api/user/', include(('user.urls', 'user'), namespace='user')),
-    re_path(r'hash/^(?P<hash>.*?)/$', ReferralLinkView.as_view(), name='referral_link'),
-    re_path(r'hash/^(?P<hash>.*?)$', ReferralLinkView.as_view(), name='referral_link')
+    path('', include(('garpix_user.urls', 'user'), namespace='garpix_user')),
 ]
 
 

@@ -2,14 +2,12 @@ import string
 
 from django.conf import settings
 from django.db import models
-from django.utils import timezone
 from datetime import datetime, timedelta
 from django.utils.translation import ugettext as _
 import hashlib
-from garpix_notify.models import Notify
 from garpix_utils.string import get_random_string
 
-from garpix_user.exceptions import UserUnregisteredException
+from garpix_user.utils.current_date import set_current_date
 
 
 class UserEmailConfirmMixin(models.Model):
@@ -25,6 +23,7 @@ class UserEmailConfirmMixin(models.Model):
     def send_email_confirmation_code(self, email=None):
         from django.contrib.auth import get_user_model
         from garpix_user.exceptions import UserRegisteredException, WaitException
+        from garpix_notify.models import Notify
 
         User = get_user_model()
 
@@ -43,13 +42,9 @@ class UserEmailConfirmMixin(models.Model):
 
         self.email_confirmation_code = confirmation_code
 
-        try:
-            self.email_code_send_date = timezone.now()
-        except Exception:
-            self.email_code_send_date = datetime.now()
-        self.save()
+        self.email_code_send_date = set_current_date()
 
-        print(f'{settings.SITE_URL}/confirm-email/{str(hashlib.sha512(confirmation_code.encode("utf-8")).hexdigest()).lower()}')
+        self.save()
 
         if settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION', False):
             hash = str(hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()

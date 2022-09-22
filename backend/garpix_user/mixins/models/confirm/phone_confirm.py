@@ -5,7 +5,6 @@ from django.db import models
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-from garpix_notify.models import Notify
 from garpix_utils.string import get_random_string
 
 from phonenumber_field.modelfields import PhoneNumberField
@@ -25,6 +24,7 @@ class UserPhoneConfirmMixin(models.Model):
     def send_phone_confirmation_code(self, phone=None):
         from django.contrib.auth import get_user_model
         from garpix_user.exceptions import UserRegisteredException, WaitException
+        from garpix_notify.models import Notify
 
         User = get_user_model()
 

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
-from garpix_user.utils import get_token_from_request
+from garpix_user.utils.get_token_from_request import get_token_from_request
 from django.contrib.auth.models import AnonymousUser
 
 

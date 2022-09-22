@@ -30,13 +30,13 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django >= 3.1',
+        'Django >= 3.1, < 4',
         'djangorestframework >= 3.8',
         'django-oauth-toolkit >= 1.1.2',
         'social-auth-app-django >= 2.1.0',
         'django-rest-framework-social-oauth2 >= 1.1.0',
         'django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}',
-        'garpix-notify >= 4.1.0',
+        'garpix-notify >= 5.1.5',
         'garpix-utils >= 1.4.0'
     ],
 )

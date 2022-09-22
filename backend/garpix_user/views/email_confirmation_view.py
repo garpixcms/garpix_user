@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.views.generic import RedirectView
 
-from garpix_user.exceptions import NotAuthenticateException
 from garpix_user.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
     EmailPreConfirmSendSerializer, UserSessionTokenSerializer
 

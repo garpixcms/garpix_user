@@ -63,8 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'garpix_user',
-    'garpix_qa',
+    'eqator',
     'ckeditor',
     'celery',
     # for auth
@@ -79,8 +78,9 @@ INSTALLED_APPS = [
     'fcm_django',
     'garpix_notify',
     'solo',
-    'user',
     'app',
+    'user',
+    'garpix_user'
 ]
 
 MIDDLEWARE = [
@@ -219,8 +219,6 @@ NOTIFY_EVENTS.update(EMAIL_LINK_CONFIRMATION_EVENT_ITEM)
 
 CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
 
-GARPIX_USER_USERSESSION_MIXIN = "user.models.user_session_mixin.UserSessionMixin"
-
 AUTH_USER_MODEL = 'user.User'
 
 # ckeditor
@@ -244,10 +242,12 @@ API_URL = 'api'
 # user settings
 GARPIX_USER = {
     # base settings
-    'USER_CONFIG': 'garpix_user.models.users_config.GarpixUserConfig',
     'USE_REFERRAL_LINKS': False,
     'REFERRAL_REDIRECT_URL': '/',
+    'USER_USERSESSION_MIXIN': 'user.models.user_session_mixin.UserSessionMixin',
     # email/phone confirmation
+    'USE_EMAIL_CONFIRMATION': True,
+    'USE_PHONE_CONFIRMATION': True,
     'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
     'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_EMAIL_LINK_CONFIRMATION': True,
@@ -256,6 +256,9 @@ GARPIX_USER = {
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    # restore password
+    'USE_EMAIL_RESTORE_PASSWORD': True,
+    'USE_PHONE_RESTORE_PASSWORD': True,
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request

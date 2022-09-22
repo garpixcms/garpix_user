@@ -22,40 +22,57 @@ Add the `garpix_user` to your `INSTALLED_APPS`:
 ```python
 # settings.py
 
+# ...
 INSTALLED_APPS = [
     # ...
     'garpix_user',
 ]
 ```
 
+and to migration modules:
+
+```python
+# settings.py
+
+# ...
+MIGRATION_MODULES = {
+    'garpix_user': 'app.migrations.garpix_user',
+}
+```
+
 Add to `urls.py`:
 
-```
+```python
 from garpix_user.views import LogoutView, LoginView
 
+# ...
 urlpatterns = [
     # ...
-    path('logout/', LogoutView.as_view(url='/'), name="logout"),
-    path('login/', LoginView.as_view(), name="authorize"),
-    # ...
+    # garpix_user
+    path('', include(('garpix_user.urls', 'user'), namespace='garpix_user')),
+
 ]
 ```
 
 For custom auth with phone and email use this in `settings.py`:
 
-```
+```python
+# ...
+
 AUTHENTICATION_BACKENDS = (
     # Django
-    'garpix_user.models.CustomAuthenticationBackend',
+    'garpix_user.utils.backends.CustomAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
 ```
 
 ## With Django Rest Framework
 
 Add this for SPA:
 
-```
+```python
+# ...
 INSTALLED_APPS += [
     # ...
     'rest_framework',
@@ -101,24 +118,14 @@ SOCIAL_AUTH_PIPELINE = (
 
 ```
 
-Add to `urls.py`:
-
-```
-from django.urls import path, include
-
-urlpatterns = [
-    # ...
-    path('api/auth/', include(('garpix_user.urls', 'garpix_auth'), namespace='garpix_auth')),
-    # ...
-]
-```
-
+## Email and phone confirmation, password restoring
 
 To use email and phone confirmation or (and) restore password functionality add the `garpix_notify` to your `INSTALLED_APPS`:
 
 ```python
 # settings.py
 
+# ...
 INSTALLED_APPS = [
     # ...
     'garpix_notify',
@@ -137,7 +144,31 @@ MIGRATION_MODULES = {
 Add corresponding mixin(s) to your User model:
 
 ```python
+
+# user model file
+
 from garpix_user.models import UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin  # noqa
+
+class User(UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin):
+    pass
+    #
+```
+
+and corresponding settings:
+
+```python
+
+# settings.py
+
+GARPIX_USER = {
+    'USE_EMAIL_CONFIRMATION': True,
+    'USE_PHONE_CONFIRMATION': True,
+    'USE_EMAIL_RESTORE_PASSWORD': True,
+    'USE_PHONE_RESTORE_PASSWORD': True,
+}
+
+# Hint: see all available settings in the end of this document.
+
 ```
 
 You also need import email or (and) phone confirmation notify events:
@@ -174,13 +205,121 @@ GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
 
 If you need to use pre-registration email or phone confirmation, you need to set corresponding variables to True:
 ```python
-GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = True
 
-GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = True
+# settings.py
+
+GARPIX_USER = {
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
+}
+
+# Hint: see all available settings in the end of this document.
+
+```
+
+If you need to use email confirmation by link, you need to set corresponding variable:
+```python
+
+# settings.py
+
+GARPIX_USER = {
+    'USE_EMAIL_LINK_CONFIRMATION': True,
+    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',  # link to the page user needs to see after email confirmation
+}
+
+# Hint: see all available settings in the end of this document.
+
 ```
 
 Also add the corresponding mixins to UserSession model.
 
+## Referral links
+
+You can also use referral links in your project with garpix_user. To add this functionality, just add the corresponding settings:
+
+```python  
+
+# settings.py
+
+GARPIX_USER = {
+    'USE_REFERRAL_LINKS': True,
+    'REFERRAL_REDIRECT_URL': '/', # link to the page user needs to see
+}
+
+```
+
+## UserSession
+
+Using `garpix_user` you can also store info about unregistered user sessions. The package already consists of model and views for it.
+
+You can add some custom functionality to the UserSession model using `UserSessionMixin`. Add it's locations to settings:
+
+```python
+
+# settings.py
+
+GARPIX_USER = {
+    'USER_USERSESSION_MIXIN': 'user.models.user_session_mixin.UserSessionMixin'
+}
+
+```
+
+To create the unregistered user send `POST` request to `{API_URL}/user_session/create_user_session/`
+
+The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `UserSession-Token`.
+
+You can use pre-registration email and phone confirmation using this model. Just add the corresponding mixins to this model as was described above for User model:
+
+```python
+
+from django.db import models
+
+from garpix_user.mixins.models import RestorePasswordMixin
+from garpix_user.mixins.models.confirm import UserEmailConfirmMixin, UserPhoneConfirmMixin
+
+
+class UserSessionMixin(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin):
+
+    email = models.EmailField(verbose_name='Email', null=True, blank=True)  # add this field to mixin if you need email pre-registration confirmation
+
+    class Meta:
+        abstract = True
+
+```
+
+## All available settings
+
+```python
+    
+# settings.py
+
+GARPIX_USER = {
+    # base settings
+    'USE_REFERRAL_LINKS': False,
+    'REFERRAL_REDIRECT_URL': '/',
+    # email/phone confirmation
+    'USE_EMAIL_CONFIRMATION': True,
+    'USE_PHONE_CONFIRMATION': True,
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
+    'USE_EMAIL_LINK_CONFIRMATION': True,
+    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
+    'CONFIRM_CODE_LENGTH': 6,
+    'TIME_LAST_REQUEST': 1,
+    'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    # restore password
+    'USE_EMAIL_RESTORE_PASSWORD': True,
+    'USE_PHONE_RESTORE_PASSWORD': True,
+    # response messages
+    'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
+    'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
+    'INCORRECT_CODE_RESPONSE': 'Некорретный код',
+    'NO_TIME_LEFT_RESPONSE': 'Код недействителен. Запросите повторно',
+    'NOT_AUTHENTICATED_RESPONSE': 'Учетные данные не были предоставлены'
+}
+
+```
 
 See `garpix_user/tests/test_api.py` for examples.
 

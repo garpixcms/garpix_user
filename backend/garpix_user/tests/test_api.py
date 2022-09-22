@@ -154,14 +154,3 @@ class LoginApiTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(response.json(), {'result': False})
-
-    def test_confirm_email_registered(self):
-        self.user_login()
-        response = self.client.post(
-            reverse('garpix_user:api_confirm_email'),
-            {
-                'email': self.email,
-            },
-            HTTP_ACCEPT='application/json'
-        )
-        print(response)

@@ -5,8 +5,8 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.utils.module_loading import import_string
 
-
-UserSessionMixin = import_string(settings.GARPIX_USER_USERSESSION_MIXIN)
+UserSessionMixin = import_string(
+    settings.GARPIX_USER.get('USER_USERSESSION_MIXIN', 'garpix_user.mixins.models.user_session.UserSessionMixin'))
 
 
 class UserSession(UserSessionMixin, models.Model):
