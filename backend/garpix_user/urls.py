@@ -5,7 +5,6 @@ from rest_framework import routers
 from garpix_user.views.user_session_view import UserSessionView
 from garpix_user.views.registration_view import registration_view
 from garpix_user.views.referral_links_view import ReferralLinkView
-from garpix_user.views.login_views import LogoutView, LoginView
 
 from garpix_user.views import (
     EmailConfirmationView, PhoneConfirmationView,
