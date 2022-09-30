@@ -266,3 +266,5 @@ GARPIX_USER = {
     'NO_TIME_LEFT_RESPONSE': 'Код недействителен. Запросите повторно',
     'NOT_AUTHENTICATED_RESPONSE': 'Учетные данные не были предоставлены'
 }
+
+GARPIX_NOTIFY_CELERY_SETTINGS = 'app.celery.app'

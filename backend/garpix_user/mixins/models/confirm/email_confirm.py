@@ -3,6 +3,8 @@ import string
 from django.conf import settings
 from django.db import models
 from datetime import datetime, timedelta
+
+from django.urls import reverse
 from django.utils.translation import ugettext as _
 import hashlib
 from garpix_utils.string import get_random_string
@@ -49,7 +51,7 @@ class UserEmailConfirmMixin(models.Model):
         if settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION', False):
             hash = str(hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
             Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
-                'confirmation_link': f'{settings.SITE_URL}/confirm_email/{hash}'
+                'confirmation_link': f"{settings.SITE_URL}{reverse('garpix_user:email_confirmation_link', args=[hash])}"
             }, email=self.email)
         else:
             Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
@@ -79,7 +81,7 @@ class UserEmailConfirmMixin(models.Model):
     def confirm_email_by_link(cls, hash):
         from garpix_user.exceptions import IncorrectCodeException, NoTimeLeftException
 
-        users_list = cls.objects.filter(is_email_confirmated=False)
+        users_list = cls.objects.filter(is_email_confirmed=False)
 
         for user in users_list:
             if str(hashlib.sha512(f'{user.email}+{user.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower() == hash:

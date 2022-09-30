@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from garpix_user.views import LoginView, LogoutView
 from .views import HomeView, CurrentUserView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.conf import settings
@@ -27,6 +28,8 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     # garpix_user
     path('', include(('garpix_user.urls', 'user'), namespace='garpix_user')),
+    path('logout/', LogoutView.as_view(url='/'), name="logout"),
+    path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
 ]
 
 

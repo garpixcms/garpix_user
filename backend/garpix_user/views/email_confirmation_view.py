@@ -71,6 +71,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
 class EmailConfirmationLinkView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
+        print("HELLO")
         User = get_user_model()
         hash = self.kwargs.get('hash', None)
         result = User.confirm_email_by_link(hash)

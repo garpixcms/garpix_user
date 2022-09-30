@@ -13,6 +13,8 @@ from garpix_user.views import (
     EmailConfirmationLinkView
 )
 
+app_name = 'garpix_user'
+
 GARPIX_USER_SETTINGS = getattr(settings, 'GARPIX_USER', dict())
 
 # api routing
@@ -40,22 +42,20 @@ if GARPIX_USER_SETTINGS.get('USE_PHONE_RESTORE_PASSWORD', False):
 api_urlpatterns += router.urls
 
 urlpatterns = [
-    path(f'{settings.API_URL}/garpix_user/', include((api_urlpatterns, 'garpix_user'), namespace='garpix_user_api')),
-    path('logout/', LogoutView.as_view(url='/'), name="logout"),
-    path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
+    path(f'{settings.API_URL}/garpix_user/', include((api_urlpatterns, 'garpix_user'), namespace='garpix_user_api'))
 ]
 
 if GARPIX_USER_SETTINGS.get('USE_REFERRAL_LINKS', False):
     urlpatterns += [
-        re_path(r'hash/^(?P<hash>.*?)/$', ReferralLinkView.as_view(), name='referral_link'),
-        re_path(r'hash/^(?P<hash>.*?)$', ReferralLinkView.as_view(), name='referral_link')
+        re_path(r'invite_link/(?P<hash>.*?)/$', ReferralLinkView.as_view(), name='referral_link'),
+        re_path(r'invite_link/(?P<hash>.*?)$', ReferralLinkView.as_view(), name='referral_link')
     ]
 
 if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False) and GARPIX_USER_SETTINGS.get('USE_EMAIL_LINK_CONFIRMATION',
                                                                                           False):
     urlpatterns += [
-        re_path(r'confirm_email/hash/^(?P<hash>.*?)/$', EmailConfirmationLinkView.as_view(),
+        re_path(r'confirm_email/(?P<hash>.*?)/$', EmailConfirmationLinkView.as_view(),
                 name='email_confirmation_link'),
-        re_path(r'confirm_email/hash/^(?P<hash>.*?)$', EmailConfirmationLinkView.as_view(),
+        re_path(r'confirm_email/(?P<hash>.*?)$', EmailConfirmationLinkView.as_view(),
                 name='email_confirmation_link'),
     ]

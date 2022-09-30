@@ -22,15 +22,22 @@ class ModelException(Exception):
 
 
 class WaitException(ModelException):
-    message = settings.GARPIX_USER.get('WAIT_RESPONSE', None) or _(f"Less than {settings.GARPIX_USER.get('GARPIX_TIME_LAST_REQUEST', 1)} minutes has passed since the last request")
+    message = _(settings.GARPIX_USER.get('WAIT_RESPONSE',
+                                         f"Less than {settings.GARPIX_USER.get('GARPIX_TIME_LAST_REQUEST', 1)} minutes has passed since the last request"))
 
 
 class UserRegisteredException(ModelException):
-    message = settings.GARPIX_USER.get('USER_REGISTERED_RESPONSE', None) or _("User with such {field} has been already registered")
+    def get_message(self):
+        return _(settings.GARPIX_USER.get('USER_REGISTERED_RESPONSE',
+                                          "User with such {field} has been already registered").format(
+            field=self.field))
 
 
 class UserUnregisteredException(ModelException):
-    message = settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', None) or _("User with such {field} has not been registered")
+
+    def get_message(self):
+        return _(settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE',
+                                          "User with such {field} has not been registered").format(field=self.field))
 
 
 class IncorrectCodeException(ModelException):
