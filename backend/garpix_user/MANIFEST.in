@@ -1,2 +1,1 @@
-recursive-exclude __pycache__ *
-recursive-include garpix_auth *
+recursive-include garpix_user *
