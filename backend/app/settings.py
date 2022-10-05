@@ -79,8 +79,8 @@ INSTALLED_APPS = [
     'garpix_notify',
     'solo',
     'app',
-    'user',
-    'garpix_user'
+    'garpix_user',
+    'user'
 ]
 
 MIDDLEWARE = [
