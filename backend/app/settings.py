@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'rest_framework_social_oauth2',
     # 'drf_multiple_model',
     'drf_spectacular',
+    'garpix_package',
     # for notify
     'fcm_django',
     'garpix_notify',

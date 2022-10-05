@@ -23,6 +23,7 @@ garpix-notify = "==5.12.5"
 garpix-utils = "==1.5.1"
 eqator = "==2.4.0"
 sentry-sdk = "*"
+garpix-package = "*"
 
 [dev-packages]
 
