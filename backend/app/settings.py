@@ -14,6 +14,12 @@ import os
 from pathlib import Path
 from environs import Env
 
+from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM, \
+    EMAIL_LINK_CONFIRMATION_EVENT_ITEM, EMAIL_LINK_CONFIRMATION_EVENT  # noqa
+from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
+from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+
 env = Env()
 env.read_env()
 
@@ -22,6 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+SITE_URL = os.getenv('SITE_URL')
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -46,7 +54,6 @@ DEBUG = env.bool('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,15 +63,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
-    'garpix_auth',
-    'garpix_qa',
+    'eqator',
+    'ckeditor',
+    'celery',
     # for auth
     'rest_framework',
     'rest_framework.authtoken',
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
+    # 'drf_multiple_model',
+    'drf_spectacular',
+    # for notify
+    'fcm_django',
+    'garpix_notify',
+    'solo',
+    'app',
+    'garpix_user',
+    'user'
 ]
 
 MIDDLEWARE = [
@@ -74,7 +90,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -99,7 +115,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -113,7 +128,6 @@ DATABASES = {
         'PORT': env.int('POSTGRES_PORT'),
     },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -133,7 +147,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -149,14 +162,15 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-# garpix_auth
+# garpix_user
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'garpix_auth.rest.authentication.MainAuthentication',
+        'garpix_user.rest.authentication.MainAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 AUTHENTICATION_BACKENDS = (
@@ -190,5 +204,67 @@ GARPIX_ACCESS_TOKEN_TTL_SECONDS = 0  # infinity
 GARPIX_REFRESH_TOKEN_TTL_SECONDS = 0  # infinity
 
 MIGRATION_MODULES = {
-    'garpix_auth': 'app.migrations.garpix_auth',
+    'garpix_user': 'app.migrations.garpix_user',
+    'garpix_notify': 'app.migrations.garpix_notify',
 }
+
+NOTIFY_EVENTS = {}
+
+NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
+NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
+
+NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
+NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
+NOTIFY_EVENTS.update(EMAIL_LINK_CONFIRMATION_EVENT_ITEM)
+
+CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
+
+AUTH_USER_MODEL = 'user.User'
+
+# ckeditor
+
+CKEDITOR_UPLOAD_PATH = ''
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'width': '100%',
+    },
+}
+
+MIN_LENGTH_PASSWORD = 8
+MIN_DIGITS_PASSWORD = 2
+MIN_CHARS_PASSWORD = 2
+MIN_UPPERCASE_PASSWORD = 1
+
+API_URL = 'api'
+
+# user settings
+GARPIX_USER = {
+    # base settings
+    'USE_REFERRAL_LINKS': False,
+    'REFERRAL_REDIRECT_URL': '/',
+    'USER_USERSESSION_MIXIN': 'app.mixins.models.user_session_mixin.UserSessionMixin',
+    # email/phone confirmation
+    'USE_EMAIL_CONFIRMATION': True,
+    'USE_PHONE_CONFIRMATION': True,
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
+    'USE_EMAIL_LINK_CONFIRMATION': True,
+    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
+    'CONFIRM_CODE_LENGTH': 6,
+    'TIME_LAST_REQUEST': 1,
+    'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    # restore password
+    'USE_EMAIL_RESTORE_PASSWORD': True,
+    'USE_PHONE_RESTORE_PASSWORD': True,
+    # response messages
+    'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
+    'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
+    'INCORRECT_CODE_RESPONSE': 'Некорретный код',
+    'NO_TIME_LEFT_RESPONSE': 'Код недействителен. Запросите повторно',
+    'NOT_AUTHENTICATED_RESPONSE': 'Учетные данные не были предоставлены'
+}
+
+GARPIX_NOTIFY_CELERY_SETTINGS = 'app.celery.app'

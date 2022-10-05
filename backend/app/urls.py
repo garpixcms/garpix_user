@@ -15,15 +15,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
+from garpix_user.views import LoginView, LogoutView
 from .views import HomeView, CurrentUserView
-from garpix_auth.views import LogoutView, LoginView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.conf import settings
 
 urlpatterns = [
     path('', HomeView.as_view()),
     path('admin/', admin.site.urls),
     path('api/current-user/', CurrentUserView.as_view(), name='current-user'),
-    # garpix_auth
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    # garpix_user
+    path('', include(('garpix_user.urls', 'user'), namespace='garpix_user')),
     path('logout/', LogoutView.as_view(url='/'), name="logout"),
     path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
-    path('api/auth/', include(('garpix_auth.urls', 'garpix_auth'), namespace='garpix_auth')),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += [
+        path(f'{settings.API_URL}/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path(f'{settings.API_URL}/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    ]

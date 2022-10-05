@@ -325,11 +325,11 @@ See `garpix_user/tests/test_api.py` for examples.
 
 # Changelog
 
-See [CHANGELOG.md](backend/garpix_user/CHANGELOG.md).
+See [CHANGELOG.md](CHANGELOG.md).
 
 # Contributing
 
-See [CONTRIBUTING.md](backend/garpix_user/CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 # License
 
