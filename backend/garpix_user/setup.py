@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='garpix-user',
-    version='1.0.0',
+    version='3.0.0-rc1',
     description='',
     author='Garpix LTD',
     author_email='info@garpix.com',
