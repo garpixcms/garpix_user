@@ -323,6 +323,25 @@ GARPIX_USER = {
 
 See `garpix_user/tests/test_api.py` for examples.
 
+# For Frontend Developers
+
+UserSession - needed to associate an unauthorized user with other entities in our system.
+
+To create a UserSession, you need to call the method:
+
+`/api/garpix_user/user_session/create_user_session/`
+
+Next, you need to put it in a cookie or other storage and pass it in a special header. UserSession-Token.
+
+## Phone Verification
+
+Happens in two steps
+
+1. Send `/api/garpix_user/confirm_phone/send_code/` in the request body send the **phone.** field The phone number will be saved and a confirmation code will be sent to it.
+2. After that, you need to send the code `/api/garpix_user/confirm_phone/check_code/` in the field **phone_confirmation_code**
+
+If everything went well, the phone will be confirmed
+
 # Changelog
 
 See [CHANGELOG.md](backend/garpix_user/CHANGELOG.md).
