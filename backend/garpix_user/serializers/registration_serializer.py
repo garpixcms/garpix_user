@@ -61,4 +61,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password_2',)
+        fields = ('password', 'password_2',)
+
+    def get_field_names(self, declared_fields, info):
+        expanded_fields = super().get_field_names(declared_fields, info)
+
+        if getattr(User, 'USERNAME_FIELDS', None):
+            return expanded_fields + User.USERNAME_FIELDS
+        else:
+            return expanded_fields

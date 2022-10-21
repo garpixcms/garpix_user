@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 from environs import Env
 
-from garpix_user.settings import *
+from garpix_user.settings import *  # noqa
 
 env = Env()
 env.read_env()
@@ -179,6 +179,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
     # Django
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    'garpix_user.utils.backends.CustomAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -257,6 +258,6 @@ GARPIX_NOTIFY_CELERY_SETTINGS = 'app.celery.app'
 
 NOTIFY_EVENTS = {}
 
-NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
+NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)  # noqa
 
 CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]

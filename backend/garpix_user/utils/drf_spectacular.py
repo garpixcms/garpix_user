@@ -10,4 +10,4 @@ def user_session_token_header_parameter(required=False):
         required=required,
         type=str,
         location=OpenApiParameter.HEADER
-)
+    )
