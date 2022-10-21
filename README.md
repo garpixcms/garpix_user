@@ -69,6 +69,14 @@ AUTHENTICATION_BACKENDS = (
 
 ## With Django Rest Framework
 
+Import settings from `garpix_user`:
+
+```python
+# settings.py
+from garpix_user.settings import *
+
+```
+
 Add this for SPA:
 
 ```python
@@ -90,31 +98,6 @@ REST_FRAMEWORK = {
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     }
 }
-
-AUTHENTICATION_BACKENDS = (
-    # Only your social networks
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.vk.VKOAuth2',
-    'social_core.backends.facebook.FacebookAppOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
-    # Django
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
-
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details'
-)
 
 ```
 
@@ -158,28 +141,12 @@ GARPIX_USER = {
 
 ```
 
-You also need import email or (and) phone confirmation notify events:
+You also need to add notify events:
 
 ```python
-from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
+# settings.py
 
-NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
-
-NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
-
-```
-
-The same notification events to restore password:
-```python
-from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-
-NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
-
-NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
+NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
 
 ```
 
@@ -239,7 +206,7 @@ Using `garpix_user` you can also store info about unregistered user sessions. Th
 
 To create the unregistered user send `POST` request to `{API_URL}/user_session/create_user_session/`
 
-The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `UserSession-Token`.
+The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `user-session-token`.
 
 
 ## All available settings

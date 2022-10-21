@@ -14,11 +14,7 @@ import os
 from pathlib import Path
 from environs import Env
 
-from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM, \
-    EMAIL_LINK_CONFIRMATION_EVENT_ITEM, EMAIL_LINK_CONFIRMATION_EVENT  # noqa
-from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
-from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+from garpix_user.settings import *
 
 env = Env()
 env.read_env()
@@ -209,17 +205,6 @@ MIGRATION_MODULES = {
     'garpix_notify': 'app.migrations.garpix_notify',
 }
 
-NOTIFY_EVENTS = {}
-
-NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
-
-NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_LINK_CONFIRMATION_EVENT_ITEM)
-
-CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
-
 AUTH_USER_MODEL = 'user.User'
 
 # ckeditor
@@ -269,3 +254,9 @@ GARPIX_USER = {
 }
 
 GARPIX_NOTIFY_CELERY_SETTINGS = 'app.celery.app'
+
+NOTIFY_EVENTS = {}
+
+NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
+
+CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
