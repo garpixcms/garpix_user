@@ -1,6 +1,6 @@
 from typing import Optional
 
-from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import extend_schema
 from rest_framework import parsers
 from rest_framework import permissions
 from rest_framework import status
@@ -10,19 +10,17 @@ from rest_framework.response import Response
 
 from garpix_user.models import UserSession
 from ..serializers import UserSessionSerializer
+from ..utils.drf_spectacular import user_session_token_header_parameter
 
 
+@extend_schema(
+    parameters=[
+        user_session_token_header_parameter()
+    ]
+)
 class UserSessionView(viewsets.ViewSet):
     parser_classes = (parsers.JSONParser,)
     permission_classes = (permissions.AllowAny,)
-
-    header_parameter = OpenApiParameter(
-        name=UserSession.HEAD_NAME,
-        description='UserSession',
-        required=True,
-        type=str,
-        location=OpenApiParameter.HEADER
-    )
 
     def get_user_session(self) -> Optional[UserSession]:
         return UserSession.get_from_request(self.request)

@@ -27,17 +27,12 @@ class WaitException(ModelException):
 
 
 class UserRegisteredException(ModelException):
-    def get_message(self):
-        return _(settings.GARPIX_USER.get('USER_REGISTERED_RESPONSE',
-                                          "User with such {field} has been already registered").format(
-            field=self.field))
+    message = _(settings.GARPIX_USER.get('USER_REGISTERED_RESPONSE', "User with such {field} has been already registered"))
 
 
 class UserUnregisteredException(ModelException):
 
-    def get_message(self):
-        return _(settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE',
-                                          "User with such {field} has not been registered").format(field=self.field))
+    message = _(settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', "User with such {field} has not been registered"))
 
 
 class IncorrectCodeException(ModelException):
@@ -50,6 +45,10 @@ class NoTimeLeftException(ModelException):
 
 class NotAuthenticateException(ModelException):
     message = _("Credentials were not provided")
+
+
+class NotConfirmedException(ModelException):
+    message = _("{field} was not confirmed")
 
 
 class ValidationErrorSerializer(serializers.Serializer):

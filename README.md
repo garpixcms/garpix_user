@@ -141,20 +141,7 @@ MIGRATION_MODULES = {
 }
 ```
 
-Add corresponding mixin(s) to your User model:
-
-```python
-
-# user model file
-
-from garpix_user.models import UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin  # noqa
-
-class User(UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin):
-    pass
-    #
-```
-
-and corresponding settings:
+Add corresponding settings:
 
 ```python
 
@@ -231,8 +218,6 @@ GARPIX_USER = {
 
 ```
 
-Also add the corresponding mixins to UserSession model.
-
 ## Referral links
 
 You can also use referral links in your project with garpix_user. To add this functionality, just add the corresponding settings:
@@ -252,40 +237,10 @@ GARPIX_USER = {
 
 Using `garpix_user` you can also store info about unregistered user sessions. The package already consists of model and views for it.
 
-You can add some custom functionality to the UserSession model using `UserSessionMixin`. Add it's locations to settings:
-
-```python
-
-# settings.py
-
-GARPIX_USER = {
-    'USER_USERSESSION_MIXIN': 'user.models.user_session_mixin.UserSessionMixin'
-}
-
-```
-
 To create the unregistered user send `POST` request to `{API_URL}/user_session/create_user_session/`
 
 The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `UserSession-Token`.
 
-You can use pre-registration email and phone confirmation using this model. Just add the corresponding mixins to this model as was described above for User model:
-
-```python
-
-from django.db import models
-
-from garpix_user.mixins.models import RestorePasswordMixin
-from garpix_user.mixins.models.confirm import UserEmailConfirmMixin, UserPhoneConfirmMixin
-
-
-class UserSessionMixin(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin):
-
-    email = models.EmailField(verbose_name='Email', null=True, blank=True)  # add this field to mixin if you need email pre-registration confirmation
-
-    class Meta:
-        abstract = True
-
-```
 
 ## All available settings
 

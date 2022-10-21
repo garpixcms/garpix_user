@@ -3,36 +3,38 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from django.utils.module_loading import import_string
+from django.utils.translation import ugettext as _
+from garpix_user.mixins.models import RestorePasswordMixin
+from garpix_user.mixins.models.confirm import UserEmailConfirmMixin, UserPhoneConfirmMixin
 
-UserSessionMixin = import_string(
-    settings.GARPIX_USER.get('USER_USERSESSION_MIXIN', 'garpix_user.mixins.models.user_session.UserSessionMixin'))
 
-
-class UserSession(UserSessionMixin, models.Model):
-    HEAD_NAME = 'UserSession-Token'
+class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, models.Model):
+    HEAD_NAME = 'user-session-token'
 
     class UserState(models.IntegerChoices):
-        UNRECOGNIZED = (0, 'Неопознанный')
-        GUEST = (1, 'Гость')
-        REGISTERED = (2, 'Зарегистрированный')
+        UNRECOGNIZED = (0, _('Undefined'))
+        GUEST = (1, _('Guest'))
+        REGISTERED = (2, _('Registered'))
+
+    if settings.GARPIX_USER.get('USE_EMAIL_CONFIRMATION', False) or settings.GARPIX_USER.get('USE_EMAIL_RESTORE_PASSWORD', False):
+        email = models.EmailField(verbose_name='Email', null=True, blank=True)
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        verbose_name='Пользователь'
+        verbose_name=_('User')
     )
     token_number = models.CharField(max_length=256, null=True, blank=True, verbose_name='user token')
     recognized = models.PositiveIntegerField(
         default=UserState.UNRECOGNIZED,
         choices=UserState.choices,
-        verbose_name='Тип',
-        help_text='Обозначает состояние, в котором распознается пользователь.'
+        verbose_name=_('Type'),
+        help_text=_('Indicates the state in which the user is recognized.')
     )
     last_access = models.DateTimeField(
-        'Последний вход',
+        verbose_name=_('Last entrance'),
         default=timezone.now,
     )
 
@@ -68,6 +70,21 @@ class UserSession(UserSessionMixin, models.Model):
         return False
 
     @classmethod
+    def _create_user_session(cls, field, value):
+
+        User = get_user_model()
+
+        try:
+            user = User.objects.get(**{field: value})
+            return UserSession.objects.create(
+                token_number=uuid.uuid4(),
+                recognized=UserSession.UserState.REGISTERED,
+                user=user
+            )
+        except Exception:
+            pass
+
+    @classmethod
     def get_or_create_user_session(cls, request, session=False):
         User = get_user_model()
 
@@ -76,7 +93,7 @@ class UserSession(UserSessionMixin, models.Model):
             return user_session
 
         if request.user.is_authenticated:
-            user = get_user_model().objects.get(pk=request.user.pk)
+            user = User.objects.get(pk=request.user.pk)
             return UserSession.objects.create(
                 user=user,
                 recognized=UserSession.UserState.REGISTERED
@@ -91,27 +108,11 @@ class UserSession(UserSessionMixin, models.Model):
 
         email = request.GET.get('email', None)
         if email is not None:
-            try:
-                user = User.objects.get(email=email)
-                return UserSession.objects.create(
-                    token_number=uuid.uuid4(),
-                    recognized=UserSession.UserState.REGISTERED,
-                    user=user
-                )
-            except Exception:
-                pass
+            return cls._create_user_session('email', email)
 
         phone = request.GET.get('phone', None)
         if phone is not None:
-            try:
-                user = User.objects.get(phone=phone)
-                return UserSession.objects.create(
-                    token_number=uuid.uuid4(),
-                    recognized=UserSession.UserState.REGISTERED,
-                    user=user
-                )
-            except Exception:
-                pass
+            return cls._create_user_session('phone', phone)
 
         return UserSession.objects.create(
             token_number=uuid.uuid4(),
@@ -123,4 +124,4 @@ class UserSession(UserSessionMixin, models.Model):
         verbose_name_plural = 'Пользователи системы'
 
     def __str__(self):
-        return f'{self.pk}'
+        return f"Гость {self.user.username}" if self.user else f'Гость № {self.pk}'

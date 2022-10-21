@@ -7,8 +7,14 @@ from django.utils.translation import ugettext as _
 from garpix_user.models import UserSession
 from garpix_user.serializers import RestoreByEmailSerializer, UserSessionTokenSerializer
 from garpix_user.serializers.restore_passwrod_serializer import RestoreCheckCodeSerializer, RestoreSetPasswordSerializer
+from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 
 
+@extend_schema(
+    parameters=[
+        user_session_token_header_parameter()
+    ]
+)
 class RestoreEmailPasswordView(viewsets.ViewSet):
 
     def get_serializer_class(self):
@@ -25,10 +31,10 @@ class RestoreEmailPasswordView(viewsets.ViewSet):
         serializer = RestoreByEmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = user.send_restore_code(email=serializer.data['email'])
+        result, error = user.send_restore_code(email=serializer.data['email'])
 
-        if result is not True:
-            result.raise_exception(exception_class=ValidationError)
+        if not result:
+            error.raise_exception(exception_class=ValidationError)
         return Response(UserSessionTokenSerializer(user).data)
 
     @extend_schema(summary='Restore password by email. Step  2')
@@ -39,10 +45,10 @@ class RestoreEmailPasswordView(viewsets.ViewSet):
         serializer = RestoreCheckCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = user.check_restore_code(restore_confirmation_code=serializer.data['restore_confirmation_code'])
+        result, error = user.check_restore_code(restore_confirmation_code=serializer.data['restore_confirmation_code'])
 
-        if result is not True:
-            result.raise_exception(exception_class=ValidationError)
+        if not result:
+            error.raise_exception(exception_class=ValidationError)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(summary='Restore password by email. Step 3')
@@ -53,8 +59,8 @@ class RestoreEmailPasswordView(viewsets.ViewSet):
         serializer = RestoreSetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = user.restore_password(new_password=serializer.data['new_password'])
+        result, error = user.restore_password(field='email', new_password=serializer.data['new_password'])
 
-        if result is not True:
-            result.raise_exception(exception_class=ValidationError)
+        if not result:
+            error.raise_exception(exception_class=ValidationError)
         return Response(_('Password was updated!'))
