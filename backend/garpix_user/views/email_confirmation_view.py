@@ -31,7 +31,8 @@ class EmailConfirmationView(viewsets.GenericViewSet):
             return EmailPreConfirmSendSerializer
         return EmailConfirmCheckCodeSerializer
 
-    @extend_schema(summary=_('Email confirmation. Step 1'))
+    @extend_schema(summary=_('Email confirmation. Step 1' if not settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION',
+                                                                                          False) else 'Send email confirmation link'))
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
         user = request.user
