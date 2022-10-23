@@ -3,7 +3,7 @@ from garpix_user.mixins.models import GarpixUserMixin
 
 class User(GarpixUserMixin):
 
-    USERNAME_FIELDS = ('email',)
+    USERNAME_FIELDS = ('email', 'phone')
 
     class Meta:
         verbose_name = 'Пользователь'

@@ -8,7 +8,7 @@ from garpix_user.views.referral_links_view import ReferralLinkView
 
 from garpix_user.views import (
     EmailConfirmationView, PhoneConfirmationView,
-    RestoreEmailPasswordView, RestorePhonePasswordView,
+    RestorePasswordView, RestorePhonePasswordView,
     EmailConfirmationLinkView
 )
 
@@ -33,8 +33,8 @@ if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False):
     router.register(r'confirm_email', EmailConfirmationView, basename='api_confirm_email')
 if GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False):
     router.register(r'confirm_phone', PhoneConfirmationView, basename='api_confirm_phone')
-if GARPIX_USER_SETTINGS.get('USE_EMAIL_RESTORE_PASSWORD', False):
-    router.register(r'restore_email_password', RestoreEmailPasswordView, basename='api_restore_email_password')
+if GARPIX_USER_SETTINGS.get('USE_RESTORE_PASSWORD', False):
+    router.register(r'restore_password', RestorePasswordView, basename='api_restore_email_password')
 if GARPIX_USER_SETTINGS.get('USE_PHONE_RESTORE_PASSWORD', False):
     router.register(r'restore_phone_password', RestorePhonePasswordView, basename='api_restore_phone_password')
 

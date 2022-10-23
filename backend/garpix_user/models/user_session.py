@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.conf import settings
+from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
@@ -51,13 +52,54 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
         token = request.session.session_key
         if token is not None:
             return UserSession.objects.filter(token_number=token).first()
-        email = request.GET.get('email', None)
-        if email is not None:
-            return UserSession.objects.filter(user__email=email).first()
-        phone = request.GET.get('phone', None)
-        if phone is not None:
-            return UserSession.objects.filter(user__phone=phone).first()
+
+        username = request.GET.get('username', None)
+        if username is not None:
+            query = Q()
+            for field in get_user_model().USERNAME_FIELDS:
+                query |= Q(**{f'user__{field}': username.lower()})
+            return UserSession.objects.filter(query).first()
         return None
+
+    @classmethod
+    def create_from_request(cls, request, username, session):
+
+        User = get_user_model()
+
+        if request.user.is_authenticated:
+            user = User.objects.get(pk=request.user.pk)
+            return UserSession.objects.create(
+                user=user,
+                token_number=uuid.uuid4(),
+                recognized=UserSession.UserState.REGISTERED
+            )
+
+        if session is True:
+            token = request.session.session_key
+            return UserSession.objects.create(
+                token_number=token,
+                recognized=UserSession.UserState.GUEST
+            )
+
+        if username is not None:
+            query = Q()
+            for field in User.USERNAME_FIELDS:
+                query |= Q(**{field: username.lower()})
+
+            try:
+                user = User.objects.get(query)
+                return UserSession.objects.create(
+                    token_number=uuid.uuid4(),
+                    recognized=UserSession.UserState.REGISTERED,
+                    user=user
+                )
+            except Exception as e:
+                print(e)
+
+        return UserSession.objects.create(
+            token_number=uuid.uuid4(),
+            recognized=UserSession.UserState.GUEST
+        )
 
     @classmethod
     def set_user_from_request(cls, request):
@@ -70,58 +112,17 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
         return False
 
     @classmethod
-    def _create_user_session(cls, field, value):
-
-        User = get_user_model()
-
-        try:
-            user = User.objects.get(**{field: value})
-            return UserSession.objects.create(
-                token_number=uuid.uuid4(),
-                recognized=UserSession.UserState.REGISTERED,
-                user=user
-            )
-        except Exception:
-            pass
-
-    @classmethod
-    def get_or_create_user_session(cls, request, session=False):
-        User = get_user_model()
+    def get_or_create_user_session(cls, request, username=None, session=False):
 
         user_session = cls.get_from_request(request)
         if user_session is not None:
             return user_session
 
-        if request.user.is_authenticated:
-            user = User.objects.get(pk=request.user.pk)
-            return UserSession.objects.create(
-                user=user,
-                recognized=UserSession.UserState.REGISTERED
-            )
-
-        if session is True:
-            token = request.session.session_key
-            return UserSession.objects.create(
-                token_number=token,
-                recognized=UserSession.UserState.GUEST
-            )
-
-        email = request.GET.get('email', None)
-        if email is not None:
-            return cls._create_user_session('email', email)
-
-        phone = request.GET.get('phone', None)
-        if phone is not None:
-            return cls._create_user_session('phone', phone)
-
-        return UserSession.objects.create(
-            token_number=uuid.uuid4(),
-            recognized=UserSession.UserState.GUEST
-        )
+        return cls.create_from_request(request, username, session)
 
     class Meta:
-        verbose_name = 'Пользователь системы'
-        verbose_name_plural = 'Пользователи системы'
+        verbose_name = _('System user')
+        verbose_name_plural = _('System users')
 
     def __str__(self):
-        return f"Гость {self.user.username}" if self.user else f'Гость № {self.pk}'
+        return _(f"Guest {self.user.username}" if self.user else f'Guest № {self.pk}')

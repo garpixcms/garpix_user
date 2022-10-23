@@ -86,7 +86,6 @@ class User(GarpixUserMixin):
     def __str__(self):
         return self.username
 
-
 ```
 
 ## With Django Rest Framework

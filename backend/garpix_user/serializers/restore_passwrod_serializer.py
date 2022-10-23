@@ -4,8 +4,8 @@ from rest_framework import serializers
 from garpix_user.mixins.serializers import ToLowerMixin
 
 
-class RestoreByEmailSerializer(ToLowerMixin, serializers.Serializer):
-    email = serializers.EmailField(required=True)
+class RestorePasswordSerializer(ToLowerMixin, serializers.Serializer):
+    username = serializers.CharField(required=True)
 
 
 class RestoreByPhoneSerializer(serializers.Serializer):

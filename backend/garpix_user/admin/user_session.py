@@ -4,4 +4,4 @@ from ..models import UserSession
 
 @admin.register(UserSession)
 class UserSessionAdmin(admin.ModelAdmin):
-    pass
+    fields = ('user', 'token_number', 'recognized', 'last_access')
