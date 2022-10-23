@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from garpix_user.exceptions import NotConfirmedException
 from garpix_user.models import UserSession
 from django.utils.translation import ugettext as _
 
@@ -43,7 +42,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         # check for uppercase letter
         if sum(c.isupper() for c in value) < min_uppercase:
             raise serializers.ValidationError(
-                _('Password must container at least {min_uppercase} uppercase letter.'.format(min_uppercase=min_uppercase))
+                _('Password must container at least {min_uppercase} uppercase letter.'.format(
+                    min_uppercase=min_uppercase))
             )
 
         # check for password = password_2
@@ -58,7 +58,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if queryset is not None:
             raise serializers.ValidationError(_("This email is already in use"))
 
-        if GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_EMAIL_CONFIRMATION', False) and GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False):
+        if GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_EMAIL_CONFIRMATION', False) and GARPIX_USER_SETTINGS.get(
+                'USE_EMAIL_CONFIRMATION', False):
             user = UserSession.get_or_create_user_session(request)
             if not user.is_email_confirmed:
                 raise serializers.ValidationError(_('Email was not confirmed'))
@@ -73,7 +74,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if queryset is not None:
             raise serializers.ValidationError(_("This phone is already in use"))
 
-        if GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_PHONE_CONFIRMATION', False) and GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False):
+        if GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_PHONE_CONFIRMATION', False) and GARPIX_USER_SETTINGS.get(
+                'USE_PHONE_CONFIRMATION', False):
             user = UserSession.get_or_create_user_session(request)
             if not user.is_phone_confirmed:
                 raise serializers.ValidationError(_('Phone number was not confirmed'))
