@@ -252,8 +252,7 @@ GARPIX_USER = {
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
     # restore password
-    'USE_EMAIL_RESTORE_PASSWORD': True,
-    'USE_PHONE_RESTORE_PASSWORD': True,
+    'USE_RESTORE_PASSWORD': True,
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request

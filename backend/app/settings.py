@@ -231,13 +231,12 @@ GARPIX_USER = {
     # base settings
     'USE_REFERRAL_LINKS': False,
     'REFERRAL_REDIRECT_URL': '/',
-    'USER_USERSESSION_MIXIN': 'app.mixins.models.user_session_mixin.UserSessionMixin',
     # email/phone confirmation
     'USE_EMAIL_CONFIRMATION': True,
     'USE_PHONE_CONFIRMATION': True,
     'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
     'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
-    'USE_EMAIL_LINK_CONFIRMATION': True,
+    'USE_EMAIL_LINK_CONFIRMATION': False,
     'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
     'CONFIRM_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
