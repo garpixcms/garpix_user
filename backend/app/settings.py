@@ -219,11 +219,6 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-MIN_LENGTH_PASSWORD = 8
-MIN_DIGITS_PASSWORD = 2
-MIN_CHARS_PASSWORD = 2
-MIN_UPPERCASE_PASSWORD = 1
-
 API_URL = 'api'
 
 # user settings
@@ -244,6 +239,12 @@ GARPIX_USER = {
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
     # restore password
     'USE_RESTORE_PASSWORD': True,
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer',
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request

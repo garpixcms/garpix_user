@@ -122,6 +122,60 @@ REST_FRAMEWORK = {
 
 ```
 
+## Registration
+
+`garpix_user` adds default registration for with `phone` and/or `email` and `password` fields. To add fields to this form override `RegistrationSerializer` and add it to `settings`:
+
+```python
+# settings.py
+
+GARPIX_USER = {
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer'
+}
+
+# Hint: see all available settings in the end of this document.
+
+```
+
+```python
+# app.serializers.py
+
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+
+from garpix_user.serializers import RegistrationSerializer
+
+User = get_user_model()
+
+
+class RegistrationCustSerializer(RegistrationSerializer):
+    extra_field = serializers.CharField(write_only=True)
+
+    class Meta(RegistrationSerializer.Meta):
+        model = User
+        fields = RegistrationSerializer.Meta.fields + ('extra_field',)
+
+```
+
+You also can add password security settings:
+
+```python
+
+# settings.py
+
+GARPIX_USER = {
+    # registration
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
+}
+
+# Hint: see all available settings in the end of this document.
+
+```
+
 ## Email and phone confirmation, password restoring
 
 To use email and phone confirmation or (and) restore password functionality add the `garpix_notify` to your `INSTALLED_APPS`:
@@ -171,11 +225,19 @@ NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
 
 ```
 
-You can specify email and phone code length and lifetime:
+You can specify email and phone code length, lifetime and time delay before next attempt:
 ```python
-GARPIX_CONFIRM_CODE_LENGTH = 6
-GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
-GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
+#settings.py 
+
+GARPIX_USER = {
+    'CONFIRM_CODE_LENGTH': 6,
+    'TIME_LAST_REQUEST': 1,
+    'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+}
+
+# Hint: see all available settings in the end of this document.
+
 ```
 
 If you need to use pre-registration email or phone confirmation, you need to set corresponding variables to True:
@@ -218,6 +280,7 @@ GARPIX_USER = {
     'USE_REFERRAL_LINKS': True,
     'REFERRAL_REDIRECT_URL': '/', # link to the page user needs to see
 }
+# Hint: see all available settings in the end of this document.
 
 ```
 
@@ -253,6 +316,12 @@ GARPIX_USER = {
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
     # restore password
     'USE_RESTORE_PASSWORD': True,
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer',
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
