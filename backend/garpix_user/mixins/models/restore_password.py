@@ -10,11 +10,11 @@ from garpix_user.exceptions import NotConfirmedException
 
 
 class RestorePasswordMixin(models.Model):
-    if settings.GARPIX_USER.get('USE_RESTORE_PASSWORD', False):
-        restore_password_confirm_code = models.CharField(_('Restore password code'),
-                                                         max_length=15, null=True, blank=True)
-        is_restore_code_confirmed = models.BooleanField(_('Restore code confirmed'), blank=True, default=False)
-        restore_date = models.DateTimeField(_('Restore code sent date'), null=True)
+
+    restore_password_confirm_code = models.CharField(_('Restore password code'),
+                                                     max_length=15, null=True, blank=True)
+    is_restore_code_confirmed = models.BooleanField(_('Restore code confirmed'), blank=True, default=False)
+    restore_date = models.DateTimeField(_('Restore code sent date'), null=True)
 
     def _check_user_data(self, username):
         from garpix_user.exceptions import UserUnregisteredException

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from garpix_utils.string import get_random_string
 from rest_framework import serializers
 
 from garpix_user.models import UserSession
@@ -50,6 +51,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if value != self.initial_data.get('password_2'):
             raise serializers.ValidationError(_("Passwords do not match"))
 
+        return value
+
     def validate_email(self, value):
 
         request = self.context.get('request')
@@ -83,11 +86,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            password=validated_data['password'],
-            email=validated_data['email'],
-        )
+        user_data = {'password': validated_data['password']}
+        if USERNAME_FIELDS := getattr(User, 'USERNAME_FIELDS', None):
+            for field in USERNAME_FIELDS:
+                user_data.update({field: validated_data[field]})
+
+        if 'username' not in USERNAME_FIELDS:
+            user_data.update({'username': get_random_string(25)})
+
+        if GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False) and not GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_PHONE_CONFIRMATION', False):
+            user_data.update({'is_phone_confirmed': False})
+
+        if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False) and not GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_EMAIL_CONFIRMATION', False):
+            user_data.update({'is_email_confirmed': False})
+
+        user = User.objects.create_user(**user_data)
 
         return user
 

@@ -12,7 +12,7 @@ class GarpixUserMixin(UserEmailConfirmMixin, UserPhoneConfirmMixin, UserNotifyMi
     new_email = models.EmailField(_("New email"), blank=True, null=True)
     new_phone = PhoneNumberField(_("New phone number"), unique=True, blank=True, null=True)
 
-    USERNAME_FIELDS = ('email',)
+    USERNAME_FIELDS = ('username',)
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -21,6 +21,8 @@ class GarpixUserMixin(UserEmailConfirmMixin, UserPhoneConfirmMixin, UserNotifyMi
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if len(self.USERNAME_FIELDS) == 0:
+            raise IntegrityError(_('USERNAME_FIELDS can\'t be empty'))
         for field in self.USERNAME_FIELDS:
-            if field not in ('email', 'phone'):
-                raise IntegrityError(_(f'{field} can\'t be used as USERNAME_FIELDS. Only ("email", "phone") supported'))
+            if field not in ('email', 'phone', 'username'):
+                raise IntegrityError(_(f'{field} can\'t be used as USERNAME_FIELDS. Only ("email", "phone", "username") supported'))

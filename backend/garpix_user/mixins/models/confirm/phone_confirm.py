@@ -15,12 +15,12 @@ class UserPhoneConfirmMixin(models.Model):
     """
     Миксин для подтверждения номера телефона
     """
-    if settings.GARPIX_USER.get('USE_PHONE_CONFIRMATION', False):
-        phone = PhoneNumberField(_("Phone number"), blank=True, default='')
-        is_phone_confirmed = models.BooleanField(_("Phone number confirmed"), default=False)
-        phone_confirmation_code = models.CharField(_('Phone confirmation code'), max_length=15,
-                                                   blank=True, null=True)
-        phone_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
+
+    phone = PhoneNumberField(_("Phone number"), blank=True, default='')
+    is_phone_confirmed = models.BooleanField(_("Phone number confirmed"), default=True)
+    phone_confirmation_code = models.CharField(_('Phone confirmation code'), max_length=15,
+                                               blank=True, null=True)
+    phone_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
 
     def send_phone_confirmation_code(self, phone=None):
         from garpix_user.exceptions import UserRegisteredException, WaitException
