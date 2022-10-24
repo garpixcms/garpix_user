@@ -87,7 +87,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = {'password': validated_data['password']}
-        if USERNAME_FIELDS := getattr(User, 'USERNAME_FIELDS', None):
+        if USERNAME_FIELDS := getattr(User, 'USERNAME_FIELDS', []):
             for field in USERNAME_FIELDS:
                 user_data.update({field: validated_data[field]})
 
