@@ -13,7 +13,14 @@ from rest_framework.exceptions import NotAuthenticated, ValidationError
 from garpix_user.models import UserSession
 from django.utils.translation import ugettext as _
 
+from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 
+
+@extend_schema(
+    parameters=[
+        user_session_token_header_parameter()
+    ]
+)
 class EmailConfirmationView(viewsets.GenericViewSet):
 
     def get_serializer_class(self):
@@ -24,7 +31,8 @@ class EmailConfirmationView(viewsets.GenericViewSet):
             return EmailPreConfirmSendSerializer
         return EmailConfirmCheckCodeSerializer
 
-    @extend_schema(summary=_('Email confirmation. Step 1'))
+    @extend_schema(summary=_('Email confirmation. Step 1' if not settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION',
+                                                                                          False) else 'Send email confirmation link'))
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
         user = request.user
@@ -71,7 +79,6 @@ class EmailConfirmationView(viewsets.GenericViewSet):
 class EmailConfirmationLinkView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
-        print("HELLO")
         User = get_user_model()
         hash = self.kwargs.get('hash', None)
         result = User.confirm_email_by_link(hash)

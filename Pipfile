@@ -24,6 +24,7 @@ garpix-utils = "==1.5.1"
 eqator = "==2.4.0"
 sentry-sdk = "*"
 garpix-package = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 

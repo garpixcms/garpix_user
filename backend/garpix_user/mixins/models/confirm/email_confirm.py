@@ -16,11 +16,11 @@ class UserEmailConfirmMixin(models.Model):
     """
     Миксин для подтверждения email
     """
-    is_email_confirmed = models.BooleanField(_("Email confirmed"), default=False)
+
+    is_email_confirmed = models.BooleanField(_("Email confirmed"), default=True)
     email_confirmation_code = models.CharField(_("Email confirmation code"), max_length=255, blank=True,
                                                null=True)
     email_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
-    new_email = models.EmailField(_("New email"), blank=True, null=True)
 
     def send_email_confirmation_code(self, email=None):
         from django.contrib.auth import get_user_model

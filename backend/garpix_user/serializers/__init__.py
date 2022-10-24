@@ -11,7 +11,7 @@ from .phone_confirmation_serializer import (  # noqa
     PhoneConfirmCheckCodeSerializer,
     PhonePreConfirmSendSerializer
 )
-from .restore_passwrod_serializer import RestoreByPhoneSerializer, RestoreByEmailSerializer  # noqa
+from .restore_passwrod_serializer import RestoreByPhoneSerializer, RestorePasswordSerializer  # noqa
 
 
 from .user_session_serializer import UserSessionSerializer, UserSessionTokenSerializer  # noqa

@@ -14,11 +14,7 @@ import os
 from pathlib import Path
 from environs import Env
 
-from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM, \
-    EMAIL_LINK_CONFIRMATION_EVENT_ITEM, EMAIL_LINK_CONFIRMATION_EVENT  # noqa
-from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
-from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+from garpix_user.settings import *  # noqa
 
 env = Env()
 env.read_env()
@@ -183,6 +179,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
     # Django
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    'garpix_user.utils.backends.CustomAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -209,17 +206,6 @@ MIGRATION_MODULES = {
     'garpix_notify': 'app.migrations.garpix_notify',
 }
 
-NOTIFY_EVENTS = {}
-
-NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
-
-NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_LINK_CONFIRMATION_EVENT_ITEM)
-
-CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
-
 AUTH_USER_MODEL = 'user.User'
 
 # ckeditor
@@ -233,11 +219,6 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-MIN_LENGTH_PASSWORD = 8
-MIN_DIGITS_PASSWORD = 2
-MIN_CHARS_PASSWORD = 2
-MIN_UPPERCASE_PASSWORD = 1
-
 API_URL = 'api'
 
 # user settings
@@ -245,21 +226,25 @@ GARPIX_USER = {
     # base settings
     'USE_REFERRAL_LINKS': False,
     'REFERRAL_REDIRECT_URL': '/',
-    'USER_USERSESSION_MIXIN': 'app.mixins.models.user_session_mixin.UserSessionMixin',
     # email/phone confirmation
     'USE_EMAIL_CONFIRMATION': True,
     'USE_PHONE_CONFIRMATION': True,
-    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
-    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
-    'USE_EMAIL_LINK_CONFIRMATION': True,
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': False,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': False,
+    'USE_EMAIL_LINK_CONFIRMATION': False,
     'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
     'CONFIRM_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
     # restore password
-    'USE_EMAIL_RESTORE_PASSWORD': True,
-    'USE_PHONE_RESTORE_PASSWORD': True,
+    'USE_RESTORE_PASSWORD': True,
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer',
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
@@ -269,3 +254,9 @@ GARPIX_USER = {
 }
 
 GARPIX_NOTIFY_CELERY_SETTINGS = 'app.celery.app'
+
+NOTIFY_EVENTS = {}
+
+NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)  # noqa
+
+CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]

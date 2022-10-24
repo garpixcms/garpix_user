@@ -67,7 +67,36 @@ AUTHENTICATION_BACKENDS = (
 
 ```
 
+and `USERNAME_FIELDS` to your `User` model:
+
+```python
+# user.models.user.py
+
+from garpix_user.mixins.models import GarpixUserMixin
+
+
+class User(GarpixUserMixin):
+    
+    USERNAME_FIELDS = ('email',)
+    
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username
+
+```
+
 ## With Django Rest Framework
+
+Import settings from `garpix_user`:
+
+```python
+# settings.py
+from garpix_user.settings import *
+
+```
 
 Add this for SPA:
 
@@ -91,30 +120,59 @@ REST_FRAMEWORK = {
     }
 }
 
-AUTHENTICATION_BACKENDS = (
-    # Only your social networks
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.vk.VKOAuth2',
-    'social_core.backends.facebook.FacebookAppOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
-    # Django
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+```
 
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details'
-)
+## Registration
+
+`garpix_user` adds default registration for with `phone` and/or `email` and `password` fields. To add fields to this form override `RegistrationSerializer` and add it to `settings`:
+
+```python
+# settings.py
+
+GARPIX_USER = {
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer'
+}
+
+# Hint: see all available settings in the end of this document.
+
+```
+
+```python
+# app.serializers.py
+
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+
+from garpix_user.serializers import RegistrationSerializer
+
+User = get_user_model()
+
+
+class RegistrationCustSerializer(RegistrationSerializer):
+    extra_field = serializers.CharField(write_only=True)
+
+    class Meta(RegistrationSerializer.Meta):
+        model = User
+        fields = RegistrationSerializer.Meta.fields + ('extra_field',)
+
+```
+
+You also can add password security settings:
+
+```python
+
+# settings.py
+
+GARPIX_USER = {
+    # registration
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
+}
+
+# Hint: see all available settings in the end of this document.
 
 ```
 
@@ -141,20 +199,7 @@ MIGRATION_MODULES = {
 }
 ```
 
-Add corresponding mixin(s) to your User model:
-
-```python
-
-# user model file
-
-from garpix_user.models import UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin  # noqa
-
-class User(UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin):
-    pass
-    #
-```
-
-and corresponding settings:
+Add corresponding settings:
 
 ```python
 
@@ -171,36 +216,28 @@ GARPIX_USER = {
 
 ```
 
-You also need import email or (and) phone confirmation notify events:
+You also need to add notify events:
 
 ```python
-from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
+# settings.py
 
-NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
-
-NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
+NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
 
 ```
 
-The same notification events to restore password:
+You can specify email and phone code length, lifetime and time delay before next attempt:
 ```python
-from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+#settings.py 
 
-NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
+GARPIX_USER = {
+    'CONFIRM_CODE_LENGTH': 6,
+    'TIME_LAST_REQUEST': 1,
+    'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+}
 
-NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
+# Hint: see all available settings in the end of this document.
 
-```
-
-You can specify email and phone code length and lifetime:
-```python
-GARPIX_CONFIRM_CODE_LENGTH = 6
-GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
-GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
 ```
 
 If you need to use pre-registration email or phone confirmation, you need to set corresponding variables to True:
@@ -231,8 +268,6 @@ GARPIX_USER = {
 
 ```
 
-Also add the corresponding mixins to UserSession model.
-
 ## Referral links
 
 You can also use referral links in your project with garpix_user. To add this functionality, just add the corresponding settings:
@@ -245,6 +280,7 @@ GARPIX_USER = {
     'USE_REFERRAL_LINKS': True,
     'REFERRAL_REDIRECT_URL': '/', # link to the page user needs to see
 }
+# Hint: see all available settings in the end of this document.
 
 ```
 
@@ -252,40 +288,10 @@ GARPIX_USER = {
 
 Using `garpix_user` you can also store info about unregistered user sessions. The package already consists of model and views for it.
 
-You can add some custom functionality to the UserSession model using `UserSessionMixin`. Add it's locations to settings:
-
-```python
-
-# settings.py
-
-GARPIX_USER = {
-    'USER_USERSESSION_MIXIN': 'user.models.user_session_mixin.UserSessionMixin'
-}
-
-```
-
 To create the unregistered user send `POST` request to `{API_URL}/user_session/create_user_session/`
 
-The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `UserSession-Token`.
+The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `user-session-token`.
 
-You can use pre-registration email and phone confirmation using this model. Just add the corresponding mixins to this model as was described above for User model:
-
-```python
-
-from django.db import models
-
-from garpix_user.mixins.models import RestorePasswordMixin
-from garpix_user.mixins.models.confirm import UserEmailConfirmMixin, UserPhoneConfirmMixin
-
-
-class UserSessionMixin(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin):
-
-    email = models.EmailField(verbose_name='Email', null=True, blank=True)  # add this field to mixin if you need email pre-registration confirmation
-
-    class Meta:
-        abstract = True
-
-```
 
 ## All available settings
 
@@ -309,8 +315,13 @@ GARPIX_USER = {
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
     # restore password
-    'USE_EMAIL_RESTORE_PASSWORD': True,
-    'USE_PHONE_RESTORE_PASSWORD': True,
+    'USE_RESTORE_PASSWORD': True,
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer',
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request

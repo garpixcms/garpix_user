@@ -9,8 +9,14 @@ from garpix_user.exceptions import ValidationErrorSerializer
 from garpix_user.models import UserSession
 from garpix_user.serializers import RestoreByPhoneSerializer, UserSessionTokenSerializer
 from garpix_user.serializers.restore_passwrod_serializer import RestoreCheckCodeSerializer, RestoreSetPasswordSerializer
+from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 
 
+@extend_schema(
+    parameters=[
+        user_session_token_header_parameter()
+    ]
+)
 class RestorePhonePasswordView(viewsets.ViewSet):
 
     def get_serializer_class(self):
@@ -33,9 +39,9 @@ class RestorePhonePasswordView(viewsets.ViewSet):
         serializer = RestoreByPhoneSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = user.send_restore_code(phone=serializer.data['phone'])
+        result, error = user.send_restore_code(phone=serializer.data['phone'])
 
-        if result is not True:
+        if not result:
             result.raise_exception(exception_class=ValidationError)
         return Response(UserSessionTokenSerializer(user).data)
 
@@ -53,9 +59,9 @@ class RestorePhonePasswordView(viewsets.ViewSet):
         serializer = RestoreCheckCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = user.check_restore_code(restore_confirmation_code=serializer.data['restore_confirmation_code'])
+        result, error = user.check_restore_code(restore_confirmation_code=serializer.data['restore_confirmation_code'])
 
-        if result is not True:
+        if not result:
             result.raise_exception(exception_class=ValidationError)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -73,8 +79,8 @@ class RestorePhonePasswordView(viewsets.ViewSet):
         serializer = RestoreSetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result = user.restore_password(new_password=serializer.data['new_password'])
+        result, error = user.restore_password(field='phone', new_password=serializer.data['new_password'])
 
-        if result is not True:
+        if not result:
             result.raise_exception(exception_class=ValidationError)
         return Response(_('Password was updated!'))

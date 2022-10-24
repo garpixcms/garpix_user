@@ -12,7 +12,14 @@ from garpix_user.serializers import PhoneConfirmSendSerializer, PhoneConfirmChec
 from garpix_user.models import UserSession
 from django.utils.translation import ugettext as _
 
+from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 
+
+@extend_schema(
+    parameters=[
+        user_session_token_header_parameter()
+    ]
+)
 class PhoneConfirmationView(viewsets.GenericViewSet):
 
     def get_serializer_class(self):
@@ -63,7 +70,7 @@ class PhoneConfirmationView(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        result = user.confirm_phone(serializer.sata['phone_confirmation_code'])
+        result = user.confirm_phone(serializer.data['phone_confirmation_code'])
         if result is not True:
             result.raise_exception(exception_class=ValidationError)
         return Response(status=status.HTTP_204_NO_CONTENT)
