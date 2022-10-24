@@ -19,9 +19,11 @@ class RestorePasswordMixin(models.Model):
     def _check_user_data(self, username):
         from garpix_user.exceptions import UserUnregisteredException
 
-        USERNAME_FIELDS = getattr(get_user_model(), 'USERNAME_FIELDS', ('email',))
+        User = get_user_model()
 
-        field_name = '/'.join([get_user_model()._meta.get_field(
+        USERNAME_FIELDS = getattr(User, 'USERNAME_FIELDS', ('email',))
+
+        field_name = '/'.join([User._meta.get_field(
             field).verbose_name.title().lower() for field in USERNAME_FIELDS]).rstrip('/')
 
         if user := self.user:
