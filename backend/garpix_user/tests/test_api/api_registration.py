@@ -20,6 +20,8 @@ class RegistrationApiTest(ApiTestMixin):
         Check registration by username
         """
 
+        self.User.USERNAME_FIELDS = ('username',)
+
         response = self.client.post(
             reverse('garpix_user:garpix_user_api:api_registration'),
             {
@@ -140,6 +142,8 @@ class RegistrationApiTest(ApiTestMixin):
         """
         Check registration failed if the password is incorrect
         """
+
+        self.User.USERNAME_FIELDS = ('phone',)
 
         # password don't match
         response = self.client.post(

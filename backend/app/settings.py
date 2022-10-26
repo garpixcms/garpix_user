@@ -224,7 +224,7 @@ API_URL = 'api'
 # user settings
 GARPIX_USER = {
     # base settings
-    'USE_REFERRAL_LINKS': False,
+    'USE_REFERRAL_LINKS': True,
     'REFERRAL_REDIRECT_URL': '/',
     # email/phone confirmation
     'USE_EMAIL_CONFIRMATION': True,
