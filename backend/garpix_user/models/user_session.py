@@ -94,7 +94,8 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
 
             try:
                 user = User.objects.get(query)
-                return UserSession.objects.create(
+                session_user = UserSession.objects.filter(user=user).first()
+                return session_user or UserSession.objects.create(
                     token_number=uuid.uuid4(),
                     recognized=UserSession.UserState.REGISTERED,
                     user=user

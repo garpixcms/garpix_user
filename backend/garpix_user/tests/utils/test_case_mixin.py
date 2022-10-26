@@ -13,7 +13,7 @@ class ApiTestMixin(TestCase):
             'password': 'q1W2e3R4t5Y6'
         }
         self.new_user_data = {
-            'username': 'testuser',
+            'username': 'testuser1',
             'email': 'test1@gmail.com',
             'phone': '+79999999998',
             'password': 'q1W2e3R4t5Y6'

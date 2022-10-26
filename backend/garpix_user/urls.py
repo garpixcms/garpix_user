@@ -27,7 +27,7 @@ if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False):
 if GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False):
     router.register(r'confirm_phone', PhoneConfirmationView, basename='api_confirm_phone')
 if GARPIX_USER_SETTINGS.get('USE_RESTORE_PASSWORD', False):
-    router.register(r'restore_password', RestorePasswordView, basename='api_restore_email_password')
+    router.register(r'restore_password', RestorePasswordView, basename='api_restore_password')
 
 api_urlpatterns = [
     path('login/', obtain_auth_token, name='api_login'),

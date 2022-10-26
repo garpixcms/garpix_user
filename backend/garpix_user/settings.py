@@ -46,7 +46,7 @@ GARPIX_USER_NOTIFY_EVENTS = {
 
     RESTORE_PASSWORD_EVENT: {
         'title': 'Восстановление пароля',
-        'context_description': '{{ confirmation_code }}'
+        'context_description': '{{ restore_code }}, {{ user_fullname }}, {{ phone }}, {{ email }}'
     },
 
     EMAIL_LINK_CONFIRMATION_EVENT: {
