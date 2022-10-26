@@ -9,8 +9,6 @@ from django.utils.translation import ugettext as _
 
 User = get_user_model()
 
-GARPIX_USER_SETTINGS = settings.GARPIX_USER
-
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -18,24 +16,26 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate_password(self, value):
 
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
+
         min_length = GARPIX_USER_SETTINGS.get('MIN_LENGTH_PASSWORD', 8)
         min_digits = GARPIX_USER_SETTINGS.get('MIN_DIGITS_PASSWORD', 2)
         min_chars = GARPIX_USER_SETTINGS.get('MIN_CHARS_PASSWORD', 2)
         min_uppercase = GARPIX_USER_SETTINGS.get('MIN_UPPERCASE_PASSWORD', 1)
 
-        # check for 2 min length
+        # check for min length
         if len(value) < min_length:
             raise serializers.ValidationError(
                 _('Password must be at least {min_length} characters long.'.format(min_length=min_length))
             )
 
-        # check for 2 digits
+        # check for min digits number
         if sum(c.isdigit() for c in value) < min_digits:
             raise serializers.ValidationError(
                 _('Password must container at least {min_digits} digits.'.format(min_digits=min_digits))
             )
 
-        # check for 2 char
+        # check for min char number
         if sum(c.isalpha() for c in value) < min_chars:
             raise serializers.ValidationError(
                 _('Password must container at least {min_chars} chars.'.format(min_chars=min_chars))
@@ -56,6 +56,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
 
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
+
         request = self.context.get('request')
 
         queryset = User.objects.filter(email=value, is_email_confirmed=True).first()
@@ -71,6 +73,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def validate_phone(self, value):
+
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
 
         request = self.context.get('request')
 
@@ -88,13 +92,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
+
         request = self.context.get('request', None)
 
         validated_data.pop('password_2')
 
         user_data = validated_data
 
-        if 'username' not in validated_data.keys():
+        if 'username' not in User.USERNAME_FIELDS and 'username' not in validated_data.keys():
             user_data.update({'username': get_random_string(25)})
 
         if GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False) and not GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_PHONE_CONFIRMATION', False):

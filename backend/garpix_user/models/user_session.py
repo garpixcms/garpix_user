@@ -51,6 +51,7 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
             return UserSession.objects.filter(user=user).first()
 
         token = request.headers.get(cls.HEAD_NAME, None)
+
         if token is not None:
             return UserSession.objects.filter(token_number=token).first()
 

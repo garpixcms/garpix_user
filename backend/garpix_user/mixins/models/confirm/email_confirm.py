@@ -20,6 +20,15 @@ class UserEmailConfirmMixin(models.Model):
     email_confirmation_code = models.CharField(_("Email confirmation code"), max_length=255, blank=True,
                                                null=True)
     email_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
+    new_email = models.EmailField(_("New email"), blank=True, null=True)
+
+    def send_email_confirmation_link(self):
+        from garpix_notify.models import Notify
+        hash = str(
+            hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
+        Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
+            'confirmation_link': f"{settings.SITE_URL}{reverse('garpix_user:email_confirmation_link', args=[hash])}"
+        }, email=self.email)
 
     def send_email_confirmation_code(self, email=None):
         from django.contrib.auth import get_user_model
@@ -30,11 +39,13 @@ class UserEmailConfirmMixin(models.Model):
 
         anybody_have_this_email = User.objects.filter(email=email, is_email_confirmed=True).count() > 0
         if anybody_have_this_email:
-            return UserRegisteredException(field='email', extra_data={'field': self._meta.get_field('email').verbose_name.title().lower()})
+            return UserRegisteredException(field='email', extra_data={
+                'field': self._meta.get_field('email').verbose_name.title().lower()})
 
         if settings.GARPIX_USER.get('TIME_LAST_REQUEST', None):
             if self.email_code_send_date and self.email_code_send_date + timedelta(
-                    minutes=settings.GARPIX_USER.get('TIME_LAST_REQUEST')) >= datetime.now(self.email_code_send_date.tzinfo):
+                    minutes=settings.GARPIX_USER.get('TIME_LAST_REQUEST')) >= datetime.now(
+                    self.email_code_send_date.tzinfo):
                 return WaitException()
 
         confirmation_code = get_random_string(settings.GARPIX_USER.get('CONFIRM_CODE_LENGTH', 6), string.digits)
@@ -48,10 +59,7 @@ class UserEmailConfirmMixin(models.Model):
         self.save()
 
         if settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION', True):
-            hash = str(hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
-            Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
-                'confirmation_link': f"{settings.SITE_URL}{reverse('garpix_user:email_confirmation_link', args=[hash])}"
-            }, email=self.email)
+            self.send_email_confirmation_link()
         else:
             Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
                 'confirmation_code': confirmation_code
@@ -66,7 +74,8 @@ class UserEmailConfirmMixin(models.Model):
             return IncorrectCodeException(field='email_confirmation_code')
 
         time_is_up = (datetime.now(
-            self.email_code_send_date.tzinfo) - self.email_code_send_date).seconds / 60 > settings.GARPIX_USER.get('CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
+            self.email_code_send_date.tzinfo) - self.email_code_send_date).seconds / 60 > settings.GARPIX_USER.get(
+            'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
 
         if time_is_up:
             return NoTimeLeftException(field='email_confirmation_code')
@@ -83,7 +92,8 @@ class UserEmailConfirmMixin(models.Model):
         users_list = cls.objects.filter(is_email_confirmed=False)
 
         for user in users_list:
-            if str(hashlib.sha512(f'{user.email}+{user.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower() == hash:
+            if str(hashlib.sha512(
+                    f'{user.email}+{user.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower() == hash:
                 time_is_up = (datetime.now(
                     user.email_code_send_date.tzinfo) - user.email_code_send_date).seconds / 60 > settings.GARPIX_USER.get(
                     'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)

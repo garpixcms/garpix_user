@@ -18,13 +18,6 @@ GARPIX_USER_SETTINGS = getattr(settings, 'GARPIX_USER', dict())
 
 # api routing
 
-api_urlpatterns = [
-    path('login/', obtain_auth_token, name='api_login'),
-    path('refresh/', refresh_token_view, name='api_refresh'),
-    path('logout/', logout_view, name='api_logout'),
-    path('register/', registration_view, name='api_registration')
-]
-
 router = routers.DefaultRouter()
 
 router.register(r'user_session', UserSessionView, basename='api_user_session')
@@ -36,10 +29,16 @@ if GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False):
 if GARPIX_USER_SETTINGS.get('USE_RESTORE_PASSWORD', False):
     router.register(r'restore_password', RestorePasswordView, basename='api_restore_email_password')
 
-api_urlpatterns += router.urls
+api_urlpatterns = [
+    path('login/', obtain_auth_token, name='api_login'),
+    path('refresh/', refresh_token_view, name='api_refresh'),
+    path('logout/', logout_view, name='api_logout'),
+    path('register/', registration_view, name='api_registration'),
+    path(r'', include(router.urls))
+]
 
 urlpatterns = [
-    path(f'{settings.API_URL}/garpix_user/', include((api_urlpatterns, 'garpix_user'), namespace='garpix_user_api'))
+    path(f'{settings.API_URL}/garpix_user/', include((api_urlpatterns, 'garpix_user'), namespace='garpix_user_api')),
 ]
 
 if GARPIX_USER_SETTINGS.get('USE_REFERRAL_LINKS', False):
