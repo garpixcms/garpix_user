@@ -1,0 +1,18 @@
+GARPIX_USER_SETTINGS = {
+    # base settings
+    'USE_REFERRAL_LINKS': False,
+    'REFERRAL_REDIRECT_URL': '/',
+    # email/phone confirmation
+    'USE_EMAIL_CONFIRMATION': False,
+    'USE_PHONE_CONFIRMATION': False,
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': False,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': False,
+    'USE_EMAIL_LINK_CONFIRMATION': False,
+    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
+    'CONFIRM_CODE_LENGTH': 6,
+    'TIME_LAST_REQUEST': 1,
+    'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    # restore password
+    'USE_RESTORE_PASSWORD': False
+}

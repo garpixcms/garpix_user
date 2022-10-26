@@ -367,7 +367,7 @@ GARPIX_USER = {
 
 ```
 
-See `garpix_user/tests/test_api.py` for examples.
+See `garpix_user/tests/test_api/*.py` for examples.
 
 # Changelog
 

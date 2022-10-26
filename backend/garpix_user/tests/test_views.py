@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -14,7 +14,7 @@ class LoginViewTest(TestCase):
 
     def test_invalid_username_password(self):
         response = self.client.post(
-            '/login/',
+            reverse('authorize'),
             {
                 'username': self.username,
                 'password': 'passwordtest',
@@ -25,7 +25,7 @@ class LoginViewTest(TestCase):
 
     def test_valid_username_password(self):
         response = self.client.post(
-            '/login/',
+            reverse('authorize'),
             {
                 'username': self.username,
                 'password': self.password,
@@ -36,7 +36,7 @@ class LoginViewTest(TestCase):
 
     def test_valid_redirects(self):
         response = self.client.post(
-            '/login/',
+            reverse('authorize'),
             {
                 'username': self.username,
                 'password': self.password,

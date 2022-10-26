@@ -4,7 +4,7 @@ from django.db import transaction
 from garpix_utils.string import get_random_string
 from rest_framework import serializers
 
-from garpix_user.models import UserSession
+from garpix_user.models.user_session import UserSession
 from django.utils.translation import ugettext as _
 
 User = get_user_model()

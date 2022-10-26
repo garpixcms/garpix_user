@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ..models import UserSession
+from garpix_user.models import UserSession
 
 
 @admin.register(UserSession)

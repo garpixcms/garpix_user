@@ -74,9 +74,9 @@ INSTALLED_APPS = [
     # for notify
     'fcm_django',
     'garpix_notify',
+    'garpix_user',
     'solo',
     'app',
-    'garpix_user',
     'user'
 ]
 
