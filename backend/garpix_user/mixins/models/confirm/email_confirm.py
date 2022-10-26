@@ -17,7 +17,6 @@ class UserEmailConfirmMixin(models.Model):
     Миксин для подтверждения email
     """
 
-    is_email_confirmed = models.BooleanField(_("Email confirmed"), default=True)
     email_confirmation_code = models.CharField(_("Email confirmation code"), max_length=255, blank=True,
                                                null=True)
     email_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
@@ -48,7 +47,7 @@ class UserEmailConfirmMixin(models.Model):
 
         self.save()
 
-        if settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION', False):
+        if settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION', True):
             hash = str(hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
             Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
                 'confirmation_link': f"{settings.SITE_URL}{reverse('garpix_user:email_confirmation_link', args=[hash])}"

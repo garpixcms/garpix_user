@@ -8,16 +8,12 @@ from django.contrib.auth import get_user_model
 
 from garpix_utils.string import get_random_string
 
-from phonenumber_field.modelfields import PhoneNumberField
-
 
 class UserPhoneConfirmMixin(models.Model):
     """
     Миксин для подтверждения номера телефона
     """
 
-    phone = PhoneNumberField(_("Phone number"), blank=True, default='')
-    is_phone_confirmed = models.BooleanField(_("Phone number confirmed"), default=True)
     phone_confirmation_code = models.CharField(_('Phone confirmation code'), max_length=15,
                                                blank=True, null=True)
     phone_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)

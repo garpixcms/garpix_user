@@ -1,9 +1,9 @@
-from garpix_user.mixins.models import GarpixUserMixin
+from garpix_user.models import GarpixUser
 
 
-class User(GarpixUserMixin):
+class User(GarpixUser):
 
-    USERNAME_FIELDS = ('email', 'phone')
+    USERNAME_FIELDS = ('phone',)
 
     class Meta:
         verbose_name = 'Пользователь'

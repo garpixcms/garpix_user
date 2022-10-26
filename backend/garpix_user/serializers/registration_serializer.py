@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from garpix_utils.string import get_random_string
 from rest_framework import serializers
 
@@ -57,7 +58,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
 
-        queryset = User.objects.filter(email=value).first()
+        queryset = User.objects.filter(email=value, is_email_confirmed=True).first()
         if queryset is not None:
             raise serializers.ValidationError(_("This email is already in use"))
 
@@ -73,7 +74,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
 
-        queryset = User.objects.filter(email=value).first()
+        queryset = User.objects.filter(phone=value, is_phone_confirmed=True).first()
         if queryset is not None:
             raise serializers.ValidationError(_("This phone is already in use"))
 
@@ -86,12 +87,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user_data = {'password': validated_data['password']}
-        if USERNAME_FIELDS := getattr(User, 'USERNAME_FIELDS', []):
-            for field in USERNAME_FIELDS:
-                user_data.update({field: validated_data[field]})
 
-        if 'username' not in USERNAME_FIELDS:
+        request = self.context.get('request', None)
+
+        validated_data.pop('password_2')
+
+        user_data = validated_data
+
+        if 'username' not in validated_data.keys():
             user_data.update({'username': get_random_string(25)})
 
         if GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False) and not GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_PHONE_CONFIRMATION', False):
@@ -100,7 +103,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False) and not GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_EMAIL_CONFIRMATION', False):
             user_data.update({'is_email_confirmed': False})
 
-        user = User.objects.create_user(**user_data)
+        with transaction.atomic():
+            user = User.objects.create_user(**user_data)
+            if request:
+                user_session = UserSession.get_or_create_user_session(request)
+                user_session.user = user
+                user_session.recognized = UserSession.UserState.REGISTERED
+                user_session.save()
 
         return user
 

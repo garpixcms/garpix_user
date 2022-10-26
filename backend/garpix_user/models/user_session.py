@@ -5,6 +5,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
+from phonenumber_field.modelfields import PhoneNumberField
+
 from garpix_user.mixins.models import RestorePasswordMixin
 from garpix_user.mixins.models.confirm import UserEmailConfirmMixin, UserPhoneConfirmMixin
 
@@ -17,8 +19,11 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
         GUEST = (1, _('Guest'))
         REGISTERED = (2, _('Registered'))
 
-    if settings.GARPIX_USER.get('USE_EMAIL_CONFIRMATION', False) or settings.GARPIX_USER.get('USE_EMAIL_RESTORE_PASSWORD', False):
-        email = models.EmailField(verbose_name='Email', null=True, blank=True)
+    email = models.EmailField(verbose_name='Email', null=True, blank=True)
+    is_email_confirmed = models.BooleanField(_("Email confirmed"), default=False)
+
+    phone = PhoneNumberField(_("Phone number"), blank=True, default='')
+    is_phone_confirmed = models.BooleanField(_("Phone number confirmed"), default=False)
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,

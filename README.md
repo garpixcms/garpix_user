@@ -54,7 +54,42 @@ urlpatterns = [
 ]
 ```
 
-For custom auth with phone and email use this in `settings.py`:
+Use `GarpixUser` from `garpix_user.models` as base for your user model class:
+
+```python
+# user.models.user.py
+
+from garpix_user.models import GarpixUser
+
+
+class User(GarpixUser):
+    
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username
+
+```
+
+Use `UserAdmin` from `garpix_user.admin` as base for your user admin class:
+
+```python
+
+from django.contrib import admin
+
+from garpix_user.admin import UserAdmin
+from user.models import User
+
+
+@admin.register(User)
+class UserAdmin(UserAdmin):
+    pass
+
+```
+
+For custom auth with phone and/or email use this in `settings.py`:
 
 ```python
 # ...
@@ -72,12 +107,12 @@ and `USERNAME_FIELDS` to your `User` model:
 ```python
 # user.models.user.py
 
-from garpix_user.mixins.models import GarpixUserMixin
+from garpix_user.models import GarpixUser
 
 
-class User(GarpixUserMixin):
+class User(GarpixUser):
     
-    USERNAME_FIELDS = ('email',)
+    USERNAME_FIELDS = ('email', ) # default is username
     
     class Meta:
         verbose_name = 'Пользователь'
@@ -293,7 +328,7 @@ To create the unregistered user send `POST` request to `{API_URL}/user_session/c
 The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `user-session-token`.
 
 
-## All available settings
+## All available settings with default values
 
 ```python
     

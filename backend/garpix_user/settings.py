@@ -24,9 +24,8 @@ SOCIAL_AUTH_PIPELINE = (
 PHONE_CONFIRMATION_EVENT = 4210
 EMAIL_CONFIRMATION_EVENT = 4211
 
-PHONE_RESTORE_PASSWORD_EVENT = 4212
-EMAIL_RESTORE_PASSWORD_EVENT = 4213
-EMAIL_LINK_CONFIRMATION_EVENT = 4214
+RESTORE_PASSWORD_EVENT = 4212
+EMAIL_LINK_CONFIRMATION_EVENT = 4213
 
 GARPIX_CONFIRM_CODE_LENGTH = 6
 GARPIX_TIME_LAST_REQUEST = 2
@@ -45,28 +44,13 @@ GARPIX_USER_NOTIFY_EVENTS = {
         'context_description': '{{ confirmation_code }}'
     },
 
-    PHONE_RESTORE_PASSWORD_EVENT: {
-        'title': 'Восстановление пароля по смс',
-        'context_description': '{{ confirmation_code }}'
-    },
-
-    EMAIL_RESTORE_PASSWORD_EVENT: {
-        'title': 'Восстановление пароля по email',
+    RESTORE_PASSWORD_EVENT: {
+        'title': 'Восстановление пароля',
         'context_description': '{{ confirmation_code }}'
     },
 
     EMAIL_LINK_CONFIRMATION_EVENT: {
         'title': 'Подтверждение email по ссылке',
-        'link': '{{ link }}'
+        'context_description': '{{ link }}'
     }
 }
-
-# registration
-GARPIX_USER_CONFIG = 'garpix_user.models.users_config.GarpixUserConfig'
-GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = True
-GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = True
-
-MIN_LENGTH_PASSWORD = 8
-MIN_DIGITS_PASSWORD = 2
-MIN_CHARS_PASSWORD = 2
-MIN_UPPERCASE_PASSWORD = 1

@@ -57,7 +57,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
 
             raise NotAuthenticated()
 
-    if not settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION', False):
+    if not settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION', True):
         @extend_schema(summary=_('Email confirmation. Step 2'))
         @action(methods=['POST'], detail=False)
         def check_code(self, request, *args, **kwargs):

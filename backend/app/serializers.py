@@ -7,8 +7,8 @@ User = get_user_model()
 
 
 class RegistrationCustSerializer(RegistrationSerializer):
-    extra_field = serializers.CharField(write_only=True)
+    # extra_field = serializers.CharField(write_only=True)
 
     class Meta(RegistrationSerializer.Meta):
         model = User
-        fields = RegistrationSerializer.Meta.fields + ('extra_field',)
+        fields = RegistrationSerializer.Meta.fields
