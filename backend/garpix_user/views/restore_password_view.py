@@ -46,8 +46,8 @@ class RestorePasswordView(viewsets.ViewSet):
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result, error = user.check_restore_code(restore_confirmation_code=serializer.data['restore_confirmation_code'])
-
+        result, error = user.check_restore_code(
+            restore_password_confirm_code=serializer.data['restore_password_confirm_code'])
         if not result:
             error.raise_exception(exception_class=ValidationError)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -64,4 +64,4 @@ class RestorePasswordView(viewsets.ViewSet):
 
         if not result:
             error.raise_exception(exception_class=ValidationError)
-        return Response(_('Password was updated!'))
+        return Response({"result": _('Password was updated!')})

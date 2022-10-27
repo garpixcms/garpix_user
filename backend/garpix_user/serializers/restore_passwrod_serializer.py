@@ -17,4 +17,4 @@ class RestoreSetPasswordSerializer(serializers.Serializer):
 
 
 class RestoreCheckCodeSerializer(serializers.Serializer):
-    restore_confirmation_code = serializers.CharField(max_length=15, required=True)
+    restore_password_confirm_code = serializers.CharField(max_length=15, required=True)

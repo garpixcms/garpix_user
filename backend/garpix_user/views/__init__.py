@@ -7,4 +7,3 @@ from .login_views import LogoutView, LoginView  # noqa
 from .email_confirmation_view import EmailConfirmationView, EmailConfirmationLinkView  # noqa
 from .phone_confirmation_view import PhoneConfirmationView  # noqa
 from .restore_password_view import RestorePasswordView # noqa
-from .phone_restore_password_view import RestorePhonePasswordView # noqa

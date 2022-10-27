@@ -1,14 +1,13 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from garpix_utils.string import get_random_string
 from rest_framework import serializers
 
-from garpix_user.models import UserSession
+from garpix_user.models.user_session import UserSession
 from django.utils.translation import ugettext as _
 
 User = get_user_model()
-
-GARPIX_USER_SETTINGS = settings.GARPIX_USER
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -17,24 +16,26 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate_password(self, value):
 
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
+
         min_length = GARPIX_USER_SETTINGS.get('MIN_LENGTH_PASSWORD', 8)
         min_digits = GARPIX_USER_SETTINGS.get('MIN_DIGITS_PASSWORD', 2)
         min_chars = GARPIX_USER_SETTINGS.get('MIN_CHARS_PASSWORD', 2)
         min_uppercase = GARPIX_USER_SETTINGS.get('MIN_UPPERCASE_PASSWORD', 1)
 
-        # check for 2 min length
+        # check for min length
         if len(value) < min_length:
             raise serializers.ValidationError(
                 _('Password must be at least {min_length} characters long.'.format(min_length=min_length))
             )
 
-        # check for 2 digits
+        # check for min digits number
         if sum(c.isdigit() for c in value) < min_digits:
             raise serializers.ValidationError(
                 _('Password must container at least {min_digits} digits.'.format(min_digits=min_digits))
             )
 
-        # check for 2 char
+        # check for min char number
         if sum(c.isalpha() for c in value) < min_chars:
             raise serializers.ValidationError(
                 _('Password must container at least {min_chars} chars.'.format(min_chars=min_chars))
@@ -55,9 +56,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
 
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
+
         request = self.context.get('request')
 
-        queryset = User.objects.filter(email=value).first()
+        queryset = User.objects.filter(email=value, is_email_confirmed=True).first()
         if queryset is not None:
             raise serializers.ValidationError(_("This email is already in use"))
 
@@ -71,9 +74,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate_phone(self, value):
 
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
+
         request = self.context.get('request')
 
-        queryset = User.objects.filter(email=value).first()
+        queryset = User.objects.filter(phone=value, is_phone_confirmed=True).first()
         if queryset is not None:
             raise serializers.ValidationError(_("This phone is already in use"))
 
@@ -86,12 +91,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user_data = {'password': validated_data['password']}
-        if USERNAME_FIELDS := getattr(User, 'USERNAME_FIELDS', []):
-            for field in USERNAME_FIELDS:
-                user_data.update({field: validated_data[field]})
 
-        if 'username' not in USERNAME_FIELDS:
+        GARPIX_USER_SETTINGS = settings.GARPIX_USER
+
+        request = self.context.get('request', None)
+
+        validated_data.pop('password_2')
+
+        user_data = validated_data
+
+        if 'username' not in User.USERNAME_FIELDS and 'username' not in validated_data.keys():
             user_data.update({'username': get_random_string(25)})
 
         if GARPIX_USER_SETTINGS.get('USE_PHONE_CONFIRMATION', False) and not GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_PHONE_CONFIRMATION', False):
@@ -100,7 +109,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False) and not GARPIX_USER_SETTINGS.get('USE_PREREGISTRATION_EMAIL_CONFIRMATION', False):
             user_data.update({'is_email_confirmed': False})
 
-        user = User.objects.create_user(**user_data)
+        with transaction.atomic():
+            user = User.objects.create_user(**user_data)
+            if request:
+                user_session = UserSession.get_or_create_user_session(request)
+                user_session.user = user
+                user_session.recognized = UserSession.UserState.REGISTERED
+                user_session.save()
 
         return user
 

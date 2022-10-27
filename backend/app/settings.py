@@ -74,9 +74,9 @@ INSTALLED_APPS = [
     # for notify
     'fcm_django',
     'garpix_notify',
+    'garpix_user',
     'solo',
     'app',
-    'garpix_user',
     'user'
 ]
 
@@ -224,13 +224,13 @@ API_URL = 'api'
 # user settings
 GARPIX_USER = {
     # base settings
-    'USE_REFERRAL_LINKS': False,
+    'USE_REFERRAL_LINKS': True,
     'REFERRAL_REDIRECT_URL': '/',
     # email/phone confirmation
     'USE_EMAIL_CONFIRMATION': True,
     'USE_PHONE_CONFIRMATION': True,
-    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': False,
-    'USE_PREREGISTRATION_PHONE_CONFIRMATION': False,
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_EMAIL_LINK_CONFIRMATION': False,
     'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
     'CONFIRM_CODE_LENGTH': 6,
@@ -244,13 +244,7 @@ GARPIX_USER = {
     'MIN_LENGTH_PASSWORD': 8,
     'MIN_DIGITS_PASSWORD': 2,
     'MIN_CHARS_PASSWORD': 2,
-    'MIN_UPPERCASE_PASSWORD': 1,
-    # response messages
-    'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
-    'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
-    'INCORRECT_CODE_RESPONSE': 'Некорретный код',
-    'NO_TIME_LEFT_RESPONSE': 'Код недействителен. Запросите повторно',
-    'NOT_AUTHENTICATED_RESPONSE': 'Учетные данные не были предоставлены'
+    'MIN_UPPERCASE_PASSWORD': 1
 }
 
 GARPIX_NOTIFY_CELERY_SETTINGS = 'app.celery.app'

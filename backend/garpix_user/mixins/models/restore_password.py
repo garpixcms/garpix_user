@@ -37,7 +37,7 @@ class RestorePasswordMixin(models.Model):
     def _check_request_time(self):
         from garpix_user.exceptions import WaitException
 
-        if (TIME_LAST_REQUEST := settings.GARPIX_USER.get('TIME_LAST_REQUEST', None)) and (
+        if (TIME_LAST_REQUEST := settings.GARPIX_USER.get('TIME_LAST_REQUEST', 1)) and (
                 restore_date := self.restore_date):
             if restore_date + timedelta(minutes=TIME_LAST_REQUEST) >= datetime.now(restore_date.tzinfo):
                 return False, WaitException()
@@ -61,13 +61,13 @@ class RestorePasswordMixin(models.Model):
         self.save()
 
         if 'email' in self.user.USERNAME_FIELDS:
-            Notify.send(settings.EMAIL_RESTORE_PASSWORD_EVENT, {
+            Notify.send(settings.RESTORE_PASSWORD_EVENT, {
                 'user_fullname': str(self.user),
                 'email': self.user.email,
                 'restore_code': self.restore_password_confirm_code
             }, email=self.user.email)
         elif 'phone' in self.user.USERNAME_FIELDS:
-            Notify.send(settings.PHONE_RESTORE_PASSWORD_EVENT, {
+            Notify.send(settings.RESTORE_PASSWORD_EVENT, {
                 'user_fullname': str(self.user),
                 'phone': self.user.phone,
                 'restore_code': self.user.restore_password_confirm_code
