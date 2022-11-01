@@ -27,11 +27,6 @@ EMAIL_CONFIRMATION_EVENT = 4211
 RESTORE_PASSWORD_EVENT = 4212
 EMAIL_LINK_CONFIRMATION_EVENT = 4213
 
-GARPIX_CONFIRM_CODE_LENGTH = 6
-GARPIX_TIME_LAST_REQUEST = 2
-GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
-GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
-
 
 GARPIX_USER_NOTIFY_EVENTS = {
     PHONE_CONFIRMATION_EVENT: {
@@ -51,6 +46,6 @@ GARPIX_USER_NOTIFY_EVENTS = {
 
     EMAIL_LINK_CONFIRMATION_EVENT: {
         'title': 'Подтверждение email по ссылке',
-        'context_description': '{{ link }}'
+        'context_description': '{{ confirmation_link }}'
     }
 }

@@ -36,9 +36,13 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
 
             self.email_confirmation_code = confirmation_code
             self.email_code_send_date = set_current_date()
+            self.new_email = self.email
             self.send_email_confirmation_link()
 
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.first_name}, {self.last_name}' if self.first_name or self.last_name else self.email or str(self.phone)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

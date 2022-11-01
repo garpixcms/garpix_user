@@ -73,8 +73,11 @@ class UserEmailConfirmMixin(models.Model):
         if self.email_confirmation_code != email_confirmation_code:
             return IncorrectCodeException(field='email_confirmation_code')
 
+        print((datetime.now(
+            self.email_code_send_date.tzinfo) - self.email_code_send_date).days)
+
         time_is_up = (datetime.now(
-            self.email_code_send_date.tzinfo) - self.email_code_send_date).seconds / 60 > settings.GARPIX_USER.get(
+            self.email_code_send_date.tzinfo) - self.email_code_send_date).days > settings.GARPIX_USER.get(
             'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
 
         if time_is_up:
@@ -95,7 +98,7 @@ class UserEmailConfirmMixin(models.Model):
             if str(hashlib.sha512(
                     f'{user.email}+{user.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower() == hash:
                 time_is_up = (datetime.now(
-                    user.email_code_send_date.tzinfo) - user.email_code_send_date).seconds / 60 > settings.GARPIX_USER.get(
+                    user.email_code_send_date.tzinfo) - user.email_code_send_date).days > settings.GARPIX_USER.get(
                     'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
                 if time_is_up:
                     return NoTimeLeftException(field='email_confirmation_code')
