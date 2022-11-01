@@ -36,6 +36,7 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
 
             self.email_confirmation_code = confirmation_code
             self.email_code_send_date = set_current_date()
+            self.new_email = self.email
             self.send_email_confirmation_link()
 
         super().save(*args, **kwargs)

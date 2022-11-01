@@ -51,6 +51,6 @@ GARPIX_USER_NOTIFY_EVENTS = {
 
     EMAIL_LINK_CONFIRMATION_EVENT: {
         'title': 'Подтверждение email по ссылке',
-        'context_description': '{{ link }}'
+        'context_description': '{{ confirmation_link }}'
     }
 }

@@ -1,5 +1,8 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect, HttpResponseGone
 from django.views.generic import RedirectView
 
 from garpix_user.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
@@ -83,5 +86,5 @@ class EmailConfirmationLinkView(RedirectView):
         hash = self.kwargs.get('hash', None)
         result = User.confirm_email_by_link(hash)
         if result is not True:
-            result.raise_exception(exception_class=ValidationError)
-        return settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LINK_REDIRECT', '/')
+            return f"{settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LINK_REDIRECT', '/')}?status=error"
+        return f"{settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LINK_REDIRECT', '/')}?status=success"

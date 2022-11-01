@@ -149,7 +149,7 @@ INSTALLED_APPS += [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': {
-        'garpix_auth.rest.authentication.MainAuthentication',
+        'garpix_user.rest.authentication.MainAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     }
