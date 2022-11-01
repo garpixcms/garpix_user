@@ -41,6 +41,9 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
 
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f'{self.first_name}, {self.last_name}' if self.first_name or self.last_name else self.email or str(self.phone)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if len(self.USERNAME_FIELDS) == 0:
