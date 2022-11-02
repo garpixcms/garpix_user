@@ -30,9 +30,11 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         GARPIX_USER_SETTINGS = getattr(settings, "GARPIX_USER", {})
+
         if is_new and not self.is_email_confirmed and GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False) and GARPIX_USER_SETTINGS.get(
                 'USE_EMAIL_LINK_CONFIRMATION', True):
-            confirmation_code = get_random_string(settings.GARPIX_USER.get('CONFIRM_CODE_LENGTH', 6), string.digits)
+
+            confirmation_code = get_random_string(self.get_confirm_code_length(), string.digits)
 
             self.email_confirmation_code = confirmation_code
             self.email_code_send_date = set_current_date()

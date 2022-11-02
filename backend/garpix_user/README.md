@@ -275,6 +275,8 @@ GARPIX_USER = {
 
 ```
 
+Notice: the minimum and maximum values for `CONFIRM_CODE_LENGTH` are 4 and 255. These values will be hard used in case your settings are not in this interval.
+
 If you need to use pre-registration email or phone confirmation, you need to set corresponding variables to True:
 ```python
 

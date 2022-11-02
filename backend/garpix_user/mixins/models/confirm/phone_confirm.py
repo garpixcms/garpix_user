@@ -9,8 +9,10 @@ from django.contrib.auth import get_user_model
 from garpix_utils.string import get_random_string
 from phonenumber_field.modelfields import PhoneNumberField
 
+from garpix_user.mixins.models.confirm.code_length_mixin import CodeLengthMixin
 
-class UserPhoneConfirmMixin(models.Model):
+
+class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
     """
     Миксин для подтверждения номера телефона
     """
@@ -35,7 +37,7 @@ class UserPhoneConfirmMixin(models.Model):
                     minutes=settings.GARPIX_USER.get('TIME_LAST_REQUEST')) >= datetime.now(self.phone_code_send_date.tzinfo):
                 return WaitException()
 
-        confirmation_code = get_random_string(settings.GARPIX_USER.get('CONFIRM_CODE_LENGTH', 6), string.digits)
+        confirmation_code = get_random_string(self.get_confirm_code_length(), string.digits)
 
         self.new_phone = phone or self.phone
 
