@@ -37,7 +37,7 @@ class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
                     minutes=settings.GARPIX_USER.get('TIME_LAST_REQUEST')) >= datetime.now(self.phone_code_send_date.tzinfo):
                 return WaitException()
 
-        confirmation_code = get_random_string(self.get_confirm_code_length(), string.digits)
+        confirmation_code = get_random_string(self.get_confirm_code_length('phone'), string.digits)
 
         self.new_phone = phone or self.phone
 
@@ -69,6 +69,7 @@ class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
             return NoTimeLeftException(field='phone_confirmation_code')
 
         self.is_phone_confirmed = True
+        self.phone_confirmation_code = None
         self.phone = self.new_phone
         self.save()
         return True

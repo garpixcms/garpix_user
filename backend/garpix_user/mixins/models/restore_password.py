@@ -61,13 +61,13 @@ class RestorePasswordMixin(models.Model):
         self.save()
 
         if 'email' in self.user.USERNAME_FIELDS:
-            Notify.send(settings.RESTORE_PASSWORD_EVENT, {
+            Notify.send(settings.RESTORE_PASSWORD_EMAIL_EVENT, {
                 'user_fullname': str(self.user),
                 'email': self.user.email,
                 'restore_code': self.restore_password_confirm_code
             }, email=self.user.email)
         elif 'phone' in self.user.USERNAME_FIELDS:
-            Notify.send(settings.RESTORE_PASSWORD_EVENT, {
+            Notify.send(settings.RESTORE_PASSWORD_PHONE_EVENT, {
                 'user_fullname': str(self.user),
                 'phone': self.user.phone,
                 'restore_code': self.user.restore_password_confirm_code

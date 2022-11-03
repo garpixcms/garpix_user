@@ -49,7 +49,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
                 self.email_code_send_date.tzinfo):
                 return WaitException()
 
-        confirmation_code = get_random_string(self.get_confirm_code_length(), string.digits)
+        confirmation_code = get_random_string(self.get_confirm_code_length('email'), string.digits)
 
         self.new_email = email or self.email
 
@@ -83,6 +83,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
 
         self.is_email_confirmed = True
         self.email = self.new_email
+        self.email_confirmation_code = None
         self.save()
         return True
 
@@ -102,6 +103,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
                     return NoTimeLeftException(field='email_confirmation_code')
                 user.is_email_confirmed = True
                 user.email = user.new_email or user.email
+                user.email_confirmation_code = None
                 user.save()
                 return True
 

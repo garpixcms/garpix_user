@@ -24,8 +24,9 @@ SOCIAL_AUTH_PIPELINE = (
 PHONE_CONFIRMATION_EVENT = 4210
 EMAIL_CONFIRMATION_EVENT = 4211
 
-RESTORE_PASSWORD_EVENT = 4212
-EMAIL_LINK_CONFIRMATION_EVENT = 4213
+RESTORE_PASSWORD_EMAIL_EVENT = 4212
+RESTORE_PASSWORD_PHONE_EVENT = 4213
+EMAIL_LINK_CONFIRMATION_EVENT = 4214
 
 
 GARPIX_USER_NOTIFY_EVENTS = {
@@ -39,9 +40,14 @@ GARPIX_USER_NOTIFY_EVENTS = {
         'context_description': '{{ confirmation_code }}'
     },
 
-    RESTORE_PASSWORD_EVENT: {
-        'title': 'Восстановление пароля',
-        'context_description': '{{ restore_code }}, {{ user_fullname }}, {{ phone }}, {{ email }}'
+    RESTORE_PASSWORD_EMAIL_EVENT: {
+        'title': 'Восстановление пароля по email',
+        'context_description': '{{ restore_code }}, {{ user_fullname }}, {{ email }}'
+    },
+
+    RESTORE_PASSWORD_PHONE_EVENT: {
+        'title': 'Восстановление пароля по номеру телефона',
+        'context_description': '{{ restore_code }}, {{ user_fullname }}, {{ phone }}'
     },
 
     EMAIL_LINK_CONFIRMATION_EVENT: {
