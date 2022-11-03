@@ -132,4 +132,5 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
         verbose_name_plural = _('System users')
 
     def __str__(self):
-        return _(f"Guest {self.user.username}" if self.user else f'Guest № {self.pk}')
+        return _(
+            f"{self.UserState.choices[self.recognized][1]} {self.user.username}" if self.user else f'{self.UserState.choices[self.recognized][1]} № {self.pk}')

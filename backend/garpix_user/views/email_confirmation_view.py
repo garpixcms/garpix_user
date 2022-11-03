@@ -76,7 +76,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
             result = user.confirm_email(serializer.data['email_confirmation_code'])
             if result is not True:
                 result.raise_exception(exception_class=ValidationError)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'result': _('Email confirmed!')})
 
 
 class EmailConfirmationLinkView(RedirectView):

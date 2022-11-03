@@ -9,10 +9,11 @@ from django.utils.translation import ugettext as _
 import hashlib
 from garpix_utils.string import get_random_string
 
+from garpix_user.mixins.models.confirm.code_length_mixin import CodeLengthMixin
 from garpix_user.utils.current_date import set_current_date
 
 
-class UserEmailConfirmMixin(models.Model):
+class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
     """
     Миксин для подтверждения email
     """
@@ -45,10 +46,10 @@ class UserEmailConfirmMixin(models.Model):
         if settings.GARPIX_USER.get('TIME_LAST_REQUEST', None):
             if self.email_code_send_date and self.email_code_send_date + timedelta(
                     minutes=settings.GARPIX_USER.get('TIME_LAST_REQUEST')) >= datetime.now(
-                    self.email_code_send_date.tzinfo):
+                self.email_code_send_date.tzinfo):
                 return WaitException()
 
-        confirmation_code = get_random_string(settings.GARPIX_USER.get('CONFIRM_CODE_LENGTH', 6), string.digits)
+        confirmation_code = get_random_string(self.get_confirm_code_length('email'), string.digits)
 
         self.new_email = email or self.email
 
@@ -73,9 +74,6 @@ class UserEmailConfirmMixin(models.Model):
         if self.email_confirmation_code != email_confirmation_code:
             return IncorrectCodeException(field='email_confirmation_code')
 
-        print((datetime.now(
-            self.email_code_send_date.tzinfo) - self.email_code_send_date).days)
-
         time_is_up = (datetime.now(
             self.email_code_send_date.tzinfo) - self.email_code_send_date).days > settings.GARPIX_USER.get(
             'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
@@ -85,6 +83,7 @@ class UserEmailConfirmMixin(models.Model):
 
         self.is_email_confirmed = True
         self.email = self.new_email
+        self.email_confirmation_code = None
         self.save()
         return True
 
@@ -103,7 +102,8 @@ class UserEmailConfirmMixin(models.Model):
                 if time_is_up:
                     return NoTimeLeftException(field='email_confirmation_code')
                 user.is_email_confirmed = True
-                user.email = user.new_email
+                user.email = user.new_email or user.email
+                user.email_confirmation_code = None
                 user.save()
                 return True
 

@@ -265,7 +265,8 @@ You can specify email and phone code length, lifetime and time delay before next
 #settings.py 
 
 GARPIX_USER = {
-    'CONFIRM_CODE_LENGTH': 6,
+    'CONFIRM_PHONE_CODE_LENGTH': 6,
+    'CONFIRM_EMAIL_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
@@ -274,6 +275,8 @@ GARPIX_USER = {
 # Hint: see all available settings in the end of this document.
 
 ```
+
+Notice: the minimum and maximum values for `CONFIRM_CODE_LENGTH` are 4 and 255. These values will be hard used in case your settings are not in this interval.
 
 If you need to use pre-registration email or phone confirmation, you need to set corresponding variables to True:
 ```python
@@ -344,8 +347,9 @@ GARPIX_USER = {
     'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
     'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_EMAIL_LINK_CONFIRMATION': True,
-    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
-    'CONFIRM_CODE_LENGTH': 6,
+    'EMAIL_CONFIRMATION_LINK_REDIRECT': '/',
+    'CONFIRM_PHONE_CODE_LENGTH': 6,
+    'CONFIRM_EMAIL_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
