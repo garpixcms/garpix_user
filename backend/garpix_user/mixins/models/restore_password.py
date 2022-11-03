@@ -29,7 +29,7 @@ class RestorePasswordMixin(models.Model):
         if user := self.user:
             for field in USERNAME_FIELDS:
                 if getattr(user, field) == username and getattr(user, f'is_{field}_confirmed', False):
-                    return True, None
+                    return True, field
 
         return False, UserUnregisteredException(field='username',
                                                 extra_data={'field': field_name})
@@ -47,9 +47,9 @@ class RestorePasswordMixin(models.Model):
     def send_restore_code(self, username=None):
         from garpix_notify.models import Notify
 
-        result, error = self._check_user_data(username)
+        result, data = self._check_user_data(username)
         if not result:
-            return result, error
+            return result, data
         result, error = self._check_request_time()
         if not result:
             return result, error
@@ -60,7 +60,7 @@ class RestorePasswordMixin(models.Model):
         self.restore_date = datetime.now(timezone.utc)
         self.save()
 
-        if 'email' in self.user.USERNAME_FIELDS:
+        if data == 'email' and 'email' in self.user.USERNAME_FIELDS:
             Notify.send(settings.RESTORE_PASSWORD_EMAIL_EVENT, {
                 'user_fullname': str(self.user),
                 'email': self.user.email,

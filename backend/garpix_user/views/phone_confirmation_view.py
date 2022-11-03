@@ -73,4 +73,4 @@ class PhoneConfirmationView(viewsets.GenericViewSet):
         result = user.confirm_phone(serializer.data['phone_confirmation_code'])
         if result is not True:
             result.raise_exception(exception_class=ValidationError)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'result': _('Phone number confirmed!')})
