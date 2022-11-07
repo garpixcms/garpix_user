@@ -1,3 +1,7 @@
+### 3.0.0 (07.11.2022)
+
+- Tokens related names updated
+
 ### 3.0.0 (03.11.2022)
 
 - Release on pypi.org.
