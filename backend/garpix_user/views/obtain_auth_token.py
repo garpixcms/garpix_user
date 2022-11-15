@@ -1,7 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import parsers, renderers
 
-from garpix_user.mixins.views import ActivateTranslationMixin
 from garpix_user.models.access_token import AccessToken as Token
 from garpix_user.serializers.auth_token_serializer import AuthTokenSerializer
 from rest_framework.response import Response
@@ -16,7 +15,7 @@ from garpix_user.utils.drf_spectacular import user_session_token_header_paramete
         user_session_token_header_parameter()
     ]
 )
-class ObtainAuthToken(ActivateTranslationMixin, APIView):
+class ObtainAuthToken(APIView):
     throttle_classes = ()
     permission_classes = ()
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)

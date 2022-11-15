@@ -7,7 +7,6 @@ from rest_framework.exceptions import NotAuthenticated, ValidationError
 from rest_framework.response import Response
 
 from garpix_user.exceptions import NotAuthenticateException
-from garpix_user.mixins.views import ActivateTranslationMixin
 from garpix_user.serializers import PhoneConfirmSendSerializer, PhoneConfirmCheckCodeSerializer, \
     PhonePreConfirmSendSerializer, UserSessionTokenSerializer
 from garpix_user.models import UserSession
@@ -21,7 +20,7 @@ from garpix_user.utils.drf_spectacular import user_session_token_header_paramete
         user_session_token_header_parameter()
     ]
 )
-class PhoneConfirmationView(ActivateTranslationMixin, viewsets.GenericViewSet):
+class PhoneConfirmationView(viewsets.GenericViewSet):
 
     def get_serializer_class(self):
         user = self.request.user

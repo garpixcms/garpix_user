@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.views.generic import RedirectView
 
 from garpix_user.models import UserSession, ReferralType, ReferralUserLink

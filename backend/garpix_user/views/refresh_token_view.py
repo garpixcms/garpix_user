@@ -1,6 +1,5 @@
 from rest_framework import parsers, renderers
 
-from garpix_user.mixins.views import ActivateTranslationMixin
 from garpix_user.models.access_token import AccessToken as Token
 from garpix_user.serializers.refresh_token_serializer import RefreshTokenSerializer
 from rest_framework.response import Response
@@ -11,7 +10,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 
-class RefreshTokenView(ActivateTranslationMixin, APIView):
+class RefreshTokenView(APIView):
     throttle_classes = ()
     permission_classes = ()
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)

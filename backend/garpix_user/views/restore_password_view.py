@@ -5,7 +5,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from django.utils.translation import ugettext as _
 
-from garpix_user.mixins.views import ActivateTranslationMixin
 from garpix_user.models import UserSession
 from garpix_user.serializers import RestorePasswordSerializer, UserSessionTokenSerializer
 from garpix_user.serializers.restore_passwrod_serializer import RestoreCheckCodeSerializer, RestoreSetPasswordSerializer
@@ -17,7 +16,7 @@ from garpix_user.utils.drf_spectacular import user_session_token_header_paramete
         user_session_token_header_parameter()
     ]
 )
-class RestorePasswordView(ActivateTranslationMixin, viewsets.ViewSet):
+class RestorePasswordView(viewsets.ViewSet):
 
     def get_serializer_class(self):
         if self.action == 'send_code':

@@ -9,7 +9,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from garpix_user.models import UserSession
-from ..mixins.views import ActivateTranslationMixin
 from ..serializers import UserSessionSerializer
 from ..utils.drf_spectacular import user_session_token_header_parameter
 
@@ -19,7 +18,7 @@ from ..utils.drf_spectacular import user_session_token_header_parameter
         user_session_token_header_parameter()
     ]
 )
-class UserSessionView(ActivateTranslationMixin, viewsets.ViewSet):
+class UserSessionView(viewsets.ViewSet):
     parser_classes = (parsers.JSONParser,)
     permission_classes = (permissions.AllowAny,)
 

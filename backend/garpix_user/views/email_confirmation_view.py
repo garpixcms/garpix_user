@@ -1,11 +1,7 @@
-import logging
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect, HttpResponseGone
 from django.views.generic import RedirectView
 
-from garpix_user.mixins.views import ActivateTranslationMixin
 from garpix_user.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
     EmailPreConfirmSendSerializer, UserSessionTokenSerializer
 
@@ -25,7 +21,7 @@ from garpix_user.utils.drf_spectacular import user_session_token_header_paramete
         user_session_token_header_parameter()
     ]
 )
-class EmailConfirmationView(ActivateTranslationMixin, viewsets.GenericViewSet):
+class EmailConfirmationView(viewsets.GenericViewSet):
 
     def get_serializer_class(self):
         user = self.request.user
