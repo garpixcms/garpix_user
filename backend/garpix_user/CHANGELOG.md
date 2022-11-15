@@ -1,4 +1,8 @@
-### 3.0.0 (07.11.2022)
+### 3.1.0 (15.11.2022)
+
+- Russian localization added
+
+### 3.0.1 (07.11.2022)
 
 - Tokens related names updated
 

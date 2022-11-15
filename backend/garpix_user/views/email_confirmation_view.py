@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect, HttpResponseGone
 from django.views.generic import RedirectView
 
+from garpix_user.mixins.views import ActivateTranslationMixin
 from garpix_user.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
     EmailPreConfirmSendSerializer, UserSessionTokenSerializer
 
@@ -24,7 +25,7 @@ from garpix_user.utils.drf_spectacular import user_session_token_header_paramete
         user_session_token_header_parameter()
     ]
 )
-class EmailConfirmationView(viewsets.GenericViewSet):
+class EmailConfirmationView(ActivateTranslationMixin, viewsets.GenericViewSet):
 
     def get_serializer_class(self):
         user = self.request.user
@@ -35,7 +36,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
         return EmailConfirmCheckCodeSerializer
 
     @extend_schema(summary=_('Email confirmation. Step 1' if not settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION',
-                                                                                          False) else 'Send email confirmation link'))
+                                                                                          False) else _('Send email confirmation link')))
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
         user = request.user

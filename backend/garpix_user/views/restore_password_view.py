@@ -4,6 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from django.utils.translation import ugettext as _
+
+from garpix_user.mixins.views import ActivateTranslationMixin
 from garpix_user.models import UserSession
 from garpix_user.serializers import RestorePasswordSerializer, UserSessionTokenSerializer
 from garpix_user.serializers.restore_passwrod_serializer import RestoreCheckCodeSerializer, RestoreSetPasswordSerializer
@@ -15,7 +17,7 @@ from garpix_user.utils.drf_spectacular import user_session_token_header_paramete
         user_session_token_header_parameter()
     ]
 )
-class RestorePasswordView(viewsets.ViewSet):
+class RestorePasswordView(ActivateTranslationMixin, viewsets.ViewSet):
 
     def get_serializer_class(self):
         if self.action == 'send_code':
@@ -24,7 +26,7 @@ class RestorePasswordView(viewsets.ViewSet):
             return RestoreCheckCodeSerializer
         return RestoreSetPasswordSerializer
 
-    @extend_schema(summary='Restore password. Step  1')
+    @extend_schema(summary=_('Restore password. Step 1'))
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
         serializer = self.get_serializer_class()(data=request.data)
@@ -38,7 +40,7 @@ class RestorePasswordView(viewsets.ViewSet):
             error.raise_exception(exception_class=ValidationError)
         return Response(UserSessionTokenSerializer(user).data)
 
-    @extend_schema(summary='Restore password. Step  2')
+    @extend_schema(summary=_('Restore password. Step 2'))
     @action(methods=['POST'], detail=False)
     def check_code(self, request, *args, **kwargs):
         user = UserSession.get_or_create_user_session(request)
@@ -52,7 +54,7 @@ class RestorePasswordView(viewsets.ViewSet):
             error.raise_exception(exception_class=ValidationError)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @extend_schema(summary='Restore password. Step 3')
+    @extend_schema(summary=_('Restore password. Step 3'))
     @action(methods=['POST'], detail=False)
     def set_password(self, request, *args, **kwargs):
         user = UserSession.get_or_create_user_session(request)

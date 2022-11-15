@@ -18,7 +18,7 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
         (_('Telegram'), {
             'fields': ('telegram_chat_id', 'telegram_secret', 'get_telegram_connect_user_help'),
         }),
-        (_('Confim_information'), {
+        (_('Confim information'), {
             'fields': ('is_email_confirmed', 'email_confirmation_code', 'is_phone_confirmed', 'phone_confirmation_code'),
         }),
     )
