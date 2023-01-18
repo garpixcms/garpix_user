@@ -58,4 +58,5 @@ class LoginViewTest(TestCase):
                 reverse('garpix_user:referral_link', args=[referral_link.referral_hash])
             )
             self.assertEqual(response.status_code, 302)
-            self.assertRedirects(response, BASE_GARPIX_USER_SETTINGS.get('REFERRAL_REDIRECT_URL', '/'))
+            self.assertRedirects(response,
+                                 f"{BASE_GARPIX_USER_SETTINGS.get('REFERRAL_REDIRECT_URL', '/')}?status=success")

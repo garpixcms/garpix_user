@@ -157,7 +157,7 @@ class RegistrationApiTest(ApiTestMixin):
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertDictEqual(response.json(), {'password': [_('Passwords do not match')]})
+        self.assertDictEqual(response.json(), {'password_2': [_('Passwords do not match')]})
 
         # incorrect password
         min_length = GARPIX_USER_SETTINGS.get('MIN_LENGTH_PASSWORD', 8)
@@ -383,7 +383,7 @@ class RegistrationApiTest(ApiTestMixin):
                 **{f'HTTP_{UserSession.HEAD_NAME}': token}
             )
 
-            self.assertEqual(response.status_code, 204)
+            self.assertEqual(response.status_code, 200)
 
             response = self.client.post(
                 reverse('garpix_user:garpix_user_api:api_registration'),
