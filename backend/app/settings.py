@@ -238,7 +238,7 @@ GARPIX_USER = {
     'CONFIRM_EMAIL_CODE_LENGTH': 600,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
-    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 10,  # in days
     # restore password
     'USE_RESTORE_PASSWORD': True,
     # registration

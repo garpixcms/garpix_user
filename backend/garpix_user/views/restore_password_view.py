@@ -6,8 +6,7 @@ from rest_framework.response import Response
 from django.utils.translation import ugettext as _
 
 from garpix_user.models import UserSession
-from garpix_user.serializers import RestorePasswordSerializer, UserSessionTokenSerializer
-from garpix_user.serializers.restore_passwrod_serializer import RestoreCheckCodeSerializer, RestoreSetPasswordSerializer
+from garpix_user.serializers import RestorePasswordSerializer, RestoreCheckCodeSerializer, RestoreSetPasswordSerializer
 from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 
 
@@ -31,18 +30,25 @@ class RestorePasswordView(viewsets.ViewSet):
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = UserSession.get_or_create_user_session(request, username=serializer.data['username'])
+        user = UserSession.get_from_request(request)
+
+        if not user:
+            return Response({"non_field_error": [_("user-session-token not set")]})
 
         result, error = user.send_restore_code(username=serializer.data['username'])
 
         if not result:
             error.raise_exception(exception_class=ValidationError)
-        return Response(UserSessionTokenSerializer(user).data)
+        return Response({"result": "success"})
 
     @extend_schema(summary=_('Restore password. Step 2'))
     @action(methods=['POST'], detail=False)
     def check_code(self, request, *args, **kwargs):
-        user = UserSession.get_or_create_user_session(request)
+
+        user = UserSession.get_from_request(request)
+
+        if not user:
+            return Response({"non_field_error": [_("user-session-token not set")]})
 
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -51,18 +57,23 @@ class RestorePasswordView(viewsets.ViewSet):
             restore_password_confirm_code=serializer.data['restore_password_confirm_code'])
         if not result:
             error.raise_exception(exception_class=ValidationError)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"result": "success"})
 
     @extend_schema(summary=_('Restore password. Step 3'))
     @action(methods=['POST'], detail=False)
     def set_password(self, request, *args, **kwargs):
-        user = UserSession.get_or_create_user_session(request)
+
+        user = UserSession.get_from_request(request)
+
+        if not user:
+            return Response({"non_field_error": [_("user-session-token not set")]})
 
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result, error = user.restore_password(field='username', new_password=serializer.data['new_password'])
+        result, error = user.restore_password(new_password=serializer.data['new_password'],
+                                              username=serializer.data['username'])
 
         if not result:
             error.raise_exception(exception_class=ValidationError)
-        return Response({"result": _('Password was updated!')})
+        return Response({"result": "success"})
