@@ -42,12 +42,12 @@ GARPIX_USER_NOTIFY_EVENTS = {
 
     RESTORE_PASSWORD_EMAIL_EVENT: {
         'title': 'Восстановление пароля по email',
-        'context_description': '{{ restore_code }}, {{ user_fullname }}, {{ email }}'
+        'context_description': '{{ restore_code }} - restore code, {{ user }} - user instance'
     },
 
     RESTORE_PASSWORD_PHONE_EVENT: {
         'title': 'Восстановление пароля по номеру телефона',
-        'context_description': '{{ restore_code }}, {{ user_fullname }}, {{ phone }}'
+        'context_description': '{{ restore_code }} - restore code, {{ user }} - user instance'
     },
 
     EMAIL_LINK_CONFIRMATION_EVENT: {

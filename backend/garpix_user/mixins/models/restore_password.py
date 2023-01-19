@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from django.utils.translation import gettext as _
 from garpix_utils.string import get_random_string
@@ -52,12 +52,12 @@ class RestorePasswordMixin(models.Model):
         return True, None
 
     def _time_is_up(self):
+        datediff = datetime.now(self.restore_date.tzinfo) - self.restore_date
+
         if self.restore_by == self.RESTORE_BY.EMAIL:
-            return (datetime.now(
-                self.restore_date.tzinfo) - self.restore_date).days > settings.GARPIX_USER.get(
+            return datediff.days > settings.GARPIX_USER.get(
                 'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
-        return (datetime.now(
-            self.restore_date.tzinfo) - self.restore_date).seconds / 60 > settings.GARPIX_USER.get(
+        return datediff.seconds / 60 > settings.GARPIX_USER.get(
             'CONFIRM_PHONE_CODE_LIFE_TIME', 6)
 
     def send_restore_code(self, username=None):
@@ -79,15 +79,13 @@ class RestorePasswordMixin(models.Model):
 
         if user.email == username and 'email' in user.USERNAME_FIELDS:
             Notify.send(settings.RESTORE_PASSWORD_EMAIL_EVENT, {
-                'user_fullname': str(user),
-                'email': user.email,
+                'user': user,
                 'restore_code': self.restore_password_confirm_code
             }, email=user.email)
             self.restore_by = self.RESTORE_BY.EMAIL
         elif 'phone' in user.USERNAME_FIELDS:
             Notify.send(settings.RESTORE_PASSWORD_PHONE_EVENT, {
-                'user_fullname': str(user),
-                'phone': user.phone,
+                'user': user,
                 'restore_code': self.restore_password_confirm_code
             }, phone=user.phone)
             self.restore_by = self.RESTORE_BY.PHONE
@@ -129,12 +127,13 @@ class RestorePasswordMixin(models.Model):
             result, data = self._check_and_get_user(username)
             if not result:
                 return result, data
-            user = data
 
-            user.set_password(new_password)
-            user.save()
-            self.is_restore_code_confirmed = False
-            self.save()
+            with transaction.atomic():
+                user = data
+                user.set_password(new_password)
+                user.save()
+                self.is_restore_code_confirmed = False
+                self.save()
             return True, None
         return False, NotConfirmedException(
             extra_data={'field': field_name})
