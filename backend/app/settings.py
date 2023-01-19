@@ -87,7 +87,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware'
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -230,7 +231,7 @@ GARPIX_USER = {
     'USE_EMAIL_CONFIRMATION': True,
     'USE_PHONE_CONFIRMATION': True,
     'USE_PREREGISTRATION_EMAIL_CONFIRMATION': False,
-    'USE_PREREGISTRATION_PHONE_CONFIRMATION': False,
+    'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_EMAIL_LINK_CONFIRMATION': True,
     'EMAIL_CONFIRMATION_LINK_REDIRECT': '/',
     'CONFIRM_PHONE_CODE_LENGTH': 600,

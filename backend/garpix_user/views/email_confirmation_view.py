@@ -1,8 +1,5 @@
-import logging
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect, HttpResponseGone
 from django.views.generic import RedirectView
 
 from garpix_user.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
@@ -35,7 +32,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
         return EmailConfirmCheckCodeSerializer
 
     @extend_schema(summary=_('Email confirmation. Step 1' if not settings.GARPIX_USER.get('USE_EMAIL_LINK_CONFIRMATION',
-                                                                                          False) else 'Send email confirmation link'))
+                                                                                          False) else _('Send email confirmation link')))
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
         user = request.user

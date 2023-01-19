@@ -9,7 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from garpix_user.models import UserSession
-from ..serializers import UserSessionSerializer
+from ..serializers import UserSessionTokenSerializer
 from ..utils.drf_spectacular import user_session_token_header_parameter
 
 
@@ -31,5 +31,5 @@ class UserSessionView(viewsets.ViewSet):
     @action(detail=False, methods=['POST'], permission_classes=(permissions.AllowAny,))
     def create_user_session(self, request):
         return Response({
-            'session_user': UserSessionSerializer(self.get_or_create_user_session()).data
+            'session_user': UserSessionTokenSerializer(self.get_or_create_user_session()).data
         }, status=status.HTTP_200_OK)

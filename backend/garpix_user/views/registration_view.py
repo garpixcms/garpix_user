@@ -4,7 +4,6 @@ from django.utils.module_loading import import_string
 from drf_spectacular.utils import extend_schema
 from rest_framework.generics import CreateAPIView
 
-
 from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 
 User = get_user_model()

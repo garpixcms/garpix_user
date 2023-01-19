@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import parsers, renderers
+
 from garpix_user.models.access_token import AccessToken as Token
 from garpix_user.serializers.auth_token_serializer import AuthTokenSerializer
 from rest_framework.response import Response

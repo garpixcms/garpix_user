@@ -1,4 +1,10 @@
-### 3.0.0 (07.11.2022)
+### 3.1.0 (18.01.2023)
+
+- Russian localization added
+- `change_password` endpoint added
+- Restore password logic updated
+
+### 3.0.1 (07.11.2022)
 
 - Tokens related names updated
 

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.urls import path, re_path, include
-from garpix_user.views import obtain_auth_token, refresh_token_view, logout_view
+from garpix_user.views import obtain_auth_token, refresh_token_view, logout_view, ChangePasswordView
 from rest_framework import routers
 from garpix_user.views.user_session_view import UserSessionView
 from garpix_user.views.registration_view import registration_view
@@ -21,6 +21,7 @@ GARPIX_USER_SETTINGS = getattr(settings, 'GARPIX_USER', dict())
 router = routers.DefaultRouter()
 
 router.register(r'user_session', UserSessionView, basename='api_user_session')
+router.register('', ChangePasswordView, basename='api_change_password')
 
 if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False):
     router.register(r'confirm_email', EmailConfirmationView, basename='api_confirm_email')

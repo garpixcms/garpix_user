@@ -16,4 +16,4 @@ class ReferralLinkView(RedirectView):
         except Exception:
             status = 'error'
 
-        return f"settings.GARPIX_USER.get('REFERRAL_REDIRECT_URL', '/')?status={status}"
+        return f"{settings.GARPIX_USER.get('REFERRAL_REDIRECT_URL', '/')}?status={status}"
