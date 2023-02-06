@@ -3,6 +3,7 @@
 - Russian localization updated
 - Restore password bugs fixed
 - UserSession bugs fixed
+- Registration bugs fixed
 
 ### 3.1.0 (18.01.2023)
 
