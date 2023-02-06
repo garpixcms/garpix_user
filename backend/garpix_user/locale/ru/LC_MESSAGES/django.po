@@ -188,32 +188,18 @@ msgstr "Системный пользователь"
 msgid "System users"
 msgstr "Системные пользователи"
 
-#: serializers/registration_serializer.py:29
-#: tests/test_api/api_registration.py:180
-#, python-brace-format
 msgid "Password must be at least {min_length} characters long."
 msgstr "Пароль должен состоять минимум из {min_length} символов"
 
-#: serializers/registration_serializer.py:35
-#: tests/test_api/api_registration.py:194
-#, python-brace-format
-msgid "Password must container at least {min_digits} digits."
+msgid "Password must contain at least {min_digits} digits."
 msgstr "Пароль должен содержать минимум {min_digits} цифр"
 
-#: serializers/registration_serializer.py:41
-#: tests/test_api/api_registration.py:208
-#, python-brace-format
-msgid "Password must container at least {min_chars} chars."
+msgid "Password must contain at least {min_chars} chars."
 msgstr "Пароль должен содержать минимум {min_chars} букв"
 
-#: serializers/registration_serializer.py:47
-#: tests/test_api/api_registration.py:222
-#, python-brace-format
-msgid "Password must container at least {min_uppercase} uppercase letter."
+msgid "Password must contain at least {min_uppercase} uppercase letter."
 msgstr "Пароль должен содержать минимум {min_uppercase} заглавных букв"
 
-#: serializers/registration_serializer.py:53
-#: tests/test_api/api_registration.py:160
 msgid "Passwords do not match"
 msgstr "Пароли не совпадают"
 
@@ -281,3 +267,12 @@ msgstr "Восстановление пароля. Шаг 3"
 
 msgid "Send email confirmation link"
 msgstr "Отправка ссылки подтверждения email"
+
+msgid "Less than {min_time} minutes has passed since the last request"
+msgstr "Прошло меньше {min_time} минут с последнего запроса"
+
+msgid "User with such {field} has been already registered"
+msgstr "Пользователь с таким {field} уже зарегистрирован"
+
+msgid "User with such {field} has not been registered"
+msgstr "Пользователь с таким {field} не зарегистрирован"

@@ -35,7 +35,7 @@ class RegistrationSerializer(PasswordSerializerMixin, serializers.ModelSerialize
 
         request = self.context.get('request')
 
-        queryset = User.objects.filter(email=value, is_email_confirmed=True).first()
+        queryset = User.objects.filter(email=value).first()
         if queryset is not None:
             raise serializers.ValidationError(_("This email is already in use"))
 
@@ -53,7 +53,7 @@ class RegistrationSerializer(PasswordSerializerMixin, serializers.ModelSerialize
 
         request = self.context.get('request')
 
-        queryset = User.objects.filter(phone=value, is_phone_confirmed=True).first()
+        queryset = User.objects.filter(phone=value).first()
         if queryset is not None:
             raise serializers.ValidationError(_("This phone is already in use"))
 

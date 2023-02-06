@@ -1,3 +1,11 @@
+### 3.2.0 (06.02.2023)
+
+- Russian localization updated
+- Restore password bugs fixed
+- UserSession bugs fixed
+- Registration bugs fixed
+- Method `set_user_session` added to `User` model (see `Readme.md`)
+
 ### 3.1.0 (18.01.2023)
 
 - Russian localization added

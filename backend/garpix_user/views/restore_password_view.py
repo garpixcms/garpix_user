@@ -72,7 +72,9 @@ class RestorePasswordView(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
 
         result, error = user.restore_password(new_password=serializer.data['new_password'],
-                                              username=serializer.data['username'])
+                                              username=serializer.data['username'],
+                                              restore_password_confirm_code=serializer.data[
+                                                  'restore_password_confirm_code'])
 
         if not result:
             error.raise_exception(exception_class=ValidationError)

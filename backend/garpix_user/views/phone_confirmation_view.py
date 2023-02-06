@@ -54,7 +54,7 @@ class PhoneConfirmationView(viewsets.GenericViewSet):
                 result = user.send_phone_confirmation_code(serializer.data['phone'])
                 if result is not True:
                     result.raise_exception(exception_class=ValidationError)
-                return Response(UserSessionTokenSerializer(user).data)
+                return Response({'result': 'success'})
 
             raise NotAuthenticateException().raise_exception(exception_class=NotAuthenticated)
 
@@ -73,4 +73,4 @@ class PhoneConfirmationView(viewsets.GenericViewSet):
         result = user.confirm_phone(serializer.data['phone_confirmation_code'])
         if result is not True:
             result.raise_exception(exception_class=ValidationError)
-        return Response({'result': _('Phone number confirmed!')})
+        return Response({'result': 'success'})

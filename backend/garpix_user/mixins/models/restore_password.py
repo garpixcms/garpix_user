@@ -109,7 +109,7 @@ class RestorePasswordMixin(models.Model):
 
         return True, None
 
-    def restore_password(self, new_password, username):
+    def restore_password(self, new_password, username, restore_password_confirm_code=None):
         User = get_user_model()
 
         USERNAME_FIELDS = getattr(User, 'USERNAME_FIELDS', ('email',))
@@ -117,7 +117,7 @@ class RestorePasswordMixin(models.Model):
         field_name = '/'.join([User._meta.get_field(
             field).verbose_name.title().lower() for field in USERNAME_FIELDS]).rstrip('/')
 
-        if self.is_restore_code_confirmed:
+        if self.is_restore_code_confirmed and restore_password_confirm_code == self.restore_password_confirm_code:
 
             time_is_up = self._time_is_up()
 
