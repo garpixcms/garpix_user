@@ -11,6 +11,7 @@ class RestorePasswordSerializer(ToLowerMixin, serializers.Serializer):
 class RestoreSetPasswordSerializer(PasswordSerializerMixin, serializers.Serializer):
     new_password = serializers.CharField(max_length=255, required=True)
     username = serializers.CharField(required=True)
+    restore_password_confirm_code = serializers.CharField(max_length=15, required=True)
 
     def validate_new_password(self, value):
         self._validate_password(value)

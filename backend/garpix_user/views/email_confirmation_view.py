@@ -53,7 +53,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
                 result = user.send_email_confirmation_code(serializer.data['email'])
                 if result is not True:
                     result.raise_exception(exception_class=ValidationError)
-                return Response(UserSessionTokenSerializer(user).data)
+                return Response({'result': 'success'})
 
             raise NotAuthenticated()
 
@@ -73,7 +73,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
             result = user.confirm_email(serializer.data['email_confirmation_code'])
             if result is not True:
                 result.raise_exception(exception_class=ValidationError)
-            return Response({'result': _('Email confirmed!')})
+            return Response({'result': 'success'})
 
 
 class EmailConfirmationLinkView(RedirectView):
