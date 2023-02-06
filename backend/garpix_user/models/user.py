@@ -54,3 +54,15 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
             if field not in ('email', 'phone', 'username'):
                 raise IntegrityError(
                     _(f'{field} can\'t be used as USERNAME_FIELDS. Only ("email", "phone", "username") supported'))
+
+    def set_user_session(self, request):
+        from garpix_user.models import UserSession
+        current_user_session = UserSession.get_from_request(request)
+        if current_user_session:
+            if (user_user_session := UserSession.objects.filter(
+                    user=self).first()) and user_user_session != current_user_session:
+                current_user_session.delete()
+            else:
+                current_user_session.user = self
+                current_user_session.recognized = UserSession.UserState.REGISTERED
+                current_user_session.save()

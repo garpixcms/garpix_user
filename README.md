@@ -330,6 +330,7 @@ To create the unregistered user send `POST` request to `{API_URL}/user_session/c
 
 The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `user-session-token`.
 
+By default, on log in current user session instance will be dropped, if system has `registered` user session instance for authorized user. You can override `set_user_session` method of `User` model to add custom logic.
 
 ## All available settings with default values
 
