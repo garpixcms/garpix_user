@@ -23,13 +23,13 @@ class AuthTokenSerializer(serializers.Serializer):
             request = self.context.get('request')
             user = authenticate(request=request,
                                 username=username, password=password)
-            user.set_user_session(request)
             # The authenticate call simply returns None for is_active=False
             # users. (Assuming the default ModelBackend authentication
             # backend.)
             if not user:
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
+            user.set_user_session(request)
         else:
             msg = _('Must include "username" and "password".')
             raise serializers.ValidationError(msg, code='authorization')

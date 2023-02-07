@@ -1,3 +1,7 @@
+### 3.2.1 (07.02.2023)
+
+- Log in error fixed
+
 ### 3.2.0 (06.02.2023)
 
 - Russian localization updated
