@@ -1,3 +1,9 @@
+### 3.3.0 (24.02.2023)
+
+- Localization error fixed
+- Registration error fixed
+- Delete user error fixed
+
 ### 3.2.1 (07.02.2023)
 
 - Log in error fixed

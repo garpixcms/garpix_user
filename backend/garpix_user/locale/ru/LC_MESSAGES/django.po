@@ -188,17 +188,29 @@ msgstr "Системный пользователь"
 msgid "System users"
 msgstr "Системные пользователи"
 
-msgid "Password must be at least {min_length} characters long."
-msgstr "Пароль должен состоять минимум из {min_length} символов"
+msgid "Password must be at least {min_length} {characters} long."
+msgstr "Пароль должен состоять минимум из {min_length} {characters}"
 
-msgid "Password must contain at least {min_digits} digits."
-msgstr "Пароль должен содержать минимум {min_digits} цифр"
+msgid "Password must contain at least {min_digits} {digits}."
+msgstr "Пароль должен содержать минимум {min_digits} {digits}"
 
-msgid "Password must contain at least {min_chars} chars."
-msgstr "Пароль должен содержать минимум {min_chars} букв"
+msgid "Password must contain at least {min_chars} {chars}."
+msgstr "Пароль должен содержать минимум {min_chars} {chars}"
 
-msgid "Password must contain at least {min_uppercase} uppercase letter."
-msgstr "Пароль должен содержать минимум {min_uppercase} заглавных букв"
+msgid "Password must contain at least {min_uppercase} uppercase {letters}."
+msgstr "Пароль должен содержать минимум {min_uppercase} {letters}"
+
+msgid "character,characters"
+msgstr "символа,символов,символов"
+
+msgid "digit,digits"
+msgstr "цифру,цифры,цифр"
+
+msgid "char,chars"
+msgstr "букву,буквы,букв"
+
+msgid "letter,letters"
+msgstr "заглавную букву,заглавные буквы,заглавных букв"
 
 msgid "Passwords do not match"
 msgstr "Пароли не совпадают"

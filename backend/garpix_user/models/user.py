@@ -43,6 +43,11 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
 
         super().save(*args, **kwargs)
 
+    def delete(self, using=None, keep_parents=False):
+        self.is_deleted = True
+        self.is_active = False
+        self.save()
+
     def __str__(self):
         return f'{self.first_name}, {self.last_name}' if self.first_name or self.last_name else self.email or str(self.phone)
 
