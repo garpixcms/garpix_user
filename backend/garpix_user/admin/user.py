@@ -10,7 +10,7 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'fields': ('is_active', 'is_deleted', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
         (_('Viber'), {
             'fields': ('viber_chat_id', 'viber_secret_key',)

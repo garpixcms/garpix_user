@@ -43,7 +43,7 @@ class EmailConfirmationView(viewsets.GenericViewSet):
             result = user.send_email_confirmation_code(serializer.data.get('email', None))
             if result is not True:
                 result.raise_exception(exception_class=ValidationError)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'result': 'success'})
         else:
             if settings.GARPIX_USER.get('USE_PREREGISTRATION_EMAIL_CONFIRMATION', False):
                 user = UserSession.get_or_create_user_session(request)

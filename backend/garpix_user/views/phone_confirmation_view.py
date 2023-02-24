@@ -44,7 +44,7 @@ class PhoneConfirmationView(viewsets.GenericViewSet):
             result = user.send_phone_confirmation_code(serializer.data.get('phone', None))
             if result is not True:
                 result.raise_exception(exception_class=ValidationError)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'result': 'success'})
         else:
             if settings.GARPIX_USER.get('USE_PREREGISTRATION_PHONE_CONFIRMATION', False):
                 user = UserSession.get_or_create_user_session(request)

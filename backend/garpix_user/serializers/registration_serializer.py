@@ -105,3 +105,11 @@ class RegistrationSerializer(PasswordSerializerMixin, serializers.ModelSerialize
             return expanded_fields + User.USERNAME_FIELDS
         else:
             return expanded_fields
+
+    def get_extra_kwargs(self):
+        extra_kwargs = super().get_extra_kwargs()
+        if USERNAME_FIELDS := getattr(User, 'USERNAME_FIELDS', None):
+            for field in USERNAME_FIELDS:
+                extra_kwargs.update({field: {'required': True, 'allow_blank': False}})
+
+        return extra_kwargs
