@@ -288,3 +288,6 @@ msgstr "Пользователь с таким {field} уже зарегистр
 
 msgid "User with such {field} has not been registered"
 msgstr "Пользователь с таким {field} не зарегистрирован"
+
+msgid "The phone number entered is not valid."
+msgstr "Введенный некорректный номер телефона."

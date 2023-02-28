@@ -45,7 +45,7 @@ class RegistrationSerializer(PasswordSerializerMixin, serializers.ModelSerialize
             if not user.is_email_confirmed:
                 raise serializers.ValidationError(_('Email was not confirmed'))
 
-        return value
+        return str(value).lower() if value else None
 
     def validate_phone(self, value):
 

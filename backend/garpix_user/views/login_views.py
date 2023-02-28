@@ -6,7 +6,6 @@ from django.views.generic.base import RedirectView
 from django.views.generic import FormView
 from django.http import HttpResponse
 from garpix_user.forms import LoginForm
-from garpix_user.models import UserSession
 
 
 class LogoutView(RedirectView):
