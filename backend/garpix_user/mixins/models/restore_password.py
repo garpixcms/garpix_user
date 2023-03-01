@@ -36,7 +36,7 @@ class RestorePasswordMixin(models.Model):
         for field in USERNAME_FIELDS:
             user_data |= Q(**{field: username, f'is_{field}_confirmed': True})
 
-        if user := User.objects.filter(user_data).first():
+        if user := User.active_objects.filter(user_data).first():
             return True, user
 
         return False, UserUnregisteredException(field='username',
@@ -83,12 +83,14 @@ class RestorePasswordMixin(models.Model):
                 'restore_code': self.restore_password_confirm_code
             }, email=user.email)
             self.restore_by = self.RESTORE_BY.EMAIL
+            self.email = username
         elif 'phone' in user.USERNAME_FIELDS:
             Notify.send(settings.RESTORE_PASSWORD_PHONE_EVENT, {
                 'user': user,
                 'restore_code': self.restore_password_confirm_code
             }, phone=user.phone)
             self.restore_by = self.RESTORE_BY.PHONE
+            self.phone = username
 
         self.save()
 
@@ -117,7 +119,8 @@ class RestorePasswordMixin(models.Model):
         field_name = '/'.join([User._meta.get_field(
             field).verbose_name.title().lower() for field in USERNAME_FIELDS]).rstrip('/')
 
-        if self.is_restore_code_confirmed and restore_password_confirm_code == self.restore_password_confirm_code:
+        if self.is_restore_code_confirmed and restore_password_confirm_code == self.restore_password_confirm_code and getattr(
+                self, self.restore_by) == username:
 
             time_is_up = self._time_is_up()
 
