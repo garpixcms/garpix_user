@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Manager
 from garpix_notify.mixins import UserNotifyMixin
+from garpix_utils.managers import ActiveManager
 from garpix_utils.models import DeleteMixin
 from garpix_utils.string import get_random_string
 from phonenumber_field.modelfields import PhoneNumberField
@@ -21,6 +23,9 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
     is_phone_confirmed = models.BooleanField(_("Phone number confirmed"), default=True)
 
     USERNAME_FIELDS = ('username',)
+
+    objects = Manager()
+    active_objects = ActiveManager()
 
     class Meta:
         verbose_name = _('User')

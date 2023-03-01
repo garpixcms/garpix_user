@@ -291,3 +291,6 @@ msgstr "Пользователь с таким {field} не зарегистри
 
 msgid "The phone number entered is not valid."
 msgstr "Введенный некорректный номер телефона."
+
+msgid "Password is incorrect"
+msgstr "Некорректный пароль"

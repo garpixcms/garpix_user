@@ -1,4 +1,4 @@
-### 3.3.1 (28.02.2023)
+### 3.3.1-3.3.2 (28.02.2023)
 
 - Localization error fixed
 - Email lowercase error fixed
