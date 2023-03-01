@@ -1,7 +1,6 @@
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
-from django.db.models import Manager
 from garpix_notify.mixins import UserNotifyMixin
 from garpix_utils.managers import ActiveManager
 from garpix_utils.models import DeleteMixin
@@ -24,7 +23,7 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
 
     USERNAME_FIELDS = ('username',)
 
-    objects = Manager()
+    objects = UserManager()
     active_objects = ActiveManager()
 
     class Meta:

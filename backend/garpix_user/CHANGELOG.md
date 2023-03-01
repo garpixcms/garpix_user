@@ -1,3 +1,7 @@
+### 3.4.0-rc1 (01.03.2023)
+
+- Bugs fixed
+
 ### 3.3.1-3.3.2 (28.02.2023)
 
 - Localization error fixed
