@@ -230,7 +230,7 @@ GARPIX_USER = {
     # email/phone confirmation
     'USE_EMAIL_CONFIRMATION': True,
     'USE_PHONE_CONFIRMATION': True,
-    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': False,
+    'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
     'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_EMAIL_LINK_CONFIRMATION': True,
     'EMAIL_CONFIRMATION_LINK_REDIRECT': '/',
@@ -239,6 +239,7 @@ GARPIX_USER = {
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'CONFIRMATION_DELAY': 10,  # in days
     # restore password
     'USE_RESTORE_PASSWORD': True,
     # registration
@@ -256,3 +257,5 @@ NOTIFY_EVENTS = {}
 NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)  # noqa
 
 CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
+
+GARPIXCMS_CELERY_SETTINGS = 'app.celery.app'

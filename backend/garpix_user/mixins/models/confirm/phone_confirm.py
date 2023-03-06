@@ -28,7 +28,7 @@ class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
 
         User = get_user_model()
 
-        anybody_have_this_phone = User.objects.filter(phone=phone, is_phone_confirmed=True).count() > 0
+        anybody_have_this_phone = User.objects.filter(phone=phone).count() > 0
         if anybody_have_this_phone:
             return UserRegisteredException(field='phone', extra_data={'field': self._meta.get_field('phone').verbose_name.title().lower()})
 
@@ -52,7 +52,7 @@ class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
 
         Notify.send(settings.PHONE_CONFIRMATION_EVENT, {
             'confirmation_code': confirmation_code
-        }, phone=self.phone)
+        }, phone=self.new_phone)
 
         return True
 

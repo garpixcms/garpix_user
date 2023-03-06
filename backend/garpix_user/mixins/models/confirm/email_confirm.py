@@ -29,7 +29,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
             hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
         Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
             'confirmation_link': reverse('garpix_user:email_confirmation_link', args=[hash])
-        }, email=self.email)
+        }, email=self.new_email)
 
     def send_email_confirmation_code(self, email=None):
         from django.contrib.auth import get_user_model
@@ -38,7 +38,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
 
         User = get_user_model()
 
-        anybody_have_this_email = User.objects.filter(email=email, is_email_confirmed=True).count() > 0
+        anybody_have_this_email = User.objects.filter(email=email).count() > 0
         if anybody_have_this_email:
             return UserRegisteredException(field='email', extra_data={
                 'field': self._meta.get_field('email').verbose_name.title().lower()})
@@ -64,7 +64,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         else:
             Notify.send(settings.EMAIL_CONFIRMATION_EVENT, {
                 'confirmation_code': confirmation_code
-            }, email=self.email)
+            }, email=self.new_email)
 
         return True
 
