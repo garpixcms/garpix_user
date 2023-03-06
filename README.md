@@ -305,6 +305,17 @@ GARPIX_USER = {
 # Hint: see all available settings in the end of this document.
 
 ```
+By default, users with unconfirmed email/phone number will be deleted in 10 days. You can set up it using `CONFIRMATION_DELAY`:
+
+```python
+# settings.py
+
+GARPIX_USER = {
+# ...
+    'CONFIRMATION_DELAY': 10,  # in days
+}
+
+```
 
 ## Referral links
 
@@ -354,6 +365,7 @@ GARPIX_USER = {
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'CONFIRMATION_DELAY': 10,  # in days
     # restore password
     'USE_RESTORE_PASSWORD': True,
     # registration
