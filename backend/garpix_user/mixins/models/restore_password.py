@@ -28,9 +28,6 @@ class RestorePasswordMixin(models.Model):
 
         USERNAME_FIELDS = getattr(User, 'USERNAME_FIELDS', ('email',))
 
-        field_name = '/'.join([User._meta.get_field(
-            field).verbose_name.title().lower() for field in USERNAME_FIELDS]).rstrip('/')
-
         user_data = Q()
 
         for field in USERNAME_FIELDS:
@@ -40,7 +37,7 @@ class RestorePasswordMixin(models.Model):
             return True, user
 
         return False, UserUnregisteredException(field='username',
-                                                extra_data={'field': field_name})
+                                                extra_data={'value': username})
 
     def _check_request_time(self):
 

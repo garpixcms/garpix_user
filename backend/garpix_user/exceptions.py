@@ -33,7 +33,7 @@ class UserRegisteredException(ModelException):
 
 
 class UserUnregisteredException(ModelException):
-    message = settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', _("User with such {field} has not been registered"))
+    message = settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', _("User on {value} has not been registered"))
 
 
 class IncorrectCodeException(ModelException):

@@ -286,8 +286,8 @@ msgstr "Прошло меньше {min_time} минут с последнего 
 msgid "User with such {field} has been already registered"
 msgstr "Пользователь с таким {field} уже зарегистрирован"
 
-msgid "User with such {field} has not been registered"
-msgstr "Пользователь с таким {field} не зарегистрирован"
+msgid "User on {value} has not been registered"
+msgstr "Пользователь по {value} не зарегистрирован"
 
 msgid "The phone number entered is not valid."
 msgstr "Введенный некорректный номер телефона."
