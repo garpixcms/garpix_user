@@ -1,3 +1,7 @@
+### 3.4.0 (07.03.2023)
+
+- Release fixes to pypi.org.
+
 ### 3.4.0-rc1-3.4.0-rc4 (01.03.2023)
 
 - Bugs fixed
