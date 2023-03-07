@@ -35,6 +35,8 @@ class RegistrationSerializer(PasswordSerializerMixin, serializers.ModelSerialize
 
         request = self.context.get('request')
 
+        value = str(value).lower() if value else None
+
         queryset = User.objects.filter(email=value).first()
         if queryset is not None:
             raise serializers.ValidationError(_("This email is already in use"))
@@ -45,7 +47,7 @@ class RegistrationSerializer(PasswordSerializerMixin, serializers.ModelSerialize
             if not user.is_email_confirmed:
                 raise serializers.ValidationError(_('Email was not confirmed'))
 
-        return str(value).lower() if value else None
+        return value
 
     def validate_phone(self, value):
 

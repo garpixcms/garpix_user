@@ -283,11 +283,11 @@ msgstr "Отправка ссылки подтверждения email"
 msgid "Less than {min_time} minutes has passed since the last request"
 msgstr "Прошло меньше {min_time} минут с последнего запроса"
 
-msgid "User with such {field} has been already registered"
-msgstr "Пользователь с таким {field} уже зарегистрирован"
+msgid "User with such data has been already registered"
+msgstr "Пользователь с указанными данными уже зарегистрирован"
 
-msgid "User on {value} has not been registered"
-msgstr "Пользователь по {value} не зарегистрирован"
+msgid "User with such data has not been registered"
+msgstr "Пользователь с указанными данными не зарегистрирован"
 
 msgid "The phone number entered is not valid."
 msgstr "Введенный некорректный номер телефона."

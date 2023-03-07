@@ -29,11 +29,11 @@ class WaitException(ModelException):
 
 class UserRegisteredException(ModelException):
     message = settings.GARPIX_USER.get('USER_REGISTERED_RESPONSE',
-                                       _("User with such {field} has been already registered"))
+                                       _("User with such data has been already registered"))
 
 
 class UserUnregisteredException(ModelException):
-    message = settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', _("User on {value} has not been registered"))
+    message = settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', _("User with such data has not been registered"))
 
 
 class IncorrectCodeException(ModelException):
