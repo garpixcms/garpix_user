@@ -81,7 +81,10 @@ class EmailConfirmationLinkView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         User = get_user_model()
         hash = self.kwargs.get('hash', None)
-        result = User.confirm_email_by_link(hash)
+        model_type = self.kwargs.get('model_type', None)
+
+        model = UserSession if model_type == 'user_session' else User
+        result = model.confirm_email_by_link(hash)
         if result is not True:
             return f"{settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LINK_REDIRECT', '/')}?status=error"
         return f"{settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LINK_REDIRECT', '/')}?status=success"

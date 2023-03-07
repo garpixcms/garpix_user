@@ -28,8 +28,10 @@ class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
 
         User = get_user_model()
 
-        anybody_have_this_phone = User.objects.filter(phone=phone).count() > 0
-        if anybody_have_this_phone:
+        anybody_have_this_phone = User.objects.filter(phone=phone)
+        if isinstance(self, User):
+            anybody_have_this_phone = anybody_have_this_phone.exclude(id=self.id)
+        if anybody_have_this_phone.count() > 0:
             return UserRegisteredException(field='phone', extra_data={'field': self._meta.get_field('phone').verbose_name.title().lower()})
 
         if settings.GARPIX_USER.get('TIME_LAST_REQUEST', None):

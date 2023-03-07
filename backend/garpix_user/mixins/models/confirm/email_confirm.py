@@ -25,10 +25,12 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
 
     def send_email_confirmation_link(self):
         from garpix_notify.models import Notify
+        from garpix_user.models import UserSession
+        model_type = 'user_session' if isinstance(self, UserSession) else 'user'
         hash = str(
             hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
         Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
-            'confirmation_link': reverse('garpix_user:email_confirmation_link', args=[hash])
+            'confirmation_link': reverse('garpix_user:email_confirmation_link', args=[model_type, hash])
         }, email=self.new_email)
 
     def send_email_confirmation_code(self, email=None):
@@ -38,8 +40,10 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
 
         User = get_user_model()
 
-        anybody_have_this_email = User.objects.filter(email=email).count() > 0
-        if anybody_have_this_email:
+        anybody_have_this_email = User.objects.filter(email=email)
+        if isinstance(self, User):
+            anybody_have_this_email = anybody_have_this_email.exclude(id=self.id)
+        if anybody_have_this_email.count() > 0:
             return UserRegisteredException(field='email', extra_data={
                 'field': self._meta.get_field('email').verbose_name.title().lower()})
 

@@ -51,8 +51,8 @@ if GARPIX_USER_SETTINGS.get('USE_REFERRAL_LINKS', False):
 if GARPIX_USER_SETTINGS.get('USE_EMAIL_CONFIRMATION', False) and GARPIX_USER_SETTINGS.get('USE_EMAIL_LINK_CONFIRMATION',
                                                                                           True):
     urlpatterns += [
-        re_path(r'confirm_email/(?P<hash>.*?)/$', EmailConfirmationLinkView.as_view(),
+        re_path(r'confirm_email/(?P<model_type>.*?)/(?P<hash>.*?)/$', EmailConfirmationLinkView.as_view(),
                 name='email_confirmation_link'),
-        re_path(r'confirm_email/(?P<hash>.*?)$', EmailConfirmationLinkView.as_view(),
+        re_path(r'confirm_email/(?P<model_type>.*?)/(?P<hash>.*?)$', EmailConfirmationLinkView.as_view(),
                 name='email_confirmation_link'),
     ]
