@@ -19,7 +19,7 @@ def get_user_by_token(token):
             if tok.created + timedelta(seconds=settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS) < timezone.now():
                 tok.delete()
                 raise Exception("Token expired.")
-        user = User.objects.get(id=tok.user_id)
+        user = User.active_objects.get(id=tok.user_id)
         return user
     except: # noqa
         pass

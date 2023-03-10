@@ -1,4 +1,65 @@
-### 3.0.0-rc1 (05.10.2022)
+### 3.4.0 (07.03.2023)
+
+- Release fixes to pypi.org.
+
+### 3.4.0-rc1-3.4.0-rc4 (01.03.2023)
+
+- Bugs fixed
+
+### 3.3.1-3.3.2 (28.02.2023)
+
+- Localization error fixed
+- Email lowercase error fixed
+
+### 3.3.0 (24.02.2023)
+
+- Localization error fixed
+- Registration error fixed
+- Delete user error fixed
+
+### 3.2.1 (07.02.2023)
+
+- Log in error fixed
+
+### 3.2.0 (06.02.2023)
+
+- Russian localization updated
+- Restore password bugs fixed
+- UserSession bugs fixed
+- Registration bugs fixed
+- Method `set_user_session` added to `User` model (see `Readme.md`)
+
+### 3.1.0 (18.01.2023)
+
+- Russian localization added
+- `change_password` endpoint added
+- Restore password logic updated
+
+### 3.0.1 (07.11.2022)
+
+- Tokens related names updated
+
+### 3.0.0 (03.11.2022)
+
+- Release on pypi.org.
+
+### 3.0.0-rc5 - 3.0.0-rc6 (26.10.2022)
+
+- Исправлена регистрация через подтверждение email и номера телефона
+- Добавлен базовый класс для админ.панели (смотрите `Readme.md`)
+- Исправлена связка моделей `User` и `UserSession`.
+- Исправлены и дополнены автотесты
+
+### 3.0.0-rc4 (21.10.2022)
+
+- Удален миксин для `UserSession`
+- Все миксины добавлены в модели из коробки, теперь все регулируется только настройками в `settings.py`
+- Добавлена возможность настраивать список полей, используемых в `CustomAuthenticationBackend` качестве `username` (смотрите `Readme.md`)
+- Исправлено swagger-документирование эндпоинтов
+- Эндпоинт на восстановление пароля теперь принимает `username`.
+- Добавлена настройка `REGISTRATION_SERIALIZER` - расширение сериалайзера регитсрации (смотрите `Readme.md`)
+
+### 3.0.0-rc1 - 3.0.0-rc3 (05.10.2022)
 
 - Проект преобразован в `garpix_user`
 - Добавлена модель `UserSession` для работы с неавторизованным пользователем

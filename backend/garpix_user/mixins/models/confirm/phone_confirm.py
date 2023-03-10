@@ -7,16 +7,16 @@ from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 
 from garpix_utils.string import get_random_string
-
 from phonenumber_field.modelfields import PhoneNumberField
 
+from garpix_user.mixins.models.confirm.code_length_mixin import CodeLengthMixin
 
-class UserPhoneConfirmMixin(models.Model):
+
+class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
     """
     Миксин для подтверждения номера телефона
     """
-    phone = PhoneNumberField(_("Phone number"), blank=True, default='')
-    is_phone_confirmed = models.BooleanField(_("Phone number confirmed"), default=False)
+
     phone_confirmation_code = models.CharField(_('Phone confirmation code'), max_length=15,
                                                blank=True, null=True)
     phone_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
@@ -28,8 +28,10 @@ class UserPhoneConfirmMixin(models.Model):
 
         User = get_user_model()
 
-        anybody_have_this_phone = User.objects.filter(phone=phone, is_phone_confirmed=True).count() > 0
-        if anybody_have_this_phone:
+        anybody_have_this_phone = User.objects.filter(phone=phone)
+        if isinstance(self, User):
+            anybody_have_this_phone = anybody_have_this_phone.exclude(id=self.id)
+        if anybody_have_this_phone.count() > 0:
             return UserRegisteredException(field='phone', extra_data={'field': self._meta.get_field('phone').verbose_name.title().lower()})
 
         if settings.GARPIX_USER.get('TIME_LAST_REQUEST', None):
@@ -37,7 +39,7 @@ class UserPhoneConfirmMixin(models.Model):
                     minutes=settings.GARPIX_USER.get('TIME_LAST_REQUEST')) >= datetime.now(self.phone_code_send_date.tzinfo):
                 return WaitException()
 
-        confirmation_code = get_random_string(settings.GARPIX_USER.get('CONFIRM_CODE_LENGTH', 6), string.digits)
+        confirmation_code = get_random_string(self.get_confirm_code_length('phone'), string.digits)
 
         self.new_phone = phone or self.phone
 
@@ -52,7 +54,7 @@ class UserPhoneConfirmMixin(models.Model):
 
         Notify.send(settings.PHONE_CONFIRMATION_EVENT, {
             'confirmation_code': confirmation_code
-        }, phone=self.phone)
+        }, phone=self.new_phone)
 
         return True
 
@@ -69,6 +71,7 @@ class UserPhoneConfirmMixin(models.Model):
             return NoTimeLeftException(field='phone_confirmation_code')
 
         self.is_phone_confirmed = True
+        self.phone_confirmation_code = None
         self.phone = self.new_phone
         self.save()
         return True

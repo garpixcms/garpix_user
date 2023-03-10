@@ -29,6 +29,8 @@ class LoginView(FormView):
         username = data.get('username')
         password = data.get('password')
         user = authenticate(request, username=username, password=password)
+        if user:
+            user.set_user_session(request)
         login(request, user)
         if self.request.accepts('text/html'):
             return redirect(request.GET.get('next', '/'))

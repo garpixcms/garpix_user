@@ -5,7 +5,10 @@ from django.db.models import Q
 class CustomAuthenticationBackend:
     def authenticate(self, request, username=None, password=None):
         try:
-            user = get_user_model().objects.get(Q(phone=username) | Q(username=username.lower()))
+            query = Q()
+            for field in get_user_model().USERNAME_FIELDS:
+                query |= Q(**{field: username.lower()})
+            user = get_user_model().active_objects.get(query)
             pwd_valid = user.check_password(password)
             if pwd_valid:
                 return user
@@ -15,6 +18,6 @@ class CustomAuthenticationBackend:
 
     def get_user(self, user_id):
         try:
-            return get_user_model().objects.get(pk=user_id)
+            return get_user_model().active_objects.get(pk=user_id)
         except get_user_model().DoesNotExist:
             return None

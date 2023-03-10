@@ -1,13 +1,10 @@
-from django.contrib.auth.models import AbstractUser
-from garpix_notify.mixins import UserNotifyMixin
-from garpix_user.mixins.models.confirm import UserEmailConfirmMixin, UserPhoneConfirmMixin
+from garpix_user.models import GarpixUser
 
 
-class User(UserEmailConfirmMixin, UserPhoneConfirmMixin, UserNotifyMixin, AbstractUser):
+class User(GarpixUser):
+
+    USERNAME_FIELDS = ('phone', 'email')
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-
-    def __str__(self):
-        return self.username

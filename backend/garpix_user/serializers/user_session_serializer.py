@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from ..models import UserSession
+from garpix_user.models.user_session import UserSession
 
 
 class UserSessionSerializer(ModelSerializer):

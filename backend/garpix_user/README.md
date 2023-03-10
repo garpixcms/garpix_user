@@ -54,7 +54,42 @@ urlpatterns = [
 ]
 ```
 
-For custom auth with phone and email use this in `settings.py`:
+Use `GarpixUser` from `garpix_user.models` as base for your user model class:
+
+```python
+# user.models.user.py
+
+from garpix_user.models import GarpixUser
+
+
+class User(GarpixUser):
+    
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username
+
+```
+
+Use `UserAdmin` from `garpix_user.admin` as base for your user admin class:
+
+```python
+
+from django.contrib import admin
+
+from garpix_user.admin import UserAdmin
+from user.models import User
+
+
+@admin.register(User)
+class UserAdmin(UserAdmin):
+    pass
+
+```
+
+For custom auth with phone and/or email use this in `settings.py`:
 
 ```python
 # ...
@@ -67,7 +102,36 @@ AUTHENTICATION_BACKENDS = (
 
 ```
 
+and `USERNAME_FIELDS` to your `User` model:
+
+```python
+# user.models.user.py
+
+from garpix_user.models import GarpixUser
+
+
+class User(GarpixUser):
+    
+    USERNAME_FIELDS = ('email', ) # default is username
+    
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username
+
+```
+
 ## With Django Rest Framework
+
+Import settings from `garpix_user`:
+
+```python
+# settings.py
+from garpix_user.settings import *
+
+```
 
 Add this for SPA:
 
@@ -85,36 +149,65 @@ INSTALLED_APPS += [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': {
-        'garpix_auth.rest.authentication.MainAuthentication',
+        'garpix_user.rest.authentication.MainAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     }
 }
 
-AUTHENTICATION_BACKENDS = (
-    # Only your social networks
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.vk.VKOAuth2',
-    'social_core.backends.facebook.FacebookAppOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
-    # Django
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+```
 
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details'
-)
+## Registration
+
+`garpix_user` adds default registration for with `phone` and/or `email` and `password` fields. To add fields to this form override `RegistrationSerializer` and add it to `settings`:
+
+```python
+# settings.py
+
+GARPIX_USER = {
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer'
+}
+
+# Hint: see all available settings in the end of this document.
+
+```
+
+```python
+# app.serializers.py
+
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
+
+from garpix_user.serializers import RegistrationSerializer
+
+User = get_user_model()
+
+
+class RegistrationCustSerializer(RegistrationSerializer):
+    extra_field = serializers.CharField(write_only=True)
+
+    class Meta(RegistrationSerializer.Meta):
+        model = User
+        fields = RegistrationSerializer.Meta.fields + ('extra_field',)
+
+```
+
+You also can add password security settings:
+
+```python
+
+# settings.py
+
+GARPIX_USER = {
+    # registration
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
+}
+
+# Hint: see all available settings in the end of this document.
 
 ```
 
@@ -141,20 +234,7 @@ MIGRATION_MODULES = {
 }
 ```
 
-Add corresponding mixin(s) to your User model:
-
-```python
-
-# user model file
-
-from garpix_user.models import UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin  # noqa
-
-class User(UserEmailConfirmMixin, UserPhoneConfirmMixin, RestorePasswordMixin):
-    pass
-    #
-```
-
-and corresponding settings:
+Add corresponding settings:
 
 ```python
 
@@ -171,37 +251,32 @@ GARPIX_USER = {
 
 ```
 
-You also need import email or (and) phone confirmation notify events:
+You also need to add notify events:
 
 ```python
-from garpix_user.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
+# settings.py
 
-NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
-
-NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
+NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
 
 ```
 
-The same notification events to restore password:
+You can specify email and phone code length, lifetime and time delay before next attempt:
 ```python
-from garpix_user.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
-from garpix_user.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+#settings.py 
 
-NOTIFY_EVENTS = {}  # if you haven't any notifications in your project
+GARPIX_USER = {
+    'CONFIRM_PHONE_CODE_LENGTH': 6,
+    'CONFIRM_EMAIL_CODE_LENGTH': 6,
+    'TIME_LAST_REQUEST': 1,
+    'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+}
 
-NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
-NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
+# Hint: see all available settings in the end of this document.
 
 ```
 
-You can specify email and phone code length and lifetime:
-```python
-GARPIX_CONFIRM_CODE_LENGTH = 6
-GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
-GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
-```
+Notice: the minimum and maximum values for `CONFIRM_CODE_LENGTH` are 4 and 255. These values will be hard used in case your settings are not in this interval.
 
 If you need to use pre-registration email or phone confirmation, you need to set corresponding variables to True:
 ```python
@@ -231,7 +306,17 @@ GARPIX_USER = {
 
 ```
 
-Also add the corresponding mixins to UserSession model.
+By default, users with unconfirmed email/phone number will be deleted in 10 days. You can set up it using `CONFIRMATION_DELAY`:
+
+```python
+# settings.py
+
+GARPIX_USER = {
+# ...
+    'CONFIRMATION_DELAY': 10,  # in days
+}
+
+```
 
 ## Referral links
 
@@ -245,6 +330,7 @@ GARPIX_USER = {
     'USE_REFERRAL_LINKS': True,
     'REFERRAL_REDIRECT_URL': '/', # link to the page user needs to see
 }
+# Hint: see all available settings in the end of this document.
 
 ```
 
@@ -252,42 +338,14 @@ GARPIX_USER = {
 
 Using `garpix_user` you can also store info about unregistered user sessions. The package already consists of model and views for it.
 
-You can add some custom functionality to the UserSession model using `UserSessionMixin`. Add it's locations to settings:
-
-```python
-
-# settings.py
-
-GARPIX_USER = {
-    'USER_USERSESSION_MIXIN': 'user.models.user_session_mixin.UserSessionMixin'
-}
-
-```
-
 To create the unregistered user send `POST` request to `{API_URL}/user_session/create_user_session/`
 
-The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `UserSession-Token`.
+The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `user-session-token`.
 
-You can use pre-registration email and phone confirmation using this model. Just add the corresponding mixins to this model as was described above for User model:
-
-```python
-
-from django.db import models
-
-from garpix_user.mixins.models import RestorePasswordMixin
-from garpix_user.mixins.models.confirm import UserEmailConfirmMixin, UserPhoneConfirmMixin
+By default, on log in current user session instance will be dropped, if system has `registered` user session instance for authorized user. You can override `set_user_session` method of `User` model to add custom logic.
 
 
-class UserSessionMixin(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin):
-
-    email = models.EmailField(verbose_name='Email', null=True, blank=True)  # add this field to mixin if you need email pre-registration confirmation
-
-    class Meta:
-        abstract = True
-
-```
-
-## All available settings
+## All available settings with default values
 
 ```python
     
@@ -303,14 +361,21 @@ GARPIX_USER = {
     'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
     'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_EMAIL_LINK_CONFIRMATION': True,
-    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',
-    'CONFIRM_CODE_LENGTH': 6,
+    'EMAIL_CONFIRMATION_LINK_REDIRECT': '/',
+    'CONFIRM_PHONE_CODE_LENGTH': 6,
+    'CONFIRM_EMAIL_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'CONFIRMATION_DELAY': 10,  # in days
     # restore password
-    'USE_EMAIL_RESTORE_PASSWORD': True,
-    'USE_PHONE_RESTORE_PASSWORD': True,
+    'USE_RESTORE_PASSWORD': True,
+    # registration
+    'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer',
+    'MIN_LENGTH_PASSWORD': 8,
+    'MIN_DIGITS_PASSWORD': 2,
+    'MIN_CHARS_PASSWORD': 2,
+    'MIN_UPPERCASE_PASSWORD': 1,
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
@@ -321,7 +386,7 @@ GARPIX_USER = {
 
 ```
 
-See `garpix_user/tests/test_api.py` for examples.
+See `garpix_user/tests/test_api/*.py` for examples.
 
 # Changelog
 

@@ -1,0 +1,296 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-15 04:01+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: admin/user.py:11
+msgid "Personal info"
+msgstr "Персональная информация"
+
+#: admin/user.py:12
+msgid "Permissions"
+msgstr "Права"
+
+#: admin/user.py:15
+msgid "Viber"
+msgstr "Viber"
+
+#: admin/user.py:18
+msgid "Telegram"
+msgstr "Telegram"
+
+#: admin/user.py:21
+msgid "Confim information"
+msgstr "Подтверждение данных"
+
+#: exceptions.py:39
+msgid "Incorrect code"
+msgstr "Неправильный код"
+
+#: exceptions.py:43
+msgid "Code has expired. Request it again"
+msgstr "Код недействителен. Запросите повторно"
+
+#: exceptions.py:47
+msgid "Credentials were not provided"
+msgstr "Учетные данные не были предоставлены"
+
+#: exceptions.py:51
+#, python-brace-format
+msgid "{field} was not confirmed"
+msgstr "{field} был подтвержден"
+
+#: mixins/models/confirm/email_confirm.py:21
+msgid "Email confirmation code"
+msgstr "Код подтверждения email"
+
+#: mixins/models/confirm/email_confirm.py:23
+#: mixins/models/confirm/phone_confirm.py:22
+msgid "Code sent date"
+msgstr "Дата отправления кода"
+
+#: mixins/models/confirm/email_confirm.py:24
+msgid "New email"
+msgstr "Новый email"
+
+#: mixins/models/confirm/phone_confirm.py:20
+msgid "Phone confirmation code"
+msgstr "Код подтверждения номера телефона"
+
+#: mixins/models/confirm/phone_confirm.py:23
+msgid "New phone number"
+msgstr "Новый номер телефона"
+
+#: mixins/models/restore_password.py:14
+msgid "Restore password code"
+msgstr "Код восстановления пароля"
+
+#: mixins/models/restore_password.py:16
+msgid "Restore code confirmed"
+msgstr "Код восстановления подтвержден"
+
+#: mixins/models/restore_password.py:17
+msgid "Restore code sent date"
+msgstr "Дата отправки кода восстановления"
+
+#: models/access_token.py:9 models/refresh_token.py:9
+msgid "Key"
+msgstr ""
+
+#: models/access_token.py:12 models/refferal.py:20 models/refresh_token.py:12
+#: models/user.py:26 models/user_session.py:33
+msgid "User"
+msgstr "Пользователь"
+
+#: models/access_token.py:14 models/refresh_token.py:14
+msgid "Created"
+msgstr "Создан"
+
+#: models/access_token.py:17
+msgid "Access Token"
+msgstr ""
+
+#: models/access_token.py:18
+msgid "Access Tokens"
+msgstr ""
+
+#: models/refferal.py:9
+msgid "Referral way title"
+msgstr "Название реферрального пути"
+
+#: models/refferal.py:22
+msgid "Where did the user come from"
+msgstr "Откуда пришел пользователь"
+
+#: models/refresh_token.py:17
+msgid "Refresh Token"
+msgstr ""
+
+#: models/refresh_token.py:18
+msgid "Refresh Tokens"
+msgstr ""
+
+#: models/user.py:18 models/user_session.py:23
+msgid "Email confirmed"
+msgstr "Email подтвержден"
+
+#: models/user.py:20 models/user_session.py:25
+msgid "Phone number"
+msgstr "Номер телефона"
+
+#: models/user.py:21 models/user_session.py:26
+msgid "Phone number confirmed"
+msgstr "Номер телефона подтвержден"
+
+#: models/user.py:27
+msgid "Users"
+msgstr "Пользователи"
+
+#: models/user.py:52
+msgid "USERNAME_FIELDS can't be empty"
+msgstr "USERNAME_FIELDS не может быть пустым"
+
+#: models/user.py:56
+#, python-brace-format
+msgid ""
+"{field} can't be used as USERNAME_FIELDS. Only (\"email\", \"phone\", "
+"\"username\") supported"
+msgstr ""
+"{field} не может быть использован в качестве USERNAME_FIELDS. Только (\"email\", \"phone\", "
+"\"username\") поддерживаются"
+
+#: models/user_session.py:18
+msgid "Undefined"
+msgstr "Не найден"
+
+#: models/user_session.py:19
+msgid "Guest"
+msgstr "Гость"
+
+#: models/user_session.py:20
+msgid "Registered"
+msgstr "Зарегистрирован"
+
+#: models/user_session.py:39
+msgid "Type"
+msgstr "Тип"
+
+#: models/user_session.py:40
+msgid "Indicates the state in which the user is recognized."
+msgstr "Обозначает состояние, в котором распознается пользователь."
+
+#: models/user_session.py:43
+msgid "Last entrance"
+msgstr "Последний вход"
+
+#: models/user_session.py:131
+msgid "System user"
+msgstr "Системный пользователь"
+
+#: models/user_session.py:132
+msgid "System users"
+msgstr "Системные пользователи"
+
+msgid "Password must be at least {min_length} {characters} long."
+msgstr "Пароль должен состоять минимум из {min_length} {characters}"
+
+msgid "Password must contain at least {min_digits} {digits}."
+msgstr "Пароль должен содержать минимум {min_digits} {digits}"
+
+msgid "Password must contain at least {min_chars} {chars}."
+msgstr "Пароль должен содержать минимум {min_chars} {chars}"
+
+msgid "Password must contain at least {min_uppercase} uppercase {letters}."
+msgstr "Пароль должен содержать минимум {min_uppercase} {letters}"
+
+msgid "character,characters"
+msgstr "символа,символов,символов"
+
+msgid "digit,digits"
+msgstr "цифру,цифры,цифр"
+
+msgid "char,chars"
+msgstr "букву,буквы,букв"
+
+msgid "letter,letters"
+msgstr "заглавную букву,заглавные буквы,заглавных букв"
+
+msgid "Passwords do not match"
+msgstr "Пароли не совпадают"
+
+#: serializers/registration_serializer.py:65
+#: tests/test_api/api_registration.py:284
+msgid "This email is already in use"
+msgstr "Email уже используется"
+
+#: serializers/registration_serializer.py:71
+#: tests/test_api/api_registration.py:246
+msgid "Email was not confirmed"
+msgstr "Email не был подтвержден"
+
+#: serializers/registration_serializer.py:83
+#: tests/test_api/api_registration.py:299
+msgid "This phone is already in use"
+msgstr "Номер телефона уже используется"
+
+#: serializers/registration_serializer.py:89
+#: tests/test_api/api_registration.py:262
+msgid "Phone number was not confirmed"
+msgstr "Номер телефона не был подтвержден"
+
+#: tests/test_api/api_user_session_restore_password.py:113
+#: views/restore_password_view.py:67
+msgid "Password was updated!"
+msgstr "Пароль был обновлен!"
+
+#: tests/test_api/api_user_session_restore_password.py:137
+msgid "Less than 1 minutes has passed since the last request"
+msgstr "Не прошло 1 минуты с момента последней попытки"
+
+#: views/email_confirmation_view.py:37
+msgid "Email confirmation. Step 1"
+msgstr "Подтверждение Email. Шаг 1"
+
+#: views/email_confirmation_view.py:64
+msgid "Email confirmation. Step 2"
+msgstr "Подтверждение Email. Шаг 2"
+
+#: views/email_confirmation_view.py:79
+msgid "Email confirmed!"
+msgstr "Email подтвержден!"
+
+#: views/phone_confirmation_view.py:35
+msgid "Phone confirmation. Step 1"
+msgstr "Подтверждение номера телефон. Шаг 1"
+
+#: views/phone_confirmation_view.py:61
+msgid "Phone confirmation. Step 2"
+msgstr "Подтверждение номера телефон. Шаг 2"
+
+#: views/phone_confirmation_view.py:76
+msgid "Phone number confirmed!"
+msgstr "Номер телефона подтвержден!"
+
+msgid "Restore password. Step 1"
+msgstr "Восстановление пароля. Шаг 1"
+
+msgid "Restore password. Step 2"
+msgstr "Восстановление пароля. Шаг 2"
+
+msgid "Restore password. Step 3"
+msgstr "Восстановление пароля. Шаг 3"
+
+msgid "Send email confirmation link"
+msgstr "Отправка ссылки подтверждения email"
+
+msgid "Less than {min_time} minutes has passed since the last request"
+msgstr "Прошло меньше {min_time} минут с последнего запроса"
+
+msgid "User with such data has been already registered"
+msgstr "Пользователь с указанными данными уже зарегистрирован"
+
+msgid "User with such data has not been registered"
+msgstr "Пользователь с указанными данными не зарегистрирован"
+
+msgid "The phone number entered is not valid."
+msgstr "Введенный некорректный номер телефона."
+
+msgid "Password is incorrect"
+msgstr "Некорректный пароль"
