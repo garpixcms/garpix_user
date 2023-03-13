@@ -27,7 +27,7 @@ garpix-package = "*"
 drf-spectacular = "*"
 pip = "*"
 install = "*"
-django-phonenumber-field-for-garpix-user = "==8.0.0rc1"
+django-phonenumber-field-for-garpix-user = "==8.0.0rc2"
 
 [dev-packages]
 
