@@ -25,7 +25,7 @@ def delete_unconfirmed_users():
 
 
 celery_app.conf.beat_schedule.update({
-    'periodic_task': {
+    'user_periodic_task': {
         'task': 'garpix_user.tasks.delete_unconfirmed_users.delete_unconfirmed_users',
         'schedule': 3600,
     }
