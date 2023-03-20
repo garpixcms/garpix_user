@@ -4,6 +4,8 @@ from django.db.models import Q
 
 class CustomAuthenticationBackend:
     def authenticate(self, request, username=None, password=None):
+        if username is None or password is None:
+            return None
         try:
             query = Q()
             for field in get_user_model().USERNAME_FIELDS:
