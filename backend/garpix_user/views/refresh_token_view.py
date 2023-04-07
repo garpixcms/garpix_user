@@ -1,4 +1,4 @@
-from rest_framework import parsers, renderers
+from rest_framework import parsers, renderers, status
 
 from garpix_user.models.access_token import AccessToken as Token
 from garpix_user.serializers.refresh_token_serializer import RefreshTokenSerializer
@@ -34,7 +34,7 @@ class RefreshTokenView(APIView):
                 'result': True,
             })
         except:  # noqa
-            return Response({'result': False})
+            return Response({'result': False}, status=status.HTTP_400_BAD_REQUEST)
 
 
 refresh_token_view = RefreshTokenView.as_view()
