@@ -116,5 +116,9 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
     def check_email_confirmation(self):
         return self.is_email_confirmed
 
+    @classmethod
+    def confirm_link_redirect_url(cls):
+        return '/'
+
     class Meta:
         abstract = True
