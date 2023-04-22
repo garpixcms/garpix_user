@@ -26,11 +26,15 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
     def send_email_confirmation_link(self):
         from garpix_notify.models import Notify
         from garpix_user.models import UserSession
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+
         model_type = 'user_session' if isinstance(self, UserSession) else 'user'
         hash = str(
             hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
         Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
-            'confirmation_link': reverse('garpix_user:email_confirmation_link', args=[model_type, hash])
+            'confirmation_link': User.confirm_link_redirect_url(model_type, hash)
         }, email=self.new_email)
 
     def send_email_confirmation_code(self, email=None):
@@ -50,7 +54,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         if settings.GARPIX_USER.get('TIME_LAST_REQUEST', None):
             if self.email_code_send_date and self.email_code_send_date + timedelta(
                     minutes=settings.GARPIX_USER.get('TIME_LAST_REQUEST')) >= datetime.now(
-                        self.email_code_send_date.tzinfo):
+                self.email_code_send_date.tzinfo):
                 return WaitException()
 
         confirmation_code = get_random_string(self.get_confirm_code_length('email'), string.digits)
@@ -94,8 +98,10 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
     @classmethod
     def confirm_email_by_link(cls, hash):
         from garpix_user.exceptions import IncorrectCodeException, NoTimeLeftException
+        from garpix_user.models import UserSession
 
-        users_list = cls.objects.filter(is_email_confirmed=False)
+        _filter_data = {'is_email_confirmed': False} if isinstance(cls, UserSession) else {}
+        users_list = cls.objects.filter(**_filter_data)
 
         for user in users_list:
             if str(hashlib.sha512(
@@ -104,17 +110,21 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
                     user.email_code_send_date.tzinfo) - user.email_code_send_date).days > settings.GARPIX_USER.get(
                     'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
                 if time_is_up:
-                    return NoTimeLeftException(field='email_confirmation_code')
+                    return False, NoTimeLeftException(field='email_confirmation_code')
                 user.is_email_confirmed = True
                 user.email = user.new_email or user.email
                 user.email_confirmation_code = None
                 user.save()
-                return True
+                return True, user
 
-        return IncorrectCodeException(field='email_confirmation_code')
+        return False, IncorrectCodeException(field='email_confirmation_code')
 
     def check_email_confirmation(self):
         return self.is_email_confirmed
+
+    @classmethod
+    def confirm_link_redirect_url(cls, hash, model_type):
+        return reverse('garpix_user:email_confirmation_link', args=[model_type, hash])
 
     class Meta:
         abstract = True

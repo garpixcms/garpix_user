@@ -55,7 +55,7 @@ msgstr "Учетные данные не были предоставлены"
 #: exceptions.py:51
 #, python-brace-format
 msgid "{field} was not confirmed"
-msgstr "{field} был подтвержден"
+msgstr "{field} не был подтвержден"
 
 #: mixins/models/confirm/email_confirm.py:21
 msgid "Email confirmation code"

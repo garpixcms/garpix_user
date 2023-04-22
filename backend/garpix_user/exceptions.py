@@ -14,7 +14,7 @@ class ModelException(Exception):
         self.field = field
 
     def raise_exception(self, exception_class=ValidationError):
-        field = self.field or 'non_field_error'
+        field = self.field or 'non_field_errors'
         raise exception_class({field: [self.message]}, code=self.code)
 
     def get_message(self):
@@ -24,7 +24,7 @@ class ModelException(Exception):
 class WaitException(ModelException):
     message = settings.GARPIX_USER.get('WAIT_RESPONSE',
                                        _("Less than {min_time} minutes has passed since the last request")).format(
-        min_time=settings.GARPIX_USER.get('GARPIX_TIME_LAST_REQUEST', 1))
+        min_time=settings.GARPIX_USER.get('TIME_LAST_REQUEST', 1))
 
 
 class UserRegisteredException(ModelException):

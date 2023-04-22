@@ -134,4 +134,4 @@ class UserSessionApiTest(ApiTestMixin):
 
         self.assertEqual(response.status_code, 400)
         self.assertDictEqual(response.json(),
-                             {'non_field_error': [_('Less than 1 minutes has passed since the last request')]})
+                             {'non_field_errors': [_('Less than 1 minutes has passed since the last request')]})
