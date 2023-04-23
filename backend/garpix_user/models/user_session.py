@@ -82,6 +82,8 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
             )
 
         if session is True:
+            if not request.session.session_key:
+                request.session.cycle_key()
             token = request.session.session_key
             return UserSession.objects.create(
                 token_number=token,
