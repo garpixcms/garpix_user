@@ -34,7 +34,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         hash = str(
             hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
         Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
-            'confirmation_link': User.confirm_link_redirect_url(model_type, hash)
+            'confirmation_link': User.confirm_link_redirect_url(hash, model_type)
         }, email=self.new_email)
 
     def send_email_confirmation_code(self, email=None):
