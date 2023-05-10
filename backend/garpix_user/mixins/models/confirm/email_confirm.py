@@ -34,7 +34,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         hash = str(
             hashlib.sha512(f'{self.email}+{self.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower()
         Notify.send(settings.EMAIL_LINK_CONFIRMATION_EVENT, {
-            'confirmation_link': User.confirm_link_redirect_url(hash, model_type)
+            'confirmation_link': User.confirm_link_redirect_url(model_type, hash)
         }, email=self.new_email)
 
     def send_email_confirmation_code(self, email=None):
@@ -98,10 +98,8 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
     @classmethod
     def confirm_email_by_link(cls, hash):
         from garpix_user.exceptions import IncorrectCodeException, NoTimeLeftException
-        from garpix_user.models import UserSession
 
-        _filter_data = {'is_email_confirmed': False} if isinstance(cls, UserSession) else {}
-        users_list = cls.objects.filter(**_filter_data)
+        users_list = cls.objects.all()
 
         for user in users_list:
             if str(hashlib.sha512(
@@ -123,7 +121,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         return self.is_email_confirmed
 
     @classmethod
-    def confirm_link_redirect_url(cls, hash, model_type):
+    def confirm_link_redirect_url(cls, model_type, hash):
         return reverse('garpix_user:email_confirmation_link', args=[model_type, hash])
 
     class Meta:
