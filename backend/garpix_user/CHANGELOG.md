@@ -1,3 +1,12 @@
+### 3.5.0 (10.05.2023)
+
+- `delete_unconfirmed_users` celery task added (see `Readme.md`)
+- Authentication errors fixed
+- Localization errors fixed
+- `confirm_link_redirect_url` method added (see `Readme.md`)
+- email/phone confirmation logic fixed
+- `EMAIL_CONFIRMATION_LIFE_TIME` and `PHONE_CONFIRMATION_LIFE_TIME` settings added (see `Readme.md`)
+
 ### 3.4.0 (07.03.2023)
 
 - Release fixes to pypi.org.

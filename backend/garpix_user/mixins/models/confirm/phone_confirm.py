@@ -20,6 +20,7 @@ class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
     phone_confirmation_code = models.CharField(_('Phone confirmation code'), max_length=15,
                                                blank=True, null=True)
     phone_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
+    phone_confirmed_date = models.DateTimeField(_("Date phone was confirmed"), blank=True, null=True)
     new_phone = PhoneNumberField(_("New phone number"), unique=True, blank=True, null=True)
 
     def send_phone_confirmation_code(self, phone=None):
@@ -77,7 +78,9 @@ class UserPhoneConfirmMixin(CodeLengthMixin, models.Model):
         return True
 
     def check_phone_confirmation(self):
-        return self.is_phone_confirmed
+        return self.is_phone_confirmed and self.phone_confirmed_date and self.phone_confirmed_date + timedelta(
+                days=settings.GARPIX_USER.get('PHONE_CONFIRMATION_LIFE_TIME', 2)) >= datetime.now(
+            self.phone_confirmed_date.tzinfo)
 
     class Meta:
         abstract = True

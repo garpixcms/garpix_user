@@ -21,6 +21,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
     email_confirmation_code = models.CharField(_("Email confirmation code"), max_length=255, blank=True,
                                                null=True)
     email_code_send_date = models.DateTimeField(_("Code sent date"), blank=True, null=True)
+    email_confirmed_date = models.DateTimeField(_("Date email was confirmed"), blank=True, null=True)
     new_email = models.EmailField(_("New email"), blank=True, null=True)
 
     def send_email_confirmation_link(self):
@@ -92,6 +93,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         self.is_email_confirmed = True
         self.email = self.new_email
         self.email_confirmation_code = None
+        self.email_confirmed_date = set_current_date()
         self.save()
         return True
 
@@ -118,7 +120,9 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         return False, IncorrectCodeException(field='email_confirmation_code')
 
     def check_email_confirmation(self):
-        return self.is_email_confirmed
+        return self.is_email_confirmed and self.email_confirmed_date and self.email_confirmed_date + timedelta(
+                days=settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LIFE_TIME', 2)) >= datetime.now(
+            self.email_confirmed_date.tzinfo)
 
     @classmethod
     def confirm_link_redirect_url(cls, model_type, hash):

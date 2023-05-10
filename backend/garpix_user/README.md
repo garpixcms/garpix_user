@@ -260,7 +260,7 @@ NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
 
 ```
 
-You can specify email and phone code length, lifetime and time delay before next attempt:
+You can specify email and phone code length, lifetime, confirmation lifetime and time delay before next attempt:
 ```python
 #settings.py 
 
@@ -270,6 +270,8 @@ GARPIX_USER = {
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'PHONE_CONFIRMATION_LIFE_TIME': 2, # in days
+    'EMAIL_CONFIRMATION_LIFE_TIME': 2, # in days
 }
 
 # Hint: see all available settings in the end of this document.
@@ -298,13 +300,14 @@ If you need to use email confirmation by link, you need to set corresponding var
 # settings.py
 
 GARPIX_USER = {
-    'USE_EMAIL_LINK_CONFIRMATION': True,
-    'EMAIL_CONFIRMATION_LINK_REDIRECT': '',  # link to the page user needs to see after email confirmation
+    'USE_EMAIL_LINK_CONFIRMATION': True
 }
 
 # Hint: see all available settings in the end of this document.
 
 ```
+
+You can also override `confirm_link_redirect_url` method of `User` model to form confirmation link as you need.
 
 By default, users with unconfirmed email/phone number will be deleted in 10 days. You can set up it using `CONFIRMATION_DELAY`:
 
@@ -315,6 +318,7 @@ GARPIX_USER = {
 # ...
     'CONFIRMATION_DELAY': 10,  # in days
 }
+# Hint: see all available settings in the end of this document.
 
 ```
 
@@ -361,12 +365,13 @@ GARPIX_USER = {
     'USE_PREREGISTRATION_EMAIL_CONFIRMATION': True,
     'USE_PREREGISTRATION_PHONE_CONFIRMATION': True,
     'USE_EMAIL_LINK_CONFIRMATION': True,
-    'EMAIL_CONFIRMATION_LINK_REDIRECT': '/',
     'CONFIRM_PHONE_CODE_LENGTH': 6,
     'CONFIRM_EMAIL_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'PHONE_CONFIRMATION_LIFE_TIME': 2, # in days
+    'EMAIL_CONFIRMATION_LIFE_TIME': 2, # in days
     'CONFIRMATION_DELAY': 10,  # in days
     # restore password
     'USE_RESTORE_PASSWORD': True,

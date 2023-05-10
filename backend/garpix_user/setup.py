@@ -38,7 +38,7 @@ setup(
         'social-auth-app-django >= 2.1.0',
         'social-auth-core == 4.3.0',
         'django-rest-framework-social-oauth2 >= 1.1.0',
-        'django-phonenumber-field-for-garpix_user >= 8.0.0-rc2',
+        'django-phonenumber-field-for-garpix_user >= 8.0.0',
         'garpix-notify >= 5.12.5',
         'garpix-utils >= 1.5.1',
         'drf-spectacular >= 0.24.2'
