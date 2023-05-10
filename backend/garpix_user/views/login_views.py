@@ -15,6 +15,13 @@ class LogoutView(RedirectView):
 
 
 class LoginView(FormView):
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if not kwargs.get('data'):
+            kwargs['data'] = json.loads(getattr(self.request, 'body') or b'{}')
+        return kwargs
+
     @staticmethod
     def get_form_class(**kwargs):
         return LoginForm
@@ -28,7 +35,7 @@ class LoginView(FormView):
         data = form.data
         username = data.get('username')
         password = data.get('password')
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username.lower(), password=password)
         if user:
             user.set_user_session(request)
         login(request, user)

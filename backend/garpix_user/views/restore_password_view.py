@@ -1,5 +1,5 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -33,7 +33,7 @@ class RestorePasswordView(viewsets.ViewSet):
         user = UserSession.get_from_request(request)
 
         if not user:
-            return Response({"non_field_errors": [_("user-session-token not set")]})
+            return Response({"non_field_errors": [_("user-session-token not set")]}, status=status.HTTP_400_BAD_REQUEST)
 
         result, error = user.send_restore_code(username=serializer.data['username'])
 
@@ -48,7 +48,7 @@ class RestorePasswordView(viewsets.ViewSet):
         user = UserSession.get_from_request(request)
 
         if not user:
-            return Response({"non_field_errors": [_("user-session-token not set")]})
+            return Response({"non_field_errors": [_("user-session-token not set")]}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -66,7 +66,7 @@ class RestorePasswordView(viewsets.ViewSet):
         user = UserSession.get_from_request(request)
 
         if not user:
-            return Response({"non_field_errors": [_("user-session-token not set")]})
+            return Response({"non_field_errors": [_("user-session-token not set")]}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
