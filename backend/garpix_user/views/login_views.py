@@ -1,5 +1,6 @@
 import json
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView
@@ -14,7 +15,16 @@ class LogoutView(RedirectView):
         return self.url
 
 
-class LoginView(FormView):
+class LoginView(UserPassesTestMixin, FormView):
+
+    def test_func(self):
+        return not self.request.user.is_authenticated
+
+    def handle_no_permission(self):
+        if self.request.accepts('text/html'):
+            return redirect(self.request.GET.get('next', '/'))
+        return HttpResponse({"__all__": ["Your are already authenticated"]}, content_type='application/json',
+                            status=403)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

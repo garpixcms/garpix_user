@@ -1,3 +1,9 @@
+### 3.6.0 (31.05.2023)
+
+- `username` field added to `restore_password. step 2` endpoint
+- `username` help_text added to `restore_password` endpoints
+- non authenticated permission added to `login` form
+
 ### 3.5.0 (10.05.2023)
 
 - `delete_unconfirmed_users` celery task added (see `Readme.md`)
