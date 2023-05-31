@@ -294,3 +294,9 @@ msgstr "Введенный некорректный номер телефона.
 
 msgid "Password is incorrect"
 msgstr "Некорректный пароль"
+
+msgid "Email or phone number"
+msgstr "Email или номер телефона"
+
+msgid "Your are already authenticated"
+msgstr "Вы уже авторизованы"

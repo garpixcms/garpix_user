@@ -93,9 +93,10 @@ class RestorePasswordMixin(models.Model):
 
         return True, None
 
-    def check_restore_code(self, restore_password_confirm_code=None):
+    def check_restore_code(self, username, restore_password_confirm_code=None):
 
-        if self.restore_password_confirm_code != restore_password_confirm_code:
+        if getattr(self,
+                   self.restore_by) != username or self.restore_password_confirm_code != restore_password_confirm_code:
             return False, IncorrectCodeException(field='restore_password_confirm_code')
 
         time_is_up = self._time_is_up()

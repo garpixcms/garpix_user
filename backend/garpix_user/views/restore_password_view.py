@@ -53,8 +53,9 @@ class RestorePasswordView(viewsets.ViewSet):
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result, error = user.check_restore_code(
-            restore_password_confirm_code=serializer.data['restore_password_confirm_code'])
+        result, error = user.check_restore_code(username=serializer.data['username'],
+                                                restore_password_confirm_code=serializer.data[
+                                                    'restore_password_confirm_code'])
         if not result:
             error.raise_exception(exception_class=ValidationError)
         return Response({"result": "success"})
