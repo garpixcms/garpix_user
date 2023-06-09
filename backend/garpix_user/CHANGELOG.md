@@ -1,3 +1,7 @@
+### 3.6.1 (08.06.2023)
+
+- `LoginView` fixed
+
 ### 3.6.0 (31.05.2023)
 
 - `username` field added to `restore_password. step 2` endpoint

@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView
 from django.views.generic import FormView
@@ -16,6 +16,12 @@ class LogoutView(RedirectView):
 
 
 class LoginView(UserPassesTestMixin, FormView):
+    http_method_names = ['post']
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        if self.request.accepts('text/html'):
+            return redirect(self.request.GET.get('next', '/'))
+        return HttpResponseNotAllowed(self._allowed_methods())
 
     def test_func(self):
         return not self.request.user.is_authenticated
@@ -23,7 +29,7 @@ class LoginView(UserPassesTestMixin, FormView):
     def handle_no_permission(self):
         if self.request.accepts('text/html'):
             return redirect(self.request.GET.get('next', '/'))
-        return HttpResponse({"__all__": ["Your are already authenticated"]}, content_type='application/json',
+        return HttpResponse({"__all__": [_("Your are already authenticated")]}, content_type='application/json',
                             status=403)
 
     def get_form_kwargs(self):
