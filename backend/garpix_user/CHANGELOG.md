@@ -1,3 +1,7 @@
+### 3.7.0 (20.06.2023)
+
+- `USE_REGISTRATION` setting added
+
 ### 3.6.1 (08.06.2023)
 
 - `LoginView` fixed

@@ -242,6 +242,7 @@ GARPIX_USER = {
     # restore password
     'USE_RESTORE_PASSWORD': True,
     # registration
+    'USE_REGISTRATION': False,
     'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer',
     'MIN_LENGTH_PASSWORD': 8,
     'MIN_DIGITS_PASSWORD': 2,
