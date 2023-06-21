@@ -1,3 +1,7 @@
+### 3.7.1 (21.06.2023)
+
+- `USE_REGISTRATION` default value updated
+
 ### 3.7.0 (20.06.2023)
 
 - `USE_REGISTRATION` setting added

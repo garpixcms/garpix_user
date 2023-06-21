@@ -41,7 +41,7 @@ urlpatterns = [
     path(f'{settings.API_URL}/garpix_user/', include((api_urlpatterns, 'garpix_user'), namespace='garpix_user_api')),
 ]
 
-if GARPIX_USER_SETTINGS.get('USE_REGISTRATIONS', False):
+if GARPIX_USER_SETTINGS.get('USE_REGISTRATIONS', True):
     api_urlpatterns.append(path('register/', registration_view, name='api_registration'))
 
 if GARPIX_USER_SETTINGS.get('USE_REFERRAL_LINKS', False):
