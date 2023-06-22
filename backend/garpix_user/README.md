@@ -158,7 +158,7 @@ REST_FRAMEWORK = {
 ```
 ### JWT Token
 
-You can use JWT token instead of Bearer. To do it set `REST_AUTH_TOKEN_JWT` settings to True. You also need to
+You can use JWT token. To do it set `REST_AUTH_TOKEN_JWT` settings to True. You also need to
 set `JWT_SECRET_KEY`, `JWT_SERIALIZER` settings:
 
 ```python
@@ -178,7 +178,7 @@ GARPIX_USER = {
 
 ### Authorization headers
 
-You can override the Bearer/JWT authorization header by `GARPIX_REST_AUTH_HEADER_KEY` setting.
+You can override the Bearer authorization header by `REST_AUTH_HEADER_KEY` setting.
 And also allow this custom header for cors-headers:
 
 ```python
