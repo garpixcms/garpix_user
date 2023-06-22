@@ -1,8 +1,7 @@
-from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.utils.module_loading import import_string
 from drf_spectacular.utils import extend_schema
-from rest_framework import parsers, renderers, status
+from rest_framework import parsers, renderers
 from rest_framework.fields import DateTimeField
 
 from garpix_user.models.access_token import AccessToken as Token
