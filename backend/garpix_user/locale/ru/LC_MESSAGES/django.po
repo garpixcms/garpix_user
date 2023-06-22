@@ -298,7 +298,7 @@ msgstr "Некорректный пароль"
 msgid "Email or phone number"
 msgstr "Email или номер телефона"
 
-msgid "Your are already authenticated"
+msgid "You are already authenticated"
 msgstr "Вы уже авторизованы"
 
 msgid "User is not found"

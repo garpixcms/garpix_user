@@ -97,8 +97,7 @@ For custom auth with phone and/or email use this in `settings.py`:
 
 AUTHENTICATION_BACKENDS = (
     # Django
-    'garpix_user.utils.backends.CustomAuthenticationBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'garpix_user.utils.backends.CustomAuthenticationBackend'
 )
 
 ```
@@ -157,6 +156,50 @@ REST_FRAMEWORK = {
 }
 
 ```
+### JWT Token
+
+You can use JWT token instead of Bearer. To do it set `REST_AUTH_TOKEN_JWT` settings to True. You also need to
+set `JWT_SECRET_KEY`, `JWT_SERIALIZER` settings:
+
+```python
+# settings.py
+
+# ...
+
+GARPIX_USER = {
+    'REST_AUTH_TOKEN_JWT': True,
+    'JWT_SECRET_KEY': 'your_secret',  # secret code to validate JWT token
+    'JWT_SERIALIZER': 'garpix_user.serializers.JWTDataSerializer'
+}
+
+# Hint: see all available settings in the end of this document.
+
+```
+
+### Authorization headers
+
+You can override the Bearer/JWT authorization header by `GARPIX_REST_AUTH_HEADER_KEY` setting.
+And also allow this custom header for cors-headers:
+
+```python
+# settings.py
+
+# ...
+from corsheaders.defaults import default_headers
+
+GARPIX_USER = {
+    'REST_AUTH_HEADER_KEY': 'HTTP_BEARER_AUTHORIZATION'
+}
+
+# Hint: see all available settings in the end of this document.
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "Bearer-Authorization",
+]
+```
+
+Now you need to add `Bearer-Authorization` header instead of `Authorization` header with your Bearer token to all
+requests.
 
 ## Registration
 
@@ -383,6 +426,10 @@ GARPIX_USER = {
     'MIN_DIGITS_PASSWORD': 2,
     'MIN_CHARS_PASSWORD': 2,
     'MIN_UPPERCASE_PASSWORD': 1,
+    # authorization
+    'REST_AUTH_HEADER_KEY': 'HTTP_AUTHORIZATION',
+    'REST_AUTH_TOKEN_JWT': False,
+    'JWT_SERIALIZER': 'garpix_user.serializers.JWTDataSerializer',
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
     'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
