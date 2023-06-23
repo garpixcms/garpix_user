@@ -167,7 +167,7 @@ set `JWT_SECRET_KEY`, `JWT_SERIALIZER` settings:
 
 GARPIX_USER = {
     'REST_AUTH_TOKEN_JWT': True,
-    'JWT_SECRET_KEY': 'your_secret',  # secret code to validate JWT token
+    'JWT_SECRET_KEY': env('JWT_SECRET_KEY'),  # secret code to validate JWT token
     'JWT_SERIALIZER': 'garpix_user.serializers.JWTDataSerializer'
 }
 

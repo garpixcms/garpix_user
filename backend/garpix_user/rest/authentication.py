@@ -10,7 +10,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext as _
 
 
-def get_user_by_access_token(token):
+def get_user_by_token(token):
     from ..models.access_token import AccessToken as Token
     from oauth2_provider.models import AccessToken
     User = get_user_model()
@@ -79,7 +79,7 @@ class MainAuthentication(TokenAuthentication):
         if use_jwt:
             user = get_user_by_jwt_token(token)
         else:
-            user = get_user_by_access_token(token)
+            user = get_user_by_token(token)
 
         if user is not None:
             return user, None
