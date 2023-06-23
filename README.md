@@ -2,7 +2,7 @@
 
 Auth module for Django/DRF projects. Part of GarpixCMS.
 
-Used packages: 
+Used packages:
 
 * [django rest framework](https://www.django-rest-framework.org/api-guide/authentication/)
 * [social-auth-app-django](https://github.com/python-social-auth/social-app-django)
@@ -64,7 +64,6 @@ from garpix_user.models import GarpixUser
 
 
 class User(GarpixUser):
-    
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -97,8 +96,7 @@ For custom auth with phone and/or email use this in `settings.py`:
 
 AUTHENTICATION_BACKENDS = (
     # Django
-    'garpix_user.utils.backends.CustomAuthenticationBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'garpix_user.utils.backends.CustomAuthenticationBackend'
 )
 
 ```
@@ -112,9 +110,8 @@ from garpix_user.models import GarpixUser
 
 
 class User(GarpixUser):
-    
-    USERNAME_FIELDS = ('email', ) # default is username
-    
+    USERNAME_FIELDS = ('email',)  # default is username
+
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -158,9 +155,55 @@ REST_FRAMEWORK = {
 
 ```
 
+### JWT Token
+
+You can use JWT token. To do it set `REST_AUTH_TOKEN_JWT` settings to True. You also need to
+set `JWT_SECRET_KEY`, `JWT_SERIALIZER` settings:
+
+```python
+# settings.py
+
+# ...
+
+GARPIX_USER = {
+    'REST_AUTH_TOKEN_JWT': True,
+    'JWT_SECRET_KEY': env('JWT_SECRET_KEY'),  # secret code to validate JWT token
+    'JWT_SERIALIZER': 'garpix_user.serializers.JWTDataSerializer'
+}
+
+# Hint: see all available settings in the end of this document.
+
+```
+
+### Authorization headers
+
+You can override the Bearer authorization header by `REST_AUTH_HEADER_KEY` setting.
+And also allow this custom header for cors-headers:
+
+```python
+# settings.py
+
+# ...
+from corsheaders.defaults import default_headers
+
+GARPIX_USER = {
+    'REST_AUTH_HEADER_KEY': 'HTTP_BEARER_AUTHORIZATION'
+}
+
+# Hint: see all available settings in the end of this document.
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "Bearer-Authorization",
+]
+```
+
+Now you need to add `Bearer-Authorization` header instead of `Authorization` header with your Bearer token to all
+requests.
+
 ## Registration
 
-`garpix_user` adds default registration for with `phone` and/or `email` and `password` fields. To add fields to this form override `RegistrationSerializer` and add it to `settings`:
+`garpix_user` adds default registration for with `phone` and/or `email` and `password` fields. To add fields to this
+form override `RegistrationSerializer` and add it to `settings`:
 
 ```python
 # settings.py
@@ -214,7 +257,8 @@ GARPIX_USER = {
 
 ## Email and phone confirmation, password restoring
 
-To use email and phone confirmation or (and) restore password functionality add the `garpix_notify` to your `INSTALLED_APPS`:
+To use email and phone confirmation or (and) restore password functionality add the `garpix_notify` to
+your `INSTALLED_APPS`:
 
 ```python
 # settings.py
@@ -225,6 +269,7 @@ INSTALLED_APPS = [
     'garpix_notify',
 ]
 ```
+
 and to migration modules:
 
 ```python
@@ -262,8 +307,9 @@ NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)
 ```
 
 You can specify email and phone code length, lifetime, confirmation lifetime and time delay before next attempt:
+
 ```python
-#settings.py 
+# settings.py 
 
 GARPIX_USER = {
     'CONFIRM_PHONE_CODE_LENGTH': 6,
@@ -271,17 +317,19 @@ GARPIX_USER = {
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
-    'PHONE_CONFIRMATION_LIFE_TIME': 2, # in days
-    'EMAIL_CONFIRMATION_LIFE_TIME': 2, # in days
+    'PHONE_CONFIRMATION_LIFE_TIME': 2,  # in days
+    'EMAIL_CONFIRMATION_LIFE_TIME': 2,  # in days
 }
 
 # Hint: see all available settings in the end of this document.
 
 ```
 
-Notice: the minimum and maximum values for `CONFIRM_CODE_LENGTH` are 4 and 255. These values will be hard used in case your settings are not in this interval.
+Notice: the minimum and maximum values for `CONFIRM_CODE_LENGTH` are 4 and 255. These values will be hard used in case
+your settings are not in this interval.
 
 If you need to use pre-registration email or phone confirmation, you need to set corresponding variables to True:
+
 ```python
 
 # settings.py
@@ -296,6 +344,7 @@ GARPIX_USER = {
 ```
 
 If you need to use email confirmation by link, you need to set corresponding variable:
+
 ```python
 
 # settings.py
@@ -310,13 +359,14 @@ GARPIX_USER = {
 
 You can also override `confirm_link_redirect_url` method of `User` model to form confirmation link as you need.
 
-By default, users with unconfirmed email/phone number will be deleted in 10 days. You can set up it using `CONFIRMATION_DELAY`:
+By default, users with unconfirmed email/phone number will be deleted in 10 days. You can set up it
+using `CONFIRMATION_DELAY`:
 
 ```python
 # settings.py
 
 GARPIX_USER = {
-# ...
+    # ...
     'CONFIRMATION_DELAY': 10,  # in days
 }
 # Hint: see all available settings in the end of this document.
@@ -325,7 +375,8 @@ GARPIX_USER = {
 
 ## Referral links
 
-You can also use referral links in your project with garpix_user. To add this functionality, just add the corresponding settings:
+You can also use referral links in your project with garpix_user. To add this functionality, just add the corresponding
+settings:
 
 ```python  
 
@@ -341,18 +392,21 @@ GARPIX_USER = {
 
 ## UserSession
 
-Using `garpix_user` you can also store info about unregistered user sessions. The package already consists of model and views for it.
+Using `garpix_user` you can also store info about unregistered user sessions. The package already consists of model and
+views for it.
 
 To create the unregistered user send `POST` request to `{API_URL}/user_session/create_user_session/`
 
-The request returns `UserSession` object with `token_number` field. You need to send this token number in each request passing in to header as `user-session-token`.
+The request returns `UserSession` object with `token_number` field. You need to send this token number in each request
+passing in to header as `user-session-token`.
 
-By default, on log in current user session instance will be dropped, if system has `registered` user session instance for authorized user. You can override `set_user_session` method of `User` model to add custom logic.
+By default, on log in current user session instance will be dropped, if system has `registered` user session instance
+for authorized user. You can override `set_user_session` method of `User` model to add custom logic.
 
 ## All available settings with default values
 
 ```python
-    
+
 # settings.py
 
 GARPIX_USER = {
@@ -370,8 +424,8 @@ GARPIX_USER = {
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
     'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
-    'PHONE_CONFIRMATION_LIFE_TIME': 2, # in days
-    'EMAIL_CONFIRMATION_LIFE_TIME': 2, # in days
+    'PHONE_CONFIRMATION_LIFE_TIME': 2,  # in days
+    'EMAIL_CONFIRMATION_LIFE_TIME': 2,  # in days
     'CONFIRMATION_DELAY': 10,  # in days
     # restore password
     'USE_RESTORE_PASSWORD': True,
@@ -382,9 +436,14 @@ GARPIX_USER = {
     'MIN_DIGITS_PASSWORD': 2,
     'MIN_CHARS_PASSWORD': 2,
     'MIN_UPPERCASE_PASSWORD': 1,
+    # authorizations
+    'REST_AUTH_HEADER_KEY': 'HTTP_AUTHORIZATION',
+    'REST_AUTH_TOKEN_JWT': False,
+    'JWT_SERIALIZER': 'garpix_user.serializers.JWTDataSerializer',
     # response messages
     'WAIT_RESPONSE': 'Не прошло 1 мин с момента предыдущего запроса',
-    'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',  # as 'field' will be used email/phone according to the request
+    'USER_REGISTERED_RESPONSE': 'Пользователь с таким {field} уже зарегистрирован',
+    # as 'field' will be used email/phone according to the request
     'INCORRECT_CODE_RESPONSE': 'Некорретный код',
     'NO_TIME_LEFT_RESPONSE': 'Код недействителен. Запросите повторно',
     'NOT_AUTHENTICATED_RESPONSE': 'Учетные данные не были предоставлены'
@@ -408,8 +467,10 @@ Next, you need to put it in a cookie or other storage and pass it in a special h
 
 Happens in two steps
 
-1. Send `/api/garpix_user/confirm_phone/send_code/` in the request body send the **phone.** field The phone number will be saved and a confirmation code will be sent to it.
-2. After that, you need to send the code `/api/garpix_user/confirm_phone/check_code/` in the field **phone_confirmation_code**
+1. Send `/api/garpix_user/confirm_phone/send_code/` in the request body send the **phone.** field The phone number will
+   be saved and a confirmation code will be sent to it.
+2. After that, you need to send the code `/api/garpix_user/confirm_phone/check_code/` in the field **
+   phone_confirmation_code**
 
 If everything went well, the phone will be confirmed
 

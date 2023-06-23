@@ -7,6 +7,7 @@ from django.views.generic.base import RedirectView
 from django.views.generic import FormView
 from django.http import HttpResponse
 from garpix_user.forms import LoginForm
+from django.utils.translation import ugettext as _
 
 
 class LogoutView(RedirectView):
@@ -29,7 +30,7 @@ class LoginView(UserPassesTestMixin, FormView):
     def handle_no_permission(self):
         if self.request.accepts('text/html'):
             return redirect(self.request.GET.get('next', '/'))
-        return HttpResponse({"__all__": [_("Your are already authenticated")]}, content_type='application/json',
+        return HttpResponse({"__all__": [_("You are already authenticated")]}, content_type='application/json',
                             status=403)
 
     def get_form_kwargs(self):
