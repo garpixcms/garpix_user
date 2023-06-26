@@ -28,15 +28,14 @@ class RestorePasswordMixin(models.Model):
 
         USERNAME_FIELDS = getattr(User, 'USERNAME_FIELDS', ('email',))
 
-        user_data = Q()
+        user_data = {}
 
         for field in USERNAME_FIELDS:
+            user_data.update({field: username})
             if field != 'username':
-                user_data |= Q(**{field: username, f'is_{field}_confirmed': True})
-            else:
-                user_data |= Q(**{field: username})
+                user_data.update({f'is_{field}_confirmed': True})
 
-        if user := User.active_objects.filter(user_data).first():
+        if user := User.active_objects.filter(**user_data).first():
             return True, user
 
         return False, UserUnregisteredException(field='username',
