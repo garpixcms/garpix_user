@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models, transaction
-from django.db.models import Q
 from django.utils.translation import gettext as _
 from garpix_utils.string import get_random_string
 import string
@@ -28,14 +27,14 @@ class RestorePasswordMixin(models.Model):
 
         USERNAME_FIELDS = getattr(User, 'USERNAME_FIELDS', ('email',))
 
-        user_data = Q()
+        user_data = {}
 
         for field in USERNAME_FIELDS:
-            user_data |= Q(**{field: username})
+            user_data.update({field: username})
             if field != 'username':
-                user_data |= Q(**{f'is_{field}_confirmed': True})
+                user_data.update({f'is_{field}_confirmed': True})
 
-        if user := User.active_objects.filter(user_data).first():
+        if user := User.active_objects.filter(**user_data).first():
             return True, user
 
         return False, UserUnregisteredException(field='username',

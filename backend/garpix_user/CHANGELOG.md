@@ -1,3 +1,7 @@
+### 3.8.1 (26.06.2023)
+
+- Password restore by username fixed
+
 ### 3.8.0 (22.06.2023)
 
 - JWT token authorization added (see `Readme.md`)
