@@ -31,9 +31,10 @@ class RestorePasswordMixin(models.Model):
         user_data = Q()
 
         for field in USERNAME_FIELDS:
-            user_data |= Q(**{field: username})
             if field != 'username':
-                user_data |= Q(**{f'is_{field}_confirmed': True})
+                user_data |= Q(**{field: username, f'is_{field}_confirmed': True})
+            else:
+                user_data |= Q(**{field: username})
 
         if user := User.active_objects.filter(user_data).first():
             return True, user
