@@ -53,7 +53,9 @@ class RestorePasswordMixin(models.Model):
         datediff = datetime.now(self.restore_date.tzinfo) - self.restore_date
 
         if self.restore_by == self.RESTORE_BY.EMAIL:
-            return datediff.days > settings.GARPIX_USER.get(
+            datediff = datediff.days if settings.GARPIX_USER.get('CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE',
+                                                                 'days') == 'days' else datediff.seconds / 60
+            return datediff > settings.GARPIX_USER.get(
                 'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
         return datediff.seconds / 60 > settings.GARPIX_USER.get(
             'CONFIRM_PHONE_CODE_LIFE_TIME', 6)
