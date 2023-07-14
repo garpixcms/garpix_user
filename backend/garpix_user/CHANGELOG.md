@@ -1,3 +1,7 @@
+### 3.8.2 (14.07.2023)
+
+- Error messages localization fixed
+
 ### 3.8.1 (26.06.2023)
 
 - Password restore by username fixed

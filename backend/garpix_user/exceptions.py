@@ -3,14 +3,15 @@ from django.core.validators import ValidationError
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 
+from garpix_user.utils.repluralize import rupluralize
+
 
 class ModelException(Exception):
-    message = ''
     code = 'invalid'
     field = None
 
     def __init__(self, field=None, extra_data={}):
-        self.message = self.message.format(**extra_data)
+        self.message = self.get_message().format(**extra_data)
         self.field = field
 
     def raise_exception(self, exception_class=ValidationError):
@@ -18,38 +19,46 @@ class ModelException(Exception):
         raise exception_class({field: [self.message]}, code=self.code)
 
     def get_message(self):
-        return self.message
+        return ''
 
 
 class WaitException(ModelException):
-    message = settings.GARPIX_USER.get('WAIT_RESPONSE',
-                                       _("Less than {min_time} minutes has passed since the last request")).format(
-        min_time=settings.GARPIX_USER.get('TIME_LAST_REQUEST', 1))
+    def get_message(self):
+        return settings.GARPIX_USER.get('WAIT_RESPONSE',
+                                        _("Less than {min_time} {minutes} has passed since the last request")).format(
+            min_time=settings.GARPIX_USER.get('TIME_LAST_REQUEST', 1),
+            minutes=rupluralize(settings.GARPIX_USER.get('TIME_LAST_REQUEST', 1), _('minute,minutes')))
 
 
 class UserRegisteredException(ModelException):
-    message = settings.GARPIX_USER.get('USER_REGISTERED_RESPONSE',
-                                       _("User with such data has been already registered"))
+    def get_message(self):
+        return settings.GARPIX_USER.get('USER_REGISTERED_RESPONSE',
+                                        _("User with such data has been already registered"))
 
 
 class UserUnregisteredException(ModelException):
-    message = settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', _("User with such data has not been registered"))
+    def get_message(self):
+        return settings.GARPIX_USER.get('USER_UNREGISTERED_RESPONSE', _("User with such data has not been registered"))
 
 
 class IncorrectCodeException(ModelException):
-    message = _("Incorrect code")
+    def get_message(self):
+        return _("Incorrect code")
 
 
 class NoTimeLeftException(ModelException):
-    message = _("Code has expired. Request it again")
+    def get_message(self):
+        return _("Code has expired. Request it again")
 
 
 class NotAuthenticateException(ModelException):
-    message = _("Credentials were not provided")
+    def get_message(self):
+        return _("Credentials were not provided")
 
 
 class NotConfirmedException(ModelException):
-    message = _("{field} was not confirmed")
+    def get_message(self):
+        return _("{field} was not confirmed")
 
 
 class ValidationErrorSerializer(serializers.Serializer):

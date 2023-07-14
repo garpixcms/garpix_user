@@ -280,8 +280,11 @@ msgstr "Восстановление пароля. Шаг 3"
 msgid "Send email confirmation link"
 msgstr "Отправка ссылки подтверждения email"
 
-msgid "Less than {min_time} minutes has passed since the last request"
-msgstr "Прошло меньше {min_time} минут с последнего запроса"
+msgid "Less than {min_time} {minutes} has passed since the last request"
+msgstr "Прошло меньше {min_time} {minutes} с последнего запроса"
+
+msgid "minute,minutes"
+msgstr "минуты,минут,минут"
 
 msgid "User with such data has been already registered"
 msgstr "Пользователь с указанными данными уже зарегистрирован"
@@ -290,7 +293,7 @@ msgid "User with such data has not been registered"
 msgstr "Пользователь с указанными данными не зарегистрирован"
 
 msgid "The phone number entered is not valid."
-msgstr "Введенный некорректный номер телефона."
+msgstr "Введен некорректный номер телефона."
 
 msgid "Password is incorrect"
 msgstr "Некорректный пароль"
