@@ -313,7 +313,8 @@ GARPIX_USER = {
     'CONFIRM_EMAIL_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
-    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,
+    'CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE': 'days', # available types are: ['days', 'minutes'], default is 'days'
     'PHONE_CONFIRMATION_LIFE_TIME': 2, # in days
     'EMAIL_CONFIRMATION_LIFE_TIME': 2, # in days
 }
@@ -413,7 +414,8 @@ GARPIX_USER = {
     'CONFIRM_EMAIL_CODE_LENGTH': 6,
     'TIME_LAST_REQUEST': 1,
     'CONFIRM_PHONE_CODE_LIFE_TIME': 5,  # in minutes
-    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,  # in days
+    'CONFIRM_EMAIL_CODE_LIFE_TIME': 2,
+    'CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE': 'days',
     'PHONE_CONFIRMATION_LIFE_TIME': 2, # in days
     'EMAIL_CONFIRMATION_LIFE_TIME': 2, # in days
     'CONFIRMATION_DELAY': 10,  # in days

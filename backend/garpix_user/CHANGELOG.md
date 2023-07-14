@@ -1,3 +1,7 @@
+### 3.9.0 (14.07.2023)
+
+- `CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE` setting added (see `Readme.md)
+
 ### 3.8.2 (14.07.2023)
 
 - Error messages localization fixed

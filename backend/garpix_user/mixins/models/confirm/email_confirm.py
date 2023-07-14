@@ -83,8 +83,11 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         if self.email_confirmation_code != email_confirmation_code:
             return IncorrectCodeException(field='email_confirmation_code')
 
-        time_is_up = (datetime.now(
-            self.email_code_send_date.tzinfo) - self.email_code_send_date).days > settings.GARPIX_USER.get(
+        datediff = datetime.now(self.email_code_send_date.tzinfo) - self.email_code_send_date
+        datediff = datediff.days if settings.GARPIX_USER.get('CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE',
+                                                             'days') == 'days' else datediff.seconds / 60
+
+        time_is_up = datediff > settings.GARPIX_USER.get(
             'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
 
         if time_is_up:
@@ -106,9 +109,10 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         for user in users_list:
             if str(hashlib.sha512(
                     f'{user.email}+{user.email_confirmation_code}'.encode("utf-8")).hexdigest()).lower() == hash:
-                time_is_up = (datetime.now(
-                    user.email_code_send_date.tzinfo) - user.email_code_send_date).days > settings.GARPIX_USER.get(
-                    'CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
+                datediff = datetime.now(user.email_code_send_date.tzinfo) - user.email_code_send_date
+                datediff = datediff.days if settings.GARPIX_USER.get('CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE',
+                                                                     'days') == 'days' else datediff.seconds / 60
+                time_is_up = datediff > settings.GARPIX_USER.get('CONFIRM_EMAIL_CODE_LIFE_TIME', 6)
                 if time_is_up:
                     return False, NoTimeLeftException(field='email_confirmation_code')
                 user.is_email_confirmed = True
@@ -121,7 +125,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
 
     def check_email_confirmation(self):
         return self.is_email_confirmed and self.email_confirmed_date and self.email_confirmed_date + timedelta(
-                days=settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LIFE_TIME', 2)) >= datetime.now(
+            days=settings.GARPIX_USER.get('EMAIL_CONFIRMATION_LIFE_TIME', 2)) >= datetime.now(
             self.email_confirmed_date.tzinfo)
 
     @classmethod
