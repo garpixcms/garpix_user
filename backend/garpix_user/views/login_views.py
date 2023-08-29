@@ -21,7 +21,7 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def http_method_not_allowed(self, request, *args, **kwargs):
         if self.request.accepts('text/html'):
-            return redirect(self.request.GET.get('next', '/'))
+            return redirect(self.request.GET.get('next', '/') or '/')
         return HttpResponseNotAllowed(self._allowed_methods())
 
     def test_func(self):
@@ -29,7 +29,7 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def handle_no_permission(self):
         if self.request.accepts('text/html'):
-            return redirect(self.request.GET.get('next', '/'))
+            return redirect(self.request.GET.get('next', '/') or '/')
         return HttpResponse({"__all__": [_("You are already authenticated")]}, content_type='application/json',
                             status=403)
 
@@ -57,7 +57,7 @@ class LoginView(UserPassesTestMixin, FormView):
             user.set_user_session(request)
         login(request, user)
         if self.request.accepts('text/html'):
-            return redirect(request.GET.get('next', '/'))
+            return redirect(request.GET.get('next', '/') or '/')
         return JsonResponse({'success': True})
 
     def form_invalid(self, form):

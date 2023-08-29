@@ -1,3 +1,7 @@
+### 3.9.1 (29.08.2023)
+
+- `login_view` redirect bug fixed
+
 ### 3.9.0 (14.07.2023)
 
 - `CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE` setting added (see `Readme.md)

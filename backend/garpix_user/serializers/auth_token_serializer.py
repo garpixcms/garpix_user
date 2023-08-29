@@ -3,8 +3,6 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.authentication import authenticate
 
-from garpix_user.models import UserSession
-
 
 class AuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label=_("Username"))
