@@ -32,9 +32,9 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
     readonly_fields = ['telegram_secret', 'get_telegram_connect_user_help'] + list(BaseUserAdmin.readonly_fields)
 
     def save_model(self, request, obj, form, change):
-        password_validity_period = get_password_settings()['password_validity_period']
+        password_first_change = get_password_settings()['password_first_change']
 
-        if not change and password_validity_period:
+        if not change and password_first_change:
             obj.needs_password_update = True
 
         super().save_model(request, obj, form, change)
