@@ -3,10 +3,10 @@ from django.contrib.auth import get_user_model
 from django.views.generic import RedirectView
 
 from garpix_user.serializers import EmailConfirmSendSerializer, EmailConfirmCheckCodeSerializer, \
-    EmailPreConfirmSendSerializer, UserSessionTokenSerializer
+    EmailPreConfirmSendSerializer
 
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAuthenticated, ValidationError
@@ -86,5 +86,5 @@ class EmailConfirmationLinkView(RedirectView):
         model = UserSession if model_type == 'user_session' else User
         result, user = model.confirm_email_by_link(hash)
         if result is not True:
-            return f"/?status=error"
-        return f"/?status=success"
+            return "/?status=error"
+        return "/?status=success"

@@ -1,1 +1,1 @@
-from .delete_unconfirmed_users import delete_unconfirmed_users
+from .delete_unconfirmed_users import delete_unconfirmed_users  # noqa

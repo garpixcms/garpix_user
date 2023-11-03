@@ -10,7 +10,11 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'phone')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_deleted', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'fields': (
+                'is_active', 'is_deleted', 'is_staff', 'is_superuser',
+                'is_blocked', 'login_attempts_count', 'password_updated_date', 'needs_password_update',
+                'groups', 'user_permissions'
+            ),
         }),
         (_('Viber'), {
             'fields': ('viber_chat_id', 'viber_secret_key',)
@@ -19,7 +23,8 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
             'fields': ('telegram_chat_id', 'telegram_secret', 'get_telegram_connect_user_help'),
         }),
         (_('Confim information'), {
-            'fields': ('is_email_confirmed', 'email_confirmation_code', 'is_phone_confirmed', 'phone_confirmation_code'),
+            'fields': (
+                'is_email_confirmed', 'email_confirmation_code', 'is_phone_confirmed', 'phone_confirmation_code'),
         }),
     )
     readonly_fields = ['telegram_secret', 'get_telegram_connect_user_help'] + list(BaseUserAdmin.readonly_fields)

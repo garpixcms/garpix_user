@@ -15,4 +15,4 @@ from .passwrod_serializer import RestorePasswordSerializer, RestoreSetPasswordSe
     ChangePasswordSerializer  # noqa
 
 from .user_session_serializer import UserSessionSerializer, UserSessionTokenSerializer  # noqa
-from .jwt_data_serializer import JWTDataSerializer
+from .jwt_data_serializer import JWTDataSerializer  # noqa
