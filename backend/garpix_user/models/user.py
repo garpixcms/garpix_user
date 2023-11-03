@@ -86,6 +86,7 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
     def set_password(self, raw_password):
         super().set_password(raw_password)
         self.password_updated_date = set_current_date()
+        self.save()
         password_history = PasswordHistory(user=self)
         password_history.password = make_password(raw_password)
         password_history.save()

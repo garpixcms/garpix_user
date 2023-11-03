@@ -2,6 +2,8 @@ from garpix_utils.models import AdminDeleteMixin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
+from garpix_user.utils.get_password_settings import get_password_settings
+
 
 class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
     change_form_template = "garpix_user/send_confirm.html"
@@ -28,3 +30,11 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
         }),
     )
     readonly_fields = ['telegram_secret', 'get_telegram_connect_user_help'] + list(BaseUserAdmin.readonly_fields)
+
+    def save_model(self, request, obj, form, change):
+        password_validity_period = get_password_settings()['password_validity_period']
+
+        if not change and password_validity_period:
+            obj.needs_password_update = True
+
+        super().save_model(request, obj, form, change)
