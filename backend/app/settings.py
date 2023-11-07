@@ -225,7 +225,7 @@ API_URL = 'api'
 # user settings
 GARPIX_USER = {
     # base settings
-    'USE_REFERRAL_LINKS': True,
+    'USE_REFERRAL_LINKS': False,
     'REFERRAL_REDIRECT_URL': '/',
     # email/phone confirmation
     'USE_EMAIL_CONFIRMATION': True,
@@ -244,10 +244,17 @@ GARPIX_USER = {
     # registration
     'USE_REGISTRATION': False,
     'REGISTRATION_SERIALIZER': 'app.serializers.RegistrationCustSerializer',
+    'ADMIN_PASSWORD_SETTINGS': True,
     'MIN_LENGTH_PASSWORD': 8,
     'MIN_DIGITS_PASSWORD': 2,
     'MIN_CHARS_PASSWORD': 2,
-    'MIN_UPPERCASE_PASSWORD': 1
+    'MIN_UPPERCASE_PASSWORD': 1,
+    'MIN_SPECIAL_PASSWORD': 1,
+    'PASSWORD_HISTORY': 1,
+    'PASSWORD_VALIDITY_PERIOD': -1,
+    'PASSWORD_FIRST_CHANGE': False,
+    # log in
+    'AVAILABLE_ATTEMPT': -1
 }
 
 GARPIX_NOTIFY_CELERY_SETTINGS = 'app.celery.app'

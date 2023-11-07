@@ -1,14 +1,14 @@
 from django.conf import settings
 from drf_spectacular.utils import extend_schema
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotAuthenticated, ValidationError
 from rest_framework.response import Response
 
 from garpix_user.exceptions import NotAuthenticateException
 from garpix_user.serializers import PhoneConfirmSendSerializer, PhoneConfirmCheckCodeSerializer, \
-    PhonePreConfirmSendSerializer, UserSessionTokenSerializer
+    PhonePreConfirmSendSerializer
 from garpix_user.models import UserSession
 from django.utils.translation import ugettext as _
 

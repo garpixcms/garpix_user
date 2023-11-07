@@ -1,4 +1,6 @@
 import json
+from datetime import timedelta
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import JsonResponse, HttpResponseNotAllowed
@@ -8,6 +10,9 @@ from django.views.generic import FormView
 from django.http import HttpResponse
 from garpix_user.forms import LoginForm
 from django.utils.translation import ugettext as _
+
+from garpix_user.utils.current_date import set_current_date
+from garpix_user.utils.get_password_settings import get_password_settings
 
 
 class LogoutView(RedirectView):
@@ -21,7 +26,7 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def http_method_not_allowed(self, request, *args, **kwargs):
         if self.request.accepts('text/html'):
-            return redirect(self.request.GET.get('next', '/'))
+            return redirect(self.request.GET.get('next', '/') or '/')
         return HttpResponseNotAllowed(self._allowed_methods())
 
     def test_func(self):
@@ -29,7 +34,7 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def handle_no_permission(self):
         if self.request.accepts('text/html'):
-            return redirect(self.request.GET.get('next', '/'))
+            return redirect(self.request.GET.get('next', '/') or '/')
         return HttpResponse({"__all__": [_("You are already authenticated")]}, content_type='application/json',
                             status=403)
 
@@ -47,17 +52,31 @@ class LoginView(UserPassesTestMixin, FormView):
         context = super().get_context_data(**kwargs)
         return context
 
+    def _return_error(self, form, error_text):
+        try:
+            form.add_error(None, error_text)
+        except TypeError:
+            pass
+        return self.form_invalid(form)
+
     def form_valid(self, form):
+        password_validity_period = get_password_settings()['password_validity_period']
+
         request = self.request
         data = form.data
         username = data.get('username')
         password = data.get('password')
         user = authenticate(request, username=username.lower(), password=password)
+        if user.is_blocked:
+            return self._return_error(form, _("Your account is blocked. Please contact your administrator"))
+        if password_validity_period != -1 and user.password_updated_date + timedelta(
+                days=password_validity_period) <= set_current_date():
+            return self._return_error(form, _('Your password has expired. Please change password'))
         if user:
             user.set_user_session(request)
         login(request, user)
         if self.request.accepts('text/html'):
-            return redirect(request.GET.get('next', '/'))
+            return redirect(request.GET.get('next', '/') or '/')
         return JsonResponse({'success': True})
 
     def form_invalid(self, form):

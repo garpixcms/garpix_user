@@ -306,3 +306,33 @@ msgstr "Вы уже авторизованы"
 
 msgid "User is not found"
 msgstr "Пользователь не найден"
+
+msgid "User is blocked"
+msgstr "Пользователь заблокирован"
+
+msgid "Your account was blocked due to a large number of failed login attempts. Please contact your administrator"
+msgstr "Ваш аккаунт был заблокирован из-за большого количества неудачных попыток входа. Пожалуйста, обратитесь к администратору"
+
+msgid "Your account is blocked. Please contact your administrator"
+msgstr "Ваш аккаунт заблокирован. Пожалуйста, обратитесь к администратору"
+
+msgid "Password history"
+msgstr "История паролей"
+
+msgid "Date created"
+msgstr "Дата создания"
+
+msgid "You can not use the same password you already had to"
+msgstr "Вы не можете использовать пароль, который уже был установлен ранее"
+
+msgid "Password last updated date"
+msgstr "Дата последней смены пароля"
+
+msgid "Your password has expired. Please change password"
+msgstr "Срок действия Вашего пароля истек. Пожалуйста, смените пароль"
+
+msgid "Your need to reset your password on first log in. Please set new password"
+msgstr "Необходимо сменить пароль при первом входе. Пожалуйста, задайте новый пароль"
+
+msgid "Needs password update"
+msgstr "Необходима смена пароля"

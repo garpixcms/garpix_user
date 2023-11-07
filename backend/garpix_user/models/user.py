@@ -1,4 +1,6 @@
+from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from garpix_notify.mixins import UserNotifyMixin
@@ -12,6 +14,7 @@ from django.db.utils import IntegrityError
 from django.utils.translation import gettext as _
 import string
 
+from garpix_user.models.password_history import PasswordHistory
 from garpix_user.utils.current_date import set_current_date
 
 
@@ -20,6 +23,10 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
 
     phone = PhoneNumberField(_("Phone number"), blank=True, default='')
     is_phone_confirmed = models.BooleanField(_("Phone number confirmed"), default=True)
+    is_blocked = models.BooleanField(_("User is blocked"), default=False)
+    login_attempts_count = models.IntegerField(_("Invalid log in attempts"), default=0)
+    password_updated_date = models.DateTimeField(_("Password last updated date"), default=timezone.now)
+    needs_password_update = models.BooleanField(_("Needs password update"), default=False)
 
     USERNAME_FIELDS = ('username',)
 
@@ -75,3 +82,11 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
                 current_user_session.user = self
                 current_user_session.recognized = UserSession.UserState.REGISTERED
                 current_user_session.save()
+
+    def set_password(self, raw_password):
+        super().set_password(raw_password)
+        self.password_updated_date = set_current_date()
+        self.save()
+        password_history = PasswordHistory(user=self)
+        password_history.password = make_password(raw_password)
+        password_history.save()

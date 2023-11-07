@@ -57,7 +57,7 @@ def get_user_by_jwt_token(token):
             if token_data['token_created_at'] + timedelta(
                     seconds=settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS) < timezone.now():
                 raise Exception("Token expired.")
-        return User.active_objects.get(username=token_data['username'])
+        return User.active_objects.get(username=token_data['username'], is_blockde=False)
     except Exception as e:
         print(str(e))
 

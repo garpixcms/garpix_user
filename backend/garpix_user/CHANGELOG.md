@@ -1,3 +1,19 @@
+### 3.10.0 (02.11.2023)
+
+- `GarpixUserPasswordConfiguration` model added
+- `ADMIN_PASSWORD_SETTINGS` setting added
+- `MIN_SPECIAL_PASSWORD` setting added
+- `AVAILABLE_ATTEMPT` settings added
+- `PASSWORD_HISTORY` setting added
+- `PASSWORD_VALIDITY_PERIOD` setting added
+- `PASSWORD_FIRST_CHANGE` setting added
+- `is_blocked`, `login_attempts_count`, `password_updated_date`, `needs_password_update` fields added to `GarpixUser` model
+- `PasswordHistory` model added
+
+### 3.9.1 (29.08.2023)
+
+- `login_view` redirect bug fixed
+
 ### 3.9.0 (14.07.2023)
 
 - `CONFIRM_EMAIL_CODE_LIFE_TIME_TYPE` setting added (see `Readme.md)
@@ -99,7 +115,8 @@
 
 - Удален миксин для `UserSession`
 - Все миксины добавлены в модели из коробки, теперь все регулируется только настройками в `settings.py`
-- Добавлена возможность настраивать список полей, используемых в `CustomAuthenticationBackend` качестве `username` (смотрите `Readme.md`)
+- Добавлена возможность настраивать список полей, используемых в `CustomAuthenticationBackend` качестве `username` (
+  смотрите `Readme.md`)
 - Исправлено swagger-документирование эндпоинтов
 - Эндпоинт на восстановление пароля теперь принимает `username`.
 - Добавлена настройка `REGISTRATION_SERIALIZER` - расширение сериалайзера регитсрации (смотрите `Readme.md`)
@@ -116,12 +133,13 @@
 
 - Исправлен баг в CustomBackend.
 - Добавлена модель AccessToken - создайте миграции!
-- Теперь user - ForeignKey (а не OneToOneField) для AccessToken и RefreshToken. Это позволит при выходе с одного устройства не терять токен на другом.
+- Теперь user - ForeignKey (а не OneToOneField) для AccessToken и RefreshToken. Это позволит при выходе с одного
+  устройства не терять токен на другом.
 
 ### 2.1.0 (21.09.2021)
 
 - Продление, а не изменение токена при протухании, если был рефреш. Без этого часто возникала ситуация, что с
-разных браузеров пропадал доступ.
+  разных браузеров пропадал доступ.
 
 ### 2.0.2 (14.09.2021)
 
@@ -129,11 +147,12 @@
 
 ### 2.0.1 (19.08.2021)
 
-- Добавлен permission `IsAuthenticated` для `LogoutView`. 
+- Добавлен permission `IsAuthenticated` для `LogoutView`.
 
 ### 2.0.0 (18.08.2021)
 
-- Изменен keyword с `Token` на более правильный - `Bearer` (см. https://datatracker.ietf.org/doc/html/rfc6750#section-1.2).
+- Изменен keyword с `Token` на более правильный - `Bearer` (
+  см. https://datatracker.ietf.org/doc/html/rfc6750#section-1.2).
 - Оптимизирована функция получения пользователя в токене.
 - Добавлено протухание токена (если указано значение `GARPIX_ACCESS_TOKEN_TTL_SECONDS = 0`, то не протухает).
 - Добавлен RefreshToken и возвращаемые данные при получении токена.
