@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from django.utils.translation import ugettext as _
 
 from garpix_user.models import PasswordHistory
+from garpix_user.permissions import IsUnAuthenticated
 from garpix_user.serializers import ChangePasswordSerializer
 from garpix_user.serializers.passwrod_serializer import ChangePasswordUnauthorizedSerializer
 from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
@@ -49,7 +50,7 @@ class ChangePasswordView(viewsets.ViewSet):
         return Response({"result": "success"})
 
     @extend_schema(summary=_('Change password (for unauthorized users)'))
-    @action(methods=['POST'], detail=False, permission_classes=[AllowAny])
+    @action(methods=['POST'], detail=False, permission_classes=[IsUnAuthenticated])
     def change_password_unauthorized(self, request, *args, **kwargs):
 
         serializer = self.get_serializer_class()(data=request.data, context={"request": request})
