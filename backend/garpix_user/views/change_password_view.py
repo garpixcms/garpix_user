@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.hashers import check_password
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
@@ -67,4 +68,8 @@ class ChangePasswordView(viewsets.ViewSet):
         user.needs_password_update = False
         user.save()
 
-        return Response({"result": "success"})
+        use_jwt = settings.GARPIX_USER.get('REST_AUTH_TOKEN_JWT', False)
+
+        if use_jwt:
+            return self._get_jwt_data(user)
+        return self._get_access_token_data(user)

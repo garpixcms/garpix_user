@@ -1,4 +1,8 @@
-### 3.10.0 (02.11.2023)
+### 3.10.0-rc2 (08.11.2023)
+
+- `change_password_unauthorized` response updated
+
+### 3.10.0-rc1 (02.11.2023)
 
 - `GarpixUserPasswordConfiguration` model added
 - `ADMIN_PASSWORD_SETTINGS` setting added
@@ -9,6 +13,7 @@
 - `PASSWORD_FIRST_CHANGE` setting added
 - `is_blocked`, `login_attempts_count`, `password_updated_date`, `needs_password_update` fields added to `GarpixUser` model
 - `PasswordHistory` model added
+- `change_password_unauthorized` endpoint added
 
 ### 3.9.1 (29.08.2023)
 
