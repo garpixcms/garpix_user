@@ -50,6 +50,6 @@ class PasswordSerializerMixin:
         if (len(value) - (password_digits_num + password_chars_num)) < password_settings['min_special_symbols']:
             raise serializers.ValidationError(
                 _('Password must contain at least {min_special_symbols} special {symbols}.').format(
-                    min_uppercase=password_settings['min_uppercase'],
-                    letters=rupluralize(password_settings['min_uppercase'], _('symbol,symbols')))
+                    min_special_symbols=password_settings['min_special_symbols'],
+                    symbols=rupluralize(password_settings['min_special_symbols'], _('symbol,symbols')))
             )

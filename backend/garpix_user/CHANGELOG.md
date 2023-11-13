@@ -1,4 +1,4 @@
-### 3.10.0-rc3 (13.11.2023)
+### 3.10.0-rc3-3.10.0-rc4 (13.11.2023)
 
 - login error messages updated
 - `change_password_unauthorized` bug fixed
