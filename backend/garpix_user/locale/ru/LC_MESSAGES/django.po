@@ -331,8 +331,8 @@ msgstr "Дата последней смены пароля"
 msgid "Your password has expired. Please change password"
 msgstr "Срок действия Вашего пароля истек. Пожалуйста, смените пароль"
 
-msgid "Your need to reset your password on first log in. Please set new password"
-msgstr "Необходимо сменить пароль при первом входе. Пожалуйста, задайте новый пароль"
+msgid "Your need to reset your password to activate your account"
+msgstr "Вам необходимо изменить пароль, чтобы активировать учетную запись"
 
 msgid "Needs password update"
 msgstr "Необходима смена пароля"

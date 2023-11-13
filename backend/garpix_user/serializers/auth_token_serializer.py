@@ -51,7 +51,7 @@ class AuthTokenSerializer(serializers.Serializer):
             if user.needs_password_update:
                 msg = {
                     'non_field_errors': [
-                        _('Your need to reset your password on first log in. Please set new password')],
+                        _('Your need to reset your password to activate your account')],
                     'extra_parameters': ['needs_password_update']
                 }
                 raise serializers.ValidationError(msg, code='authorization')

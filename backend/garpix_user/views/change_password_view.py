@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.utils.translation import ugettext as _
 
+from garpix_user.mixins.views.auth_token_mixin import AuthTokenViewMixin
 from garpix_user.models import PasswordHistory
 from garpix_user.permissions import IsUnAuthenticated
 from garpix_user.serializers import ChangePasswordSerializer
@@ -20,7 +21,7 @@ from garpix_user.utils.get_password_settings import get_password_settings
         user_session_token_header_parameter()
     ]
 )
-class ChangePasswordView(viewsets.ViewSet):
+class ChangePasswordView(AuthTokenViewMixin, viewsets.ViewSet):
 
     def get_serializer_class(self):
         if self.action == 'change_password_unauthorized':
