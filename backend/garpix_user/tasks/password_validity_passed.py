@@ -12,7 +12,7 @@ celery_app = import_string(settings.GARPIXCMS_CELERY_SETTINGS)
 
 
 @celery_app.task()
-def password_validity_event():
+def password_validity_passed():
     password_settings = get_password_settings()
     _password_validity_period = password_settings['password_validity_period']
     _password_validity_inform_days = password_settings['password_validity_inform_days']
@@ -33,7 +33,7 @@ def password_validity_event():
 
 
 celery_app.conf.beat_schedule.update({
-    'password_valifity_passed': {
+    'password_validity_passed': {
         'task': 'garpix_user.tasks.password_validity_passed.password_validity_passed',
         'schedule': crontab(minute='0', hour='21'),
     }
