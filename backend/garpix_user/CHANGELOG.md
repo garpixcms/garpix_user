@@ -2,7 +2,7 @@
 
 - `PASSWORD_VALIDITY_INFORM_DAYS` setting added
 - `PASSWORD_INVALID_EVENT` notify added
-- `password_validity_event` celery task added
+- `password_valifity_passed` celery task added
 - restore password bug fixed
 
 ### 3.10.0-rc3-3.10.0-rc4 (13.11.2023)

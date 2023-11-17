@@ -33,7 +33,7 @@ def password_validity_event():
 
 
 celery_app.conf.beat_schedule.update({
-    'password_validity_event': {
+    'password_valifity_passed': {
         'task': 'garpix_user.tasks.password_validity_passed.password_validity_passed',
         'schedule': crontab(minute='0', hour='21'),
     }
