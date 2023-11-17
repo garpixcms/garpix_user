@@ -35,7 +35,7 @@ class RestorePasswordView(viewsets.ViewSet):
         if not user:
             return Response({"non_field_errors": [_("user-session-token not set")]}, status=status.HTTP_400_BAD_REQUEST)
 
-        result, error = user.send_restore_code(username=serializer.data['username'])
+        result, error = user.send_restore_code(username=serializer.validated_data['username'])
 
         if not result:
             error.raise_exception(exception_class=ValidationError)
@@ -53,7 +53,7 @@ class RestorePasswordView(viewsets.ViewSet):
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result, error = user.check_restore_code(username=serializer.data['username'],
+        result, error = user.check_restore_code(username=serializer.validated_data['username'],
                                                 restore_password_confirm_code=serializer.data[
                                                     'restore_password_confirm_code'])
         if not result:
@@ -73,7 +73,7 @@ class RestorePasswordView(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
 
         result, error = user.restore_password(new_password=serializer.data['new_password'],
-                                              username=serializer.data['username'],
+                                              username=serializer.validated_data['username'],
                                               restore_password_confirm_code=serializer.data[
                                                   'restore_password_confirm_code'])
 
