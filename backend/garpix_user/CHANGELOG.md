@@ -1,3 +1,10 @@
+### 3.10.0-rc5 (17.11.2023)
+
+- `PASSWORD_VALIDITY_INFORM_DAYS` setting added
+- `PASSWORD_INVALID_EVENT` notify added
+- `password_valifity_passed` celery task added
+- restore password bug fixed
+
 ### 3.10.0-rc3-3.10.0-rc4 (13.11.2023)
 
 - login error messages updated

@@ -336,3 +336,6 @@ msgstr "Вам необходимо изменить пароль, чтобы а
 
 msgid "Needs password update"
 msgstr "Необходима смена пароля"
+
+msgid "Your password will expire in {days} days. Please change your password"
+msgstr "Срок действия вашего пароля истечет через {days} дней. Пожалуйста, измените свой пароль"

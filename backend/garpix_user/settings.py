@@ -27,7 +27,7 @@ EMAIL_CONFIRMATION_EVENT = 4211
 RESTORE_PASSWORD_EMAIL_EVENT = 4212
 RESTORE_PASSWORD_PHONE_EVENT = 4213
 EMAIL_LINK_CONFIRMATION_EVENT = 4214
-
+PASSWORD_INVALID_EVENT = 4215
 
 GARPIX_USER_NOTIFY_EVENTS = {
     PHONE_CONFIRMATION_EVENT: {
@@ -53,5 +53,10 @@ GARPIX_USER_NOTIFY_EVENTS = {
     EMAIL_LINK_CONFIRMATION_EVENT: {
         'title': 'Подтверждение email по ссылке',
         'context_description': '{{ confirmation_link }}'
-    }
+    },
+    PASSWORD_INVALID_EVENT: {
+        'title': 'Уведомление об истечении срока действия пароля',
+        'context_description': '{{ message }} - Сообщение, ',
+        'event_description': 'Уведомление об истечении срока действия пароля',
+    },
 }

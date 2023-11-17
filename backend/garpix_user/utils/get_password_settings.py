@@ -17,6 +17,7 @@ def get_password_settings():
         password_history = admin_password_settings.password_history
         password_validity_period = admin_password_settings.password_validity_period
         password_first_change = admin_password_settings.password_first_change
+        password_validity_inform_days = admin_password_settings.password_validity_inform_days
     else:
         min_length = GARPIX_USER_SETTINGS.get('MIN_LENGTH_PASSWORD', 8)
         min_digits = GARPIX_USER_SETTINGS.get('MIN_DIGITS_PASSWORD', 2)
@@ -27,6 +28,7 @@ def get_password_settings():
         password_history = GARPIX_USER_SETTINGS.get('PASSWORD_HISTORY', -1)
         password_validity_period = GARPIX_USER_SETTINGS.get('PASSWORD_VALIDITY_PERIOD', -1)
         password_first_change = GARPIX_USER_SETTINGS.get('PASSWORD_FIRST_CHANGE', False)
+        password_validity_inform_days = GARPIX_USER_SETTINGS.get('PASSWORD_VALIDITY_INFORM_DAYS', -1)
 
     return {
         'min_length': min_length,
@@ -37,5 +39,6 @@ def get_password_settings():
         'available_attempt': available_attempt,
         'password_history': password_history,
         'password_validity_period': password_validity_period,
-        'password_first_change': password_first_change
+        'password_first_change': password_first_change,
+        'password_validity_inform_days': password_validity_inform_days
     }

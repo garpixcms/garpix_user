@@ -9,7 +9,7 @@ class RestorePasswordSerializer(ToLowerMixin, serializers.Serializer):
     username = serializers.CharField(required=True, help_text=_('Email or phone number'))
 
 
-class RestoreSetPasswordSerializer(PasswordSerializerMixin, serializers.Serializer):
+class RestoreSetPasswordSerializer(ToLowerMixin, PasswordSerializerMixin, serializers.Serializer):
     new_password = serializers.CharField(max_length=255, required=True)
     username = serializers.CharField(required=True, help_text=_('Email or phone number'))
     restore_password_confirm_code = serializers.CharField(max_length=15, required=True)
@@ -19,7 +19,7 @@ class RestoreSetPasswordSerializer(PasswordSerializerMixin, serializers.Serializ
         return value
 
 
-class RestoreCheckCodeSerializer(serializers.Serializer):
+class RestoreCheckCodeSerializer(ToLowerMixin, serializers.Serializer):
     restore_password_confirm_code = serializers.CharField(max_length=15, required=True)
     username = serializers.CharField(required=True, help_text=_('Email or phone number'))
 

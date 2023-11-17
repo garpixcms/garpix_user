@@ -18,7 +18,13 @@ class GarpixUserPasswordConfiguration(SingletonModel):
                                                    verbose_name=_(
                                                        'Срок действия пароля (в днях)')
                                                    )
-    password_first_change = models.BooleanField(default=False, verbose_name=_('Обязательная смена пароля при первом входе'))
+    password_first_change = models.BooleanField(default=False,
+                                                verbose_name=_('Обязательная смена пароля при первом входе'))
+    password_validity_inform_days = models.IntegerField(default=-1,
+                                                        help_text=_('-1 если отправка уведомлений не требуется'),
+                                                        verbose_name=_(
+                                                            'За сколько дней начинать отправлять уведомление об истечении срока пароля')
+                                                        )
 
     class Meta:
         verbose_name = 'Настройки безопасности входа'
