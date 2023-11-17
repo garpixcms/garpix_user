@@ -15,7 +15,7 @@ celery_app = import_string(settings.GARPIXCMS_CELERY_SETTINGS)
 def password_validity_event():
     password_settings = get_password_settings()
     _password_validity_period = password_settings['password_validity_period']
-    _password_validity_inform_days = password_settings['_password_validity_inform_days']
+    _password_validity_inform_days = password_settings['password_validity_inform_days']
     if _password_validity_period != -1 and _password_validity_inform_days != -1:
         password_validity_period = datetime.now() - timedelta(
             days=(_password_validity_inform_days + _password_validity_period))

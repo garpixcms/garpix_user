@@ -1,4 +1,4 @@
-### 3.10.0-rc5 (17.11.2023)
+### 3.10.0-rc5-3.10.0-rc6 (17.11.2023)
 
 - `PASSWORD_VALIDITY_INFORM_DAYS` setting added
 - `PASSWORD_INVALID_EVENT` notify added
