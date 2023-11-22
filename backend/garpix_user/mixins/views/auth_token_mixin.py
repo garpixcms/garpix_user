@@ -9,21 +9,26 @@ from garpix_user.utils.current_date import set_current_date
 from django.utils.translation import gettext as _
 import jwt
 
+from garpix_user.utils.get_password_settings import get_password_settings
+
 
 class AuthTokenViewMixin:
 
     def _get_access_token_data(self, user):
+        access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
+
         token = Token.objects.create(user=user)
         refresh_token = RefreshToken.objects.create(user=user)
         return Response({
             'access_token': token.key,
             'refresh_token': refresh_token.key,
             'token_type': 'Bearer',
-            'access_token_expires': settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS,
-            'refresh_token_expires': settings.GARPIX_REFRESH_TOKEN_TTL_SECONDS,
+            'access_token_expires': access_token_ttl_seconds,
+            'refresh_token_expires': access_token_ttl_seconds,
         })
 
     def _get_jwt_data(self, user):
+        access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
         jwt_secret_key = settings.GARPIX_USER.get('JWT_SECRET_KEY', None)
 
         if jwt_secret_key is None:
@@ -45,5 +50,5 @@ class AuthTokenViewMixin:
         return Response({
             'access_token': token,
             'token_type': 'Bearer',
-            'access_token_expires': settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS
+            'access_token_expires': access_token_ttl_seconds
         })

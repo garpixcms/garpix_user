@@ -18,6 +18,7 @@ def get_password_settings():
         password_validity_period = admin_password_settings.password_validity_period
         password_first_change = admin_password_settings.password_first_change
         password_validity_inform_days = admin_password_settings.password_validity_inform_days
+        access_token_ttl_seconds = admin_password_settings.access_token_ttl_seconds
     else:
         min_length = GARPIX_USER_SETTINGS.get('MIN_LENGTH_PASSWORD', 8)
         min_digits = GARPIX_USER_SETTINGS.get('MIN_DIGITS_PASSWORD', 2)
@@ -29,6 +30,10 @@ def get_password_settings():
         password_validity_period = GARPIX_USER_SETTINGS.get('PASSWORD_VALIDITY_PERIOD', -1)
         password_first_change = GARPIX_USER_SETTINGS.get('PASSWORD_FIRST_CHANGE', False)
         password_validity_inform_days = GARPIX_USER_SETTINGS.get('PASSWORD_VALIDITY_INFORM_DAYS', -1)
+        access_token_ttl_seconds = GARPIX_USER_SETTINGS.get('ACCESS_TOKEN_TTL_SECONDS', 0)
+
+    if (settings_tok := getattr(settings, 'GARPIX_ACCESS_TOKEN_TTL_SECONDS', None)) is not None:  # DEPRECATED
+        access_token_ttl_seconds = settings_tok
 
     return {
         'min_length': min_length,
@@ -40,5 +45,6 @@ def get_password_settings():
         'password_history': password_history,
         'password_validity_period': password_validity_period,
         'password_first_change': password_first_change,
-        'password_validity_inform_days': password_validity_inform_days
+        'password_validity_inform_days': password_validity_inform_days,
+        'access_token_ttl_seconds': access_token_ttl_seconds
     }

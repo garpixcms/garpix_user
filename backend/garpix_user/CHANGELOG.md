@@ -1,4 +1,10 @@
-### 3.10.0-rc5 (17.11.2023)
+### 3.10.0-rc7 (22.11.2023)
+
+- `GARPIX_ACCESS_TOKEN_TTL_SECONDS` setting deprecated
+- `ACCESS_TOKEN_TTL_SECONDS` settings added to `GARPIX_USER`
+- translate bugs fixed
+
+### 3.10.0-rc5-3.10.0-rc6 (17.11.2023)
 
 - `PASSWORD_VALIDITY_INFORM_DAYS` setting added
 - `PASSWORD_INVALID_EVENT` notify added
