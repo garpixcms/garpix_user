@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
+
+from garpix_user.utils.get_password_settings import get_password_settings
 from garpix_user.utils.get_token_from_request import get_token_from_request
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext as _
@@ -15,11 +17,13 @@ def get_user_by_token(token):
     from oauth2_provider.models import AccessToken
     User = get_user_model()
 
+    access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
+
     # Refresh django rest token
     try:
         tok = Token.objects.get(key=token)
-        if settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS > 0:
-            if tok.created + timedelta(seconds=settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS) < timezone.now():
+        if access_token_ttl_seconds > 0:
+            if tok.created + timedelta(seconds=access_token_ttl_seconds) < timezone.now():
                 tok.delete()
                 raise Exception("Token expired.")
         user = User.active_objects.get(id=tok.user_id)
@@ -30,8 +34,8 @@ def get_user_by_token(token):
     # Refresh social auth token
     try:
         tok = AccessToken.objects.get(token=token)
-        if settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS > 0:
-            if tok.created + timedelta(seconds=settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS) < timezone.now():
+        if access_token_ttl_seconds > 0:
+            if tok.created + timedelta(seconds=access_token_ttl_seconds) < timezone.now():
                 tok.delete()
         else:
             user = tok.user
@@ -43,6 +47,9 @@ def get_user_by_token(token):
 
 
 def get_user_by_jwt_token(token):
+
+    access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
+
     User = get_user_model()
 
     jwt_secret_key = settings.GARPIX_USER.get('JWT_SECRET_KEY', None)
@@ -53,9 +60,9 @@ def get_user_by_jwt_token(token):
     try:
         token_data = jwt.decode(token, jwt_secret_key, algorithms='HS256', verify=True)
 
-        if settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS > 0:
+        if access_token_ttl_seconds > 0:
             if token_data['token_created_at'] + timedelta(
-                    seconds=settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS) < timezone.now():
+                    seconds=access_token_ttl_seconds) < timezone.now():
                 raise Exception("Token expired.")
         return User.active_objects.get(username=token_data['username'], is_blockde=False)
     except Exception as e:

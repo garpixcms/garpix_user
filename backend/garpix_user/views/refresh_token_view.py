@@ -9,6 +9,8 @@ from garpix_user.models.refresh_token import RefreshToken
 from django.utils import timezone
 from datetime import timedelta
 
+from garpix_user.utils.get_password_settings import get_password_settings
+
 
 class RefreshTokenView(APIView):
     throttle_classes = ()
@@ -18,19 +20,20 @@ class RefreshTokenView(APIView):
     serializer_class = RefreshTokenSerializer
 
     def post(self, request, *args, **kwargs):
+        access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         refresh_token = serializer.validated_data['refresh_token']
         try:
             refresh_token_obj = RefreshToken.objects.get(key=refresh_token)
-            if settings.GARPIX_REFRESH_TOKEN_TTL_SECONDS > 0:
-                if refresh_token_obj.created + timedelta(seconds=settings.GARPIX_REFRESH_TOKEN_TTL_SECONDS) < timezone.now():
+            if access_token_ttl_seconds > 0:
+                if refresh_token_obj.created + timedelta(seconds=access_token_ttl_seconds) < timezone.now():
                     refresh_token_obj.delete()
                     raise Exception("Token expired.")
             token = Token.objects.create(user=refresh_token_obj.user)
             return Response({
                 'access_token': token.key,
-                'access_token_expires': settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS,
+                'access_token_expires': access_token_ttl_seconds,
                 'result': True,
             })
         except:  # noqa

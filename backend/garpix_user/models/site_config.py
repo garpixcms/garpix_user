@@ -25,6 +25,11 @@ class GarpixUserPasswordConfiguration(SingletonModel):
                                                         verbose_name=_(
                                                             'За сколько дней начинать отправлять уведомление об истечении срока пароля')
                                                         )
+    access_token_ttl_seconds = models.IntegerField(default=0,
+                                                   help_text=_('0 если ограничение не требуется'),
+                                                   verbose_name=_(
+                                                       'Время жизни авторизационного токена')
+                                                   )
 
     class Meta:
         verbose_name = 'Настройки безопасности входа'

@@ -8,7 +8,7 @@ class PasswordHistoryAdmin(admin.ModelAdmin):
     list_display = ['user', 'created_at']
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
 
     def has_change_permission(self, request, obj=None):
         return False
