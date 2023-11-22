@@ -15,7 +15,7 @@ from garpix_user.utils.get_password_settings import get_password_settings
 class AuthTokenViewMixin:
 
     def _get_access_token_data(self, user):
-        access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
+        _password_settings = get_password_settings()
 
         token = Token.objects.create(user=user)
         refresh_token = RefreshToken.objects.create(user=user)
@@ -23,8 +23,8 @@ class AuthTokenViewMixin:
             'access_token': token.key,
             'refresh_token': refresh_token.key,
             'token_type': 'Bearer',
-            'access_token_expires': access_token_ttl_seconds,
-            'refresh_token_expires': access_token_ttl_seconds,
+            'access_token_expires': _password_settings['access_token_ttl_seconds'],
+            'refresh_token_expires': _password_settings['refresh_token_ttl_seconds'],
         })
 
     def _get_jwt_data(self, user):

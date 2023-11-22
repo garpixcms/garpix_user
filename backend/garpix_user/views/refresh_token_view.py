@@ -20,14 +20,16 @@ class RefreshTokenView(APIView):
     serializer_class = RefreshTokenSerializer
 
     def post(self, request, *args, **kwargs):
+        _password_settings = get_password_settings()
+        refresh_token_ttl_seconds = get_password_settings()['refresh_token_ttl_seconds']
         access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         refresh_token = serializer.validated_data['refresh_token']
         try:
             refresh_token_obj = RefreshToken.objects.get(key=refresh_token)
-            if access_token_ttl_seconds > 0:
-                if refresh_token_obj.created + timedelta(seconds=access_token_ttl_seconds) < timezone.now():
+            if refresh_token_ttl_seconds > 0:
+                if refresh_token_obj.created + timedelta(seconds=refresh_token_ttl_seconds) < timezone.now():
                     refresh_token_obj.delete()
                     raise Exception("Token expired.")
             token = Token.objects.create(user=refresh_token_obj.user)

@@ -1,7 +1,7 @@
-### 3.10.0-rc7 (22.11.2023)
+### 3.10.0-rc7-3.10.0-rc8 (22.11.2023)
 
-- `GARPIX_ACCESS_TOKEN_TTL_SECONDS` setting deprecated
-- `ACCESS_TOKEN_TTL_SECONDS` settings added to `GARPIX_USER`
+- `GARPIX_ACCESS_TOKEN_TTL_SECONDS` and `GARPIX_REFRESH_TOKEN_TTL_SECONDS` settings deprecated
+- `ACCESS_TOKEN_TTL_SECONDS` and `REFRESH_TOKEN_TTL_SECONDS` settings added to `GARPIX_USER`
 - translate bugs fixed
 
 ### 3.10.0-rc5-3.10.0-rc6 (17.11.2023)
