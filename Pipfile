@@ -20,7 +20,7 @@ social-auth-app-django = "*"
 django-rest-framework-social-oauth2 = "*"
 django-phonenumber-field = {version = "==7.0.0", extras = ["phonenumbers"]}
 garpix-notify = "==5.12.5"
-garpix-utils = "==1.10.0-rc3"
+garpix-utils = "==1.10.0-rc4"
 eqator = "==2.4.0"
 sentry-sdk = "*"
 garpix-package = "*"

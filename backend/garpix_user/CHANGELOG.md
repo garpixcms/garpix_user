@@ -1,6 +1,6 @@
 ### 3.10.0-rc9 (24.11.2023)
 
-- Upgrade `garpix_utils` to version 1.10.0-rc3
+- Upgrade `garpix_utils` to version 1.10.0-rc4
 - Password history logs added
 
 ### 3.10.0-rc7-3.10.0-rc8 (22.11.2023)

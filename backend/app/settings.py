@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'eqator',
     'ckeditor',
     'celery',
@@ -269,3 +270,5 @@ NOTIFY_EVENTS.update(GARPIX_USER_NOTIFY_EVENTS)  # noqa
 CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
 
 GARPIXCMS_CELERY_SETTINGS = 'app.celery.app'
+
+ISO_LOGS_NAME = "garpix_user"
