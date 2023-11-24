@@ -39,10 +39,10 @@ class ChangePasswordView(AuthTokenViewMixin, viewsets.ViewSet):
         serializer = self.get_serializer_class()(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        password_settings = get_password_settings()
-        if password_settings['password_history'] != -1:
+        password_history = get_password_settings()['password_history']
+        if password_history != -1:
             password_history_rows = PasswordHistory.objects.filter(user=user).order_by(
-                '-created_at')[:password_settings['password_history']].values_list('password', flat=True)
+                '-created_at')[:password_history + 1].values_list('password', flat=True)
             for _pass in password_history_rows:
                 if check_password(request.data['new_password'], _pass):
                     return Response({"new_password": [_('You can not use the same password you already had to')]},
@@ -61,10 +61,10 @@ class ChangePasswordView(AuthTokenViewMixin, viewsets.ViewSet):
 
         user = serializer.validated_data['user']
 
-        password_settings = get_password_settings()
-        if password_settings['password_history'] != -1:
+        password_history = get_password_settings()['password_history']
+        if password_history != -1:
             password_history_rows = PasswordHistory.objects.filter(user=user).order_by(
-                '-created_at')[:password_settings['password_history']].values_list('password', flat=True)
+                '-created_at')[:password_history + 1].values_list('password', flat=True)
             for _pass in password_history_rows:
                 if check_password(request.data['new_password'], _pass):
                     return Response({"new_password": [_('You can not use the same password you already had to')]},
