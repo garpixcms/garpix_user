@@ -40,7 +40,7 @@ setup(
         'django-rest-framework-social-oauth2 >= 1.1.0',
         'django-phonenumber-field-for-garpix_user >= 8.0.0',
         'garpix-notify >= 5.12.5',
-        'garpix-utils >= 1.10.0-rc5',
+        'garpix-utils >= 1.10.0-rc6',
         'drf-spectacular >= 0.24.2'
     ]
 )

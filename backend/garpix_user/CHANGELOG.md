@@ -1,6 +1,6 @@
 ### 3.10.0-rc10 (24.11.2023)
 
-- Upgrade `garpix_utils` to version 1.10.0-rc5
+- Upgrade `garpix_utils` to version 1.10.0-rc6
 
 ### 3.10.0-rc9 (24.11.2023)
 
