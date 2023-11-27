@@ -17,7 +17,7 @@ class LoginForm(forms.Form):
         if username and password:
             user = User.objects.filter(username=username.lower()).first()
 
-            if not user:
+            if not user or user.keycloak_auth_only:
                 raise forms.ValidationError(_('User is not found'))
 
             if user and not user.is_active:

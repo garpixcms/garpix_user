@@ -1,13 +1,16 @@
 import json
 from datetime import timedelta
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView
 from django.views.generic import FormView
 from django.http import HttpResponse
+from garpix_utils.logs.enums.get_enums import Action, ActionResult
+from garpix_utils.logs.services.logger_iso import LoggerIso
+
 from garpix_user.forms import LoginForm
 from django.utils.translation import ugettext as _
 
@@ -69,12 +72,24 @@ class LoginView(UserPassesTestMixin, FormView):
         user = authenticate(request, username=username.lower(), password=password)
         if user.is_blocked:
             return self._return_error(form, _("Your account is blocked. Please contact your administrator"))
-        if password_validity_period != -1 and user.password_updated_date + timedelta(
+        if password_validity_period != -1 and not user.keycloak_auth_only and user.password_updated_date + timedelta(
                 days=password_validity_period) <= set_current_date():
             return self._return_error(form, _('Your password has expired. Please change password'))
         if user:
             user.set_user_session(request)
         login(request, user)
+
+        message = f'Пользователь {user.username} вошел в систему.'
+        log = LoggerIso.create_log(action=Action.user_login.value,
+                                   obj=get_user_model().__name__,
+                                   obj_address=request.path,
+                                   result=ActionResult.success,
+                                   sbj=request.user.username,
+                                   sbj_address=LoggerIso.get_client_ip(request),
+                                   msg=message)
+
+        LoggerIso.write_string(log)
+
         if self.request.accepts('text/html'):
             return redirect(request.GET.get('next', '/') or '/')
         return JsonResponse({'success': True})

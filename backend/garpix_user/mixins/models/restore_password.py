@@ -27,7 +27,7 @@ class RestorePasswordMixin(models.Model):
 
         USERNAME_FIELDS = getattr(User, 'USERNAME_FIELDS', ('email',))
 
-        user_data = {}
+        user_data = {'keycloak_auth_only': False}
 
         for field in USERNAME_FIELDS:
             user_data.update({field: username})

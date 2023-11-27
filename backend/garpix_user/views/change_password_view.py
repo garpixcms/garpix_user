@@ -36,6 +36,10 @@ class ChangePasswordView(AuthTokenViewMixin, viewsets.ViewSet):
 
         user = request.user
 
+        if user.keycloak_auth_only:
+            return Response({"new_password": [_('You can not change your password. Please contact administrator')]},
+                            status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.get_serializer_class()(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
@@ -60,6 +64,10 @@ class ChangePasswordView(AuthTokenViewMixin, viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data['user']
+
+        if user.keycloak_auth_only:
+            return Response({"new_password": [_('You can not change your password. Please contact administrator')]},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         password_history = get_password_settings()['password_history']
         if password_history != -1:

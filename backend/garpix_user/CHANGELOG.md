@@ -1,3 +1,9 @@
+### 3.10.0-rc11 (24.11.2023)
+
+- `keycloak_auth_only` field added to `GarpixUser` model
+- `password_validity_passed` task fixed
+- Login/logout logging added
+
 ### 3.10.0-rc10 (24.11.2023)
 
 - Upgrade `garpix_utils` to version 1.10.0-rc6

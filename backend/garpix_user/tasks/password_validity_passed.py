@@ -19,14 +19,15 @@ def password_validity_passed():
     if _password_validity_period != -1 and _password_validity_inform_days != -1:
         password_validity_period = datetime.now() - timedelta(
             days=(_password_validity_inform_days + _password_validity_period))
-        inform_users = get_user_model().active_objects.filter(password_updated_date__lte=password_validity_period)
+        inform_users = get_user_model().active_objects.filter(password_updated_date__lte=password_validity_period,
+                                                              keycloak_auth_only=False)
 
         for user in inform_users:
             SystemNotify.send({
                 'message': {
                     'message': _(
                         'Your password will expire in {days} days. Please change your password').format(
-                        days=(user.password_updated_date + timedelta(days=_password_validity_period)).days)
+                        days=(user.password_updated_date + timedelta(days=_password_validity_period)).day)
                 },
                 'event': settings.NOTIFY_PASSWORD_INVALID_EVENT
             }, user, event=settings.NOTIFY_PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}')

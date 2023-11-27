@@ -1,4 +1,7 @@
+from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
+from garpix_utils.logs.enums.get_enums import Action, ActionResult
+from garpix_utils.logs.services.logger_iso import LoggerIso
 from rest_framework import parsers, renderers
 
 from garpix_user.mixins.views.auth_token_mixin import AuthTokenViewMixin
@@ -26,6 +29,19 @@ class ObtainAuthToken(AuthTokenViewMixin, APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         use_jwt = settings.GARPIX_USER.get('REST_AUTH_TOKEN_JWT', False)
+
+        message = f'Пользователь {user.username} вошел в систему.'
+        log = LoggerIso.create_log(action=Action.user_login.value,
+                                   obj=get_user_model().__name__,
+                                   obj_address=request.path,
+                                   result=ActionResult.success,
+                                   sbj=request.user.username,
+                                   sbj_address=LoggerIso.get_client_ip(request),
+                                   msg=message)
+
+        print(log)
+
+        LoggerIso.write_string(log)
 
         if use_jwt:
             return self._get_jwt_data(user)

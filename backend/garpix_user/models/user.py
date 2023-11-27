@@ -27,6 +27,7 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
     login_attempts_count = models.IntegerField(_("Invalid log in attempts"), default=0)
     password_updated_date = models.DateTimeField(_("Password last updated date"), default=timezone.now)
     needs_password_update = models.BooleanField(_("Needs password update"), default=False)
+    keycloak_auth_only = models.BooleanField(_("Keycloak auth only"), default=False)
 
     USERNAME_FIELDS = ('username',)
 

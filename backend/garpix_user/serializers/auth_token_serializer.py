@@ -31,7 +31,7 @@ class AuthTokenSerializer(serializers.Serializer):
             # The authenticate call simply returns None for is_active=False
             # users. (Assuming the default ModelBackend authentication
             # backend.)
-            if not user:
+            if not user or user.keycloak_auth_only:
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
             if user.is_blocked:
@@ -39,7 +39,7 @@ class AuthTokenSerializer(serializers.Serializer):
                     'Your account is blocked. Please contact your administrator')
                 raise serializers.ValidationError(msg, code='authorization')
 
-            if password_validity_period != -1 and user.password_updated_date + timedelta(
+            if password_validity_period != -1 and not user.keycloak_auth_only and user.password_updated_date + timedelta(
                     days=password_validity_period) <= set_current_date():
                 msg = {
                     'non_field_errors': [

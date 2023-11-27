@@ -15,7 +15,7 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin):
             'fields': (
                 'is_active', 'is_deleted', 'is_staff', 'is_superuser',
                 'is_blocked', 'login_attempts_count', 'password_updated_date', 'needs_password_update',
-                'groups', 'user_permissions'
+                'groups', 'user_permissions', 'keycloak_auth_only'
             ),
         }),
         (_('Viber'), {
