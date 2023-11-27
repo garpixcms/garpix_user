@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
 from garpix_utils.logs.enums.get_enums import Action, ActionResult
+from garpix_utils.logs.loggers import ib_logger
 from garpix_utils.logs.services.logger_iso import LoggerIso
 from rest_framework import parsers, renderers
 
@@ -31,7 +32,7 @@ class ObtainAuthToken(AuthTokenViewMixin, APIView):
         use_jwt = settings.GARPIX_USER.get('REST_AUTH_TOKEN_JWT', False)
 
         message = f'Пользователь {user.username} вошел в систему.'
-        log = LoggerIso.create_log(action=Action.user_login.value,
+        log = ib_logger.create_log(action=Action.user_login.value,
                                    obj=get_user_model().__name__,
                                    obj_address=request.path,
                                    result=ActionResult.success,
@@ -39,9 +40,7 @@ class ObtainAuthToken(AuthTokenViewMixin, APIView):
                                    sbj_address=LoggerIso.get_client_ip(request),
                                    msg=message)
 
-        print(log)
-
-        LoggerIso.write_string(log)
+        ib_logger.write_string(log)
 
         if use_jwt:
             return self._get_jwt_data(user)

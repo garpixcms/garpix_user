@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='garpix_user',
-    version='3.10.0-rc11',
+    version='3.10.0-rc12',
     description='',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -40,7 +40,7 @@ setup(
         'django-rest-framework-social-oauth2 >= 1.1.0',
         'django-phonenumber-field-for-garpix_user >= 8.0.0',
         'garpix-notify >= 5.12.5',
-        'garpix-utils >= 1.10.0-rc6',
+        'garpix-utils >= 1.10.0-rc13',
         'drf-spectacular >= 0.24.2'
     ]
 )

@@ -6,6 +6,8 @@ from .user import UserAdmin  # noqa
 
 from .password_history import PasswordHistoryAdmin  # noqa
 
+from .group import GarpixGroupAdmin
+
 
 if settings.GARPIX_USER.get('USE_REFERRAL_LINKS', False):
     from .referral_type import ReferralTypeAdmin  # noqa

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from garpix_utils.logs.enums.get_enums import Action, ActionResult
+from garpix_utils.logs.loggers import ib_logger
 from garpix_utils.logs.services.logger_iso import LoggerIso
 from rest_framework import parsers, renderers
 from garpix_user.models.access_token import AccessToken as Token
@@ -29,7 +30,7 @@ class LogoutView(APIView):
                 })
 
             message = f'Пользователь {request.user.username} вышел из системы.'
-            log = LoggerIso.create_log(action=Action.user_logout.value,
+            log = ib_logger.create_log(action=Action.user_logout.value,
                                        obj=get_user_model().__name__,
                                        obj_address=request.path,
                                        result=ActionResult.success,
@@ -37,7 +38,7 @@ class LogoutView(APIView):
                                        sbj_address=LoggerIso.get_client_ip(request),
                                        msg=message)
 
-            LoggerIso.write_string(log)
+            ib_logger.write_string(log)
         return Response({
             'result': False,
         }, status=401)

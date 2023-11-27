@@ -9,6 +9,7 @@ from django.views.generic.base import RedirectView
 from django.views.generic import FormView
 from django.http import HttpResponse
 from garpix_utils.logs.enums.get_enums import Action, ActionResult
+from garpix_utils.logs.loggers import ib_logger
 from garpix_utils.logs.services.logger_iso import LoggerIso
 
 from garpix_user.forms import LoginForm
@@ -80,7 +81,7 @@ class LoginView(UserPassesTestMixin, FormView):
         login(request, user)
 
         message = f'Пользователь {user.username} вошел в систему.'
-        log = LoggerIso.create_log(action=Action.user_login.value,
+        log = ib_logger.create_log(action=Action.user_login.value,
                                    obj=get_user_model().__name__,
                                    obj_address=request.path,
                                    result=ActionResult.success,
@@ -88,7 +89,7 @@ class LoginView(UserPassesTestMixin, FormView):
                                    sbj_address=LoggerIso.get_client_ip(request),
                                    msg=message)
 
-        LoggerIso.write_string(log)
+        ib_logger.write_string(log)
 
         if self.request.accepts('text/html'):
             return redirect(request.GET.get('next', '/') or '/')

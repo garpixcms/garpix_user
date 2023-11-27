@@ -4,7 +4,6 @@ from garpix_user.models.access_token import AccessToken as Token
 from garpix_user.serializers.refresh_token_serializer import RefreshTokenSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.conf import settings
 from garpix_user.models.refresh_token import RefreshToken
 from django.utils import timezone
 from datetime import timedelta
@@ -20,7 +19,6 @@ class RefreshTokenView(APIView):
     serializer_class = RefreshTokenSerializer
 
     def post(self, request, *args, **kwargs):
-        _password_settings = get_password_settings()
         refresh_token_ttl_seconds = get_password_settings()['refresh_token_ttl_seconds']
         access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
         serializer = self.serializer_class(data=request.data, context={'request': request})
