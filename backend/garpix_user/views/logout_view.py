@@ -25,20 +25,22 @@ class LogoutView(APIView):
                 Token.objects.filter(key=token).delete()
                 AccessToken.objects.filter(token=token).delete()
                 RefreshToken.objects.filter(key=token).delete()
+
+                message = f'Пользователь {request.user.username} вышел из системы.'
+                log = ib_logger.create_log(action=Action.user_logout.value,
+                                           obj=get_user_model().__name__,
+                                           obj_address=request.path,
+                                           result=ActionResult.success,
+                                           sbj=request.user.username,
+                                           sbj_address=LoggerIso.get_client_ip(request),
+                                           msg=message)
+
+                ib_logger.write_string(log)
+
                 return Response({
                     'result': True,
                 })
 
-            message = f'Пользователь {request.user.username} вышел из системы.'
-            log = ib_logger.create_log(action=Action.user_logout.value,
-                                       obj=get_user_model().__name__,
-                                       obj_address=request.path,
-                                       result=ActionResult.success,
-                                       sbj=request.user.username,
-                                       sbj_address=LoggerIso.get_client_ip(request),
-                                       msg=message)
-
-            ib_logger.write_string(log)
         return Response({
             'result': False,
         }, status=401)

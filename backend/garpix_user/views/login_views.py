@@ -81,6 +81,7 @@ class LoginView(UserPassesTestMixin, FormView):
         login(request, user)
 
         message = f'Пользователь {user.username} вошел в систему.'
+
         log = ib_logger.create_log(action=Action.user_login.value,
                                    obj=get_user_model().__name__,
                                    obj_address=request.path,

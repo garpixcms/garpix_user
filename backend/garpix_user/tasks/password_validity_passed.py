@@ -17,8 +17,9 @@ def password_validity_passed():
     _password_validity_period = password_settings['password_validity_period']
     _password_validity_inform_days = password_settings['password_validity_inform_days']
     if _password_validity_period != -1 and _password_validity_inform_days != -1:
+
         password_validity_period = datetime.now() - timedelta(
-            days=(_password_validity_inform_days + _password_validity_period))
+            days=(_password_validity_period - _password_validity_inform_days))
         inform_users = get_user_model().active_objects.filter(password_updated_date__lte=password_validity_period,
                                                               keycloak_auth_only=False)
 
@@ -29,8 +30,8 @@ def password_validity_passed():
                         'Your password will expire in {days} days. Please change your password').format(
                         days=(user.password_updated_date + timedelta(days=_password_validity_period)).day)
                 },
-                'event': settings.NOTIFY_PASSWORD_INVALID_EVENT
-            }, user, event=settings.NOTIFY_PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}')
+                'event': settings.PASSWORD_INVALID_EVENT
+            }, user, event=settings.PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}')
 
 
 celery_app.conf.beat_schedule.update({
