@@ -7,6 +7,7 @@ from django.utils.module_loading import import_string
 from garpix_notify.models import SystemNotify
 from django.utils.translation import gettext_lazy as _
 from garpix_user.utils.get_password_settings import get_password_settings
+from garpix_user.utils.repluralize import rupluralize
 
 celery_app = import_string(settings.GARPIXCMS_CELERY_SETTINGS)
 
@@ -23,12 +24,24 @@ def password_validity_passed():
         inform_users = get_user_model().active_objects.filter(password_updated_date__lte=password_validity_period,
                                                               keycloak_auth_only=False)
 
+        datediff = datetime.now() - timedelta(days=_password_validity_period)
         for user in inform_users:
+            expire_days = (user.password_updated_date - datediff).day
+            if expire_days > 0:
+                _msg = _(
+                        'Your password will expire in {expire_days} {days}. Please change your password').format(
+                        expire_days=expire_days,
+                        days=rupluralize(expire_days, _('day,days'))
+                    )
+            else:
+                _msg = _('Your password has expired. Please change your password')
             SystemNotify.send({
                 'message': {
                     'message': _(
-                        'Your password will expire in {days} days. Please change your password').format(
-                        days=(user.password_updated_date + timedelta(days=_password_validity_period)).day)
+                        'Your password will expire in {expire_days} {days}. Please change your password').format(
+                        expire_days=expire_days,
+                        days=rupluralize(expire_days, _('day,days'))
+                    )
                 },
                 'event': settings.PASSWORD_INVALID_EVENT
             }, user, event=settings.PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}')

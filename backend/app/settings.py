@@ -272,7 +272,7 @@ CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
 GARPIXCMS_CELERY_SETTINGS = 'app.celery.app'
 
 ISO_LOGS_NAME = "garpix_user"
-
+ISO_LOGS_PRODUCT = "Garpix user"
 IB_ISO_LOGS_NAME = 'garpix_user_ib'
 SYSTEM_ISO_LOGS_NAME = 'garpix_user_system'
 INTERVAL_COUNT = 1

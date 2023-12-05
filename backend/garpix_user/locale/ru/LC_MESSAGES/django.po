@@ -343,8 +343,14 @@ msgstr "Необходима смена пароля"
 msgid "Your password will expire in {days} days. Please change your password"
 msgstr "Срок действия вашего пароля истечет через {days} дней. Пожалуйста, измените свой пароль"
 
+msgid "Your password has expired. Please change your password"
+msgstr "Срок действия вашего пароля истек. Пожалуйста, измените свой пароль"
+
 msgid "symbol,symbols"
 msgstr "символ,символа,символов"
+
+msgid "day,days"
+msgstr "день,дня,дней"
 
 msgid "Keycloak auth only"
 msgstr "Авторизация только через keycloak"

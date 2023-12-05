@@ -1,6 +1,7 @@
-from garpix_utils.logs.enums.get_enums import Action
+from garpix_utils.logs.enums.get_enums import Action, ActionResult
 from garpix_utils.logs.loggers import ib_logger
 from garpix_utils.logs.mixins.create_log import CreateLogMixin
+from garpix_utils.logs.services.logger_iso import LoggerIso
 from garpix_utils.models import AdminDeleteMixin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
@@ -60,3 +61,46 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
                                         action_create=Action.user_create.value)
         ib_logger.write_string(log)
         super().save_model(request, obj, form, change)
+
+    def save_related(self, request, form, formsets, change):
+        obj = form.instance
+        prev_groups = set()
+        if change:
+            prev_groups = set([str(_obj) for _obj in obj.groups.all()])
+            log = self.log_change_m2m_field(ib_logger, request, super(), form, formsets, change,
+                                            action_change=Action.user_change.value,
+                                            exclude_fields=['groups'])
+            if log:
+                ib_logger.write_string(log)
+
+        else:
+            super().save_related(request, form, formsets, change)
+
+        groups = set([str(_obj) for _obj in obj.groups.all()])
+
+        new_old = groups - prev_groups
+        old_new = prev_groups - groups
+
+        msg = CreateLogMixin.log_msg_change if CreateLogMixin.log_msg_change else f'Объект {str(obj)}(id={obj.pk}) модели {obj.__class__.__name__} был изменен'
+
+        if new_old or old_new:
+            if new_old:
+                log = ib_logger.create_log(action=Action.group_add_user.value,
+                                           obj=obj.__class__.__name__,
+                                           obj_address=request.path,
+                                           result=ActionResult.success,
+                                           sbj=request.user.username,
+                                           params=f'группы: {new_old}',
+                                           sbj_address=LoggerIso.get_client_ip(request),
+                                           msg=msg)
+                ib_logger.write_string(log)
+            if old_new:
+                log = ib_logger.create_log(action=Action.group_delete_user.value,
+                                           obj=obj.__class__.__name__,
+                                           obj_address=request.path,
+                                           result=ActionResult.success,
+                                           sbj=request.user.username,
+                                           params=f'группы: {old_new}',
+                                           sbj_address=LoggerIso.get_client_ip(request),
+                                           msg=msg)
+                ib_logger.write_string(log)

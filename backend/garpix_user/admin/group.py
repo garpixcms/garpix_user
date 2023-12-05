@@ -18,6 +18,14 @@ class GarpixGroupAdmin(CreateLogMixin, GroupAdmin):
         super().save_model(request, obj, form, change)
         ib_logger.write_string(log)
 
+    def save_related(self, request, form, formsets, change):
+        if change:
+            log = self.log_change_m2m_field(ib_logger, request, super(), form, formsets, change,
+                                            action_change=Action.group_change.value,)
+            ib_logger.write_string(log)
+        else:
+            super().save_related(request, form, formsets, change)
+
     def delete_model(self, request, obj):
         action = Action.group_delete.value
         log = self.log_delete(ib_logger, request, obj, action)

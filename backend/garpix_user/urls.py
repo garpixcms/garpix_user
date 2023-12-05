@@ -6,6 +6,12 @@ from garpix_user.views.user_session_view import UserSessionView
 from garpix_user.views.registration_view import registration_view
 from garpix_user.views.referral_links_view import ReferralLinkView
 
+from django.contrib import admin
+from .forms import LoginForm
+
+admin.autodiscover()
+admin.site.login_form = LoginForm
+
 from garpix_user.views import (
     EmailConfirmationView, PhoneConfirmationView,
     RestorePasswordView,
