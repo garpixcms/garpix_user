@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from garpix_utils.logs.enums.get_enums import Action, ActionResult
+from garpix_utils.logs.loggers import ib_logger
+from garpix_utils.logs.services.logger_iso import LoggerIso
 
 from garpix_user.utils.get_password_settings import get_password_settings
 
@@ -24,6 +27,19 @@ class CustomAuthenticationBackend:
             if password_settings['available_attempt'] != -1 and user.login_attempts_count >= password_settings[
                     'available_attempt']:
                 user.is_blocked = True
+
+                message = f'Пользователь {user.username} заблокирован'
+
+                log = ib_logger.create_log(action=Action.user_access.value,
+                                           obj=get_user_model().__name__,
+                                           obj_address=request.path,
+                                           result=ActionResult.success,
+                                           sbj=user.username,
+                                           sbj_address=LoggerIso.get_client_ip(request),
+                                           msg=message)
+
+                ib_logger.write_string(log)
+
             user.save()
             return None
         except get_user_model().DoesNotExist:

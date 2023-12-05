@@ -1,3 +1,7 @@
+### 3.10.0-rc16 (05.12.2023)
+
+- Block user log added
+
 ### 3.10.0-rc15 (05.12.2023)
 
 - Upgrade `garpix_utils` to version 1.10.0-rc21
