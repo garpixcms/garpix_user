@@ -1,3 +1,9 @@
+### 3.10.0-rc17 (05.12.2023)
+
+- Permissions and groups logs fixed
+- `password_validity_passed` task fixed
+- - Upgrade `garpix_utils` to version 1.10.0-rc23
+
 ### 3.10.0-rc16 (05.12.2023)
 
 - Block user log added

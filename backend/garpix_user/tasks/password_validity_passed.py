@@ -24,15 +24,17 @@ def password_validity_passed():
         inform_users = get_user_model().active_objects.filter(password_updated_date__lte=password_validity_period,
                                                               keycloak_auth_only=False)
 
-        datediff = datetime.now() - timedelta(days=_password_validity_period)
+        datenow = datetime.now()
         for user in inform_users:
-            expire_days = (user.password_updated_date - datediff).day
+            expire_days = 1 + (
+                        user.password_updated_date + timedelta(days=_password_validity_period) - datenow).days
+
             if expire_days > 0:
                 _msg = _(
-                        'Your password will expire in {expire_days} {days}. Please change your password').format(
-                        expire_days=expire_days,
-                        days=rupluralize(expire_days, _('day,days'))
-                    )
+                    'Your password will expire in {expire_days} {days}. Please change your password').format(
+                    expire_days=expire_days,
+                    days=rupluralize(expire_days, _('day,days'))
+                )
             else:
                 _msg = _('Your password has expired. Please change your password')
             SystemNotify.send({

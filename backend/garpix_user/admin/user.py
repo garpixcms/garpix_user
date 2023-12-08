@@ -64,12 +64,13 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
 
     def save_related(self, request, form, formsets, change):
         obj = form.instance
-        prev_groups = set()
+        prev_groups, prev_permissions = set(), set()
         if change:
             prev_groups = set([str(_obj) for _obj in obj.groups.all()])
+            prev_permissions = set([str(_obj) for _obj in obj.user_permissions.all()])
             log = self.log_change_m2m_field(ib_logger, request, super(), form, formsets, change,
                                             action_change=Action.user_change.value,
-                                            exclude_fields=['groups'])
+                                            exclude_fields=['groups', 'user_permissions'])
             if log:
                 ib_logger.write_string(log)
 
@@ -77,30 +78,51 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
             super().save_related(request, form, formsets, change)
 
         groups = set([str(_obj) for _obj in obj.groups.all()])
+        permissions = set([str(_obj) for _obj in obj.user_permissions.all()])
 
-        new_old = groups - prev_groups
-        old_new = prev_groups - groups
+        new_old_groups = groups - prev_groups
+        old_new_groups = prev_groups - groups
 
-        msg = CreateLogMixin.log_msg_change if CreateLogMixin.log_msg_change else f'Объект {str(obj)}(id={obj.pk}) модели {obj.__class__.__name__} был изменен'
+        new_old_permissions = permissions - prev_permissions
+        old_new_permissions = prev_permissions - permissions
 
-        if new_old or old_new:
-            if new_old:
+        if new_old_groups or old_new_groups:
+            if new_old_groups:
+                msg = f'Пользователь {str(obj)}(id={obj.pk}) был добавлен в группы {new_old_groups}'
                 log = ib_logger.create_log(action=Action.group_add_user.value,
                                            obj=obj.__class__.__name__,
                                            obj_address=request.path,
                                            result=ActionResult.success,
                                            sbj=request.user.username,
-                                           params=f'группы: {new_old}',
                                            sbj_address=LoggerIso.get_client_ip(request),
                                            msg=msg)
                 ib_logger.write_string(log)
-            if old_new:
+            if old_new_groups:
+                msg = f'Пользователь {str(obj)}(id={obj.pk}) был удален из групп {old_new_groups}'
                 log = ib_logger.create_log(action=Action.group_delete_user.value,
                                            obj=obj.__class__.__name__,
                                            obj_address=request.path,
                                            result=ActionResult.success,
                                            sbj=request.user.username,
-                                           params=f'группы: {old_new}',
                                            sbj_address=LoggerIso.get_client_ip(request),
                                            msg=msg)
                 ib_logger.write_string(log)
+
+        msg = CreateLogMixin.log_msg_change if CreateLogMixin.log_msg_change else f'Привилегии пользователя {str(obj)}(id={obj.pk}) были изменены'
+
+        changed_fields = ''
+        if new_old_permissions or old_new_permissions:
+            if new_old_permissions:
+                changed_fields += f'+добавлены {new_old_permissions} '
+            if old_new_permissions:
+                changed_fields += f'-удалены {old_new_permissions} '
+
+            log = ib_logger.create_log(action=Action.user_access.value,
+                                       obj=obj.__class__.__name__,
+                                       obj_address=request.path,
+                                       result=ActionResult.success,
+                                       sbj=request.user.username,
+                                       params=changed_fields,
+                                       sbj_address=LoggerIso.get_client_ip(request),
+                                       msg=msg)
+            ib_logger.write_string(log)
