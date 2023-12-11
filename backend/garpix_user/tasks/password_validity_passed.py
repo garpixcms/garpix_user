@@ -39,7 +39,7 @@ def password_validity_passed():
                 _msg = _('Your password has expired. Please change your password')
             SystemNotify.send({
                 'message': {
-                    'message': _msg
+                    'message': str(_msg)
                 },
                 'event': settings.PASSWORD_INVALID_EVENT
             }, user, event=settings.PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}')
