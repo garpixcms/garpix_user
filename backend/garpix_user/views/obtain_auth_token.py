@@ -36,7 +36,7 @@ class ObtainAuthToken(AuthTokenViewMixin, APIView):
                                    obj=get_user_model().__name__,
                                    obj_address=request.path,
                                    result=ActionResult.success,
-                                   sbj=request.user.username,
+                                   sbj=user.username,
                                    sbj_address=LoggerIso.get_client_ip(request),
                                    msg=message)
 

@@ -1,3 +1,8 @@
+### 3.10.0-rc18 (11.12.2023)
+
+- `password_validity_passed` task fixed
+- Logs fixed
+
 ### 3.10.0-rc17 (05.12.2023)
 
 - Permissions and groups logs fixed

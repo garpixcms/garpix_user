@@ -26,24 +26,20 @@ def password_validity_passed():
 
         datenow = datetime.now()
         for user in inform_users:
-            expire_days = 1 + (
+            expire_days = (
                         user.password_updated_date + timedelta(days=_password_validity_period) - datenow).days
 
             if expire_days > 0:
                 _msg = _(
                     'Your password will expire in {expire_days} {days}. Please change your password').format(
-                    expire_days=expire_days,
+                    expire_days=1 + expire_days,
                     days=rupluralize(expire_days, _('day,days'))
                 )
             else:
                 _msg = _('Your password has expired. Please change your password')
             SystemNotify.send({
                 'message': {
-                    'message': _(
-                        'Your password will expire in {expire_days} {days}. Please change your password').format(
-                        expire_days=expire_days,
-                        days=rupluralize(expire_days, _('day,days'))
-                    )
+                    'message': _msg
                 },
                 'event': settings.PASSWORD_INVALID_EVENT
             }, user, event=settings.PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}')
