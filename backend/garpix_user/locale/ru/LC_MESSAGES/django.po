@@ -357,3 +357,6 @@ msgstr "Авторизация только через keycloak"
 
 msgid "You can not change your password. Please contact administrator"
 msgstr "Вы не можете сменить пароль. Пожалуйста, свяжитесь с администратором"
+
+msgid "Ensure this value is a positive integer or -1"
+msgstr "Убедитесь, что это значение - положительное число или равно -1"

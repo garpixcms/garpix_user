@@ -2,6 +2,8 @@ from solo.models import SingletonModel
 from django.db import models
 from django.utils.translation import gettext as _
 
+from garpix_user.utils.validators import PositiveWithInfValidator
+
 
 class GarpixUserPasswordConfiguration(SingletonModel):
     min_length = models.PositiveIntegerField(default=12, verbose_name=_('Минимальная длина пароля'))
@@ -35,6 +37,12 @@ class GarpixUserPasswordConfiguration(SingletonModel):
                                                     verbose_name=_(
                                                         'Время жизни рефреш токена')
                                                     )
+    access_tokens_count = models.IntegerField(default=-1,
+                                              help_text=_('-1 если отправка уведомлений не требуется'),
+                                              validators=[PositiveWithInfValidator(limit_value=[])],
+                                              verbose_name=_(
+                                                  'Количество хранимых access-токенов (самый старый будет удален)')
+                                              )
 
     class Meta:
         verbose_name = 'Настройки безопасности входа'

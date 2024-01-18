@@ -1,3 +1,8 @@
+### 3.10.0-rc20 (18.01.2024)
+
+- `access_tokens_count` setting added
+- restore and confirm password bags fixed
+
 ### 3.10.0-rc18-3.10.0-rc19 (11.12.2023)
 
 - `password_validity_passed` task fixed

@@ -23,6 +23,7 @@ def get_password_settings():
         password_validity_inform_days = admin_password_settings.password_validity_inform_days
         access_token_ttl_seconds = admin_password_settings.access_token_ttl_seconds
         refresh_token_ttl_seconds = admin_password_settings.refresh_token_ttl_seconds
+        access_tokens_count = admin_password_settings.access_tokens_count
     else:
         min_length = GARPIX_USER_SETTINGS.get('MIN_LENGTH_PASSWORD', 8)
         min_digits = GARPIX_USER_SETTINGS.get('MIN_DIGITS_PASSWORD', 2)
@@ -36,6 +37,7 @@ def get_password_settings():
         password_validity_inform_days = GARPIX_USER_SETTINGS.get('PASSWORD_VALIDITY_INFORM_DAYS', -1)
         access_token_ttl_seconds = GARPIX_USER_SETTINGS.get('ACCESS_TOKEN_TTL_SECONDS', _access_token_ttl_seconds)
         refresh_token_ttl_seconds = GARPIX_USER_SETTINGS.get('REFRESH_TOKEN_TTL_SECONDS', _refresh_token_ttl_seconds)
+        access_tokens_count = GARPIX_USER_SETTINGS.get('ACCESS_TOKENS_COUNT', -1)
 
     return {
         'min_length': min_length,
@@ -49,5 +51,6 @@ def get_password_settings():
         'password_first_change': password_first_change,
         'password_validity_inform_days': password_validity_inform_days,
         'access_token_ttl_seconds': access_token_ttl_seconds,
-        'refresh_token_ttl_seconds': refresh_token_ttl_seconds
+        'refresh_token_ttl_seconds': refresh_token_ttl_seconds,
+        'access_tokens_count': access_tokens_count,
     }

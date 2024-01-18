@@ -42,6 +42,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
         from django.contrib.auth import get_user_model
         from garpix_user.exceptions import UserRegisteredException, WaitException
         from garpix_notify.models import Notify
+        from garpix_user.models import UserSession
 
         User = get_user_model()
 
@@ -59,6 +60,9 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
                 return WaitException()
 
         confirmation_code = get_random_string(self.get_confirm_code_length('email'), string.digits)
+
+        if isinstance(self, UserSession):
+            self.email = email
 
         self.new_email = email or self.email
 
@@ -117,7 +121,7 @@ class UserEmailConfirmMixin(CodeLengthMixin, models.Model):
                     return False, NoTimeLeftException(field='email_confirmation_code')
                 user.is_email_confirmed = True
                 user.email = user.new_email or user.email
-                user.email_confirmation_code = None
+                # user.email_confirmation_code = None
                 user.save()
                 return True, user
 

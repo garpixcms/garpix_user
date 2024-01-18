@@ -17,6 +17,11 @@ class AuthTokenViewMixin:
     def _get_access_token_data(self, user):
         _password_settings = get_password_settings()
 
+        if (access_tokens_count := _password_settings['access_tokens_count']) != -1:
+            _prev_tokens = Token.objects.filter(user=user).order_by('-created')[
+                           :access_tokens_count - 1].values_list('pk', flat=True)
+            Token.objects.exclude(pk__in=_prev_tokens).delete()
+
         token = Token.objects.create(user=user)
         refresh_token = RefreshToken.objects.create(user=user)
         return Response({
