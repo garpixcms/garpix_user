@@ -6,4 +6,4 @@ class PositiveWithInfValidator(BaseValidator):
     message = _('Ensure this value is a positive integer or -1')
 
     def compare(self, a, b):
-        return a < 0 and a != -1
+        return a <= 0 and a != -1

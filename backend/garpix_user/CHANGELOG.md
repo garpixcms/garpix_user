@@ -1,3 +1,8 @@
+### 3.10.0-rc21 (22.01.2024)
+
+- `access_tokens_count` functionality fixed
+- registration functionality fixed
+
 ### 3.10.0-rc20 (18.01.2024)
 
 - `access_tokens_count` setting added

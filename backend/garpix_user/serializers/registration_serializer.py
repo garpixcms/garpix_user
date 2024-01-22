@@ -92,6 +92,8 @@ class RegistrationSerializer(PasswordSerializerMixin, serializers.ModelSerialize
                 user_session = UserSession.get_or_create_user_session(request)
                 user_session.user = user
                 user_session.recognized = UserSession.UserState.REGISTERED
+                user_session.is_email_confirmed = False
+                user_session.is_phone_confirmed = False
                 user_session.save()
 
         return user
