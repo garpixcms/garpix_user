@@ -11,7 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAuthenticated, ValidationError
 from garpix_user.models import UserSession
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 

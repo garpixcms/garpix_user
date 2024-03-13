@@ -3,7 +3,7 @@ from django.test import override_settings
 import time
 
 from garpix_user.tests.utils.test_case_mixin import ApiTestMixin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy_lazy as _
 
 
 class LoginApiTest(ApiTestMixin):

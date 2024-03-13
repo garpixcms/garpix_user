@@ -12,7 +12,7 @@ from garpix_utils.logs.loggers import ib_logger
 from garpix_utils.logs.services.logger_iso import LoggerIso
 
 from garpix_user.forms import LoginForm
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class LogoutView(RedirectView):

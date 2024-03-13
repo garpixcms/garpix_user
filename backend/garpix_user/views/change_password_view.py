@@ -5,7 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 from garpix_user.mixins.views.auth_token_mixin import AuthTokenViewMixin
 from garpix_user.models import PasswordHistory

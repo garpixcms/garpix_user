@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from garpix_user.mixins.models import RestorePasswordMixin

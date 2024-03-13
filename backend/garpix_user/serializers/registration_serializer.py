@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 from garpix_user.mixins.serializers import PasswordSerializerMixin
 from garpix_user.models.user_session import UserSession
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 

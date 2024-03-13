@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='garpix_user',
-    version='3.10.0-rc21',
+    version='3.10.0-rc22',
     description='',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -32,15 +32,15 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django >= 3.1, < 4',
+        'Django >= 3.1, < 5',
         'djangorestframework >= 3.8',
         'django-oauth-toolkit >= 1.1.2',
         'social-auth-app-django >= 2.1.0',
         'social-auth-core == 4.3.0',
-        'django-rest-framework-social-oauth2 >= 1.1.0',
-        'django-phonenumber-field-for-garpix_user >= 8.0.0',
-        'garpix-notify >= 5.12.5',
-        'garpix-utils >= 1.10.0-rc23',
+        'django-rest-framework-social-oauth2 == 1.1.0',
+        'django-phonenumber-field-for-garpix_user >= 8.0.1',
+        'garpix-notify >= 5.17.0rc1',
+        'garpix-utils >= 1.10.0-rc24',
         'drf-spectacular >= 0.24.2'
     ]
 )

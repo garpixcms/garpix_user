@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.validators import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from garpix_user.utils.repluralize import rupluralize

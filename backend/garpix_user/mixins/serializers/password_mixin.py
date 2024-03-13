@@ -2,7 +2,7 @@ from django.contrib.auth.password_validation import CommonPasswordValidator, Min
     UserAttributeSimilarityValidator
 from rest_framework import serializers
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 from garpix_user.utils.get_password_settings import get_password_settings
 from garpix_user.utils.repluralize import rupluralize

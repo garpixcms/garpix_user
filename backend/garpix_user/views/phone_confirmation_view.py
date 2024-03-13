@@ -10,7 +10,7 @@ from garpix_user.exceptions import NotAuthenticateException
 from garpix_user.serializers import PhoneConfirmSendSerializer, PhoneConfirmCheckCodeSerializer, \
     PhonePreConfirmSendSerializer
 from garpix_user.models import UserSession
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 from garpix_user.utils.drf_spectacular import user_session_token_header_parameter
 

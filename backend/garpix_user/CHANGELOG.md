@@ -1,3 +1,7 @@
+### 3.10.0-rc22 (13.03.2024)
+
+- `Django` < 5 version support added
+
 ### 3.10.0-rc21 (22.01.2024)
 
 - `access_tokens_count` functionality fixed
