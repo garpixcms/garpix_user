@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5c2cf375534155044dfa7e537b7d2533da7fd401ea4c964b6252304246e360bf"
+            "sha256": "d111b14a19b87858d19d48eb83ede52c6eed3caaa1d5e8b94cf15256e8057e87"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -468,13 +468,6 @@
             "index": "pypi",
             "version": "==4.2"
         },
-        "django-braces": {
-            "hashes": [
-                "sha256:28f00b0f98368c9a37f30cce6087fc57127f0a24c5b8b449f9e1245bded6405d",
-                "sha256:f451d08ffc1078d81209a2e17f2219bce20196928853c82405451b18a46875e0"
-            ],
-            "version": "==1.15.0"
-        },
         "django-ckeditor": {
             "hashes": [
                 "sha256:55b5f9ce3af47e3c8a8ed37d42be8439da2a664d6e571c2247c1db5c96459dd7",
@@ -532,18 +525,18 @@
         },
         "django-polymorphic-tree-for-garpix-page": {
             "hashes": [
-                "sha256:b60aeb8cd05ef33efe7f3b5c5a02ab7740f84cd1006d1da8d84ba1d2ec49915c",
-                "sha256:fd789b70e50ede15712c4a4e698c84153f302d02d30ce6ac0c7c5d4da4b822de"
+                "sha256:4931b8a905b7bd5320cab89a128d739c1369a1ef843e4c045d7a266093301f8b",
+                "sha256:a85368a685a7e96f6dd39fddd2b08bd31dd41e41afb47a928ac04cd664c7be9d"
             ],
-            "index": "pypi",
-            "version": "==2.2.0"
+            "version": "==2.2.2"
         },
         "django-rest-framework-social-oauth2": {
             "hashes": [
-                "sha256:c9a297b636ffd37957c6146280e99ead41e6aca37bcb995e3d52d65eefbca0b7"
+                "sha256:5314a6897ce43844ac476f4311998b1f450d4d08bae0224ee835065c89f45c7b",
+                "sha256:c5ca63bbb7d5530deedc243cdbea77c74b1b3739480ae3a4f2f61d1cb7ad8c2b"
             ],
             "index": "pypi",
-            "version": "==1.1.0"
+            "version": "==1.2.0"
         },
         "django-solo": {
             "hashes": [

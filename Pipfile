@@ -26,7 +26,7 @@ drf-spectacular = "*"
 pip = "*"
 install = "*"
 django-phonenumber-field-for-garpix-user = "==8.0.1"
-django-rest-framework-social-oauth2 = "==1.1.0"
+django-rest-framework-social-oauth2 = "==1.2.0"
 django-phonenumber-field = "*"
 
 [dev-packages]

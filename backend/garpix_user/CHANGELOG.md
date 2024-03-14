@@ -1,3 +1,7 @@
+### 3.10.0-rc23 (14.03.2024)
+
+- Обновлена зависимость `django-rest-framework-social-oauth2` до версии 1.2.0
+
 ### 3.10.0-rc22 (13.03.2024)
 
 - `Django` < 5 version support added
