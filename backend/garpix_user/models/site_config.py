@@ -45,8 +45,8 @@ class GarpixUserPasswordConfiguration(SingletonModel):
                                               )
 
     class Meta:
-        verbose_name = 'Настройки безопасности входа'
-        verbose_name_plural = 'Настройки безопасности входа'
+        verbose_name = 'Настройки безопасности входа | Login Security Settings '
+        verbose_name_plural = 'Настройки безопасности входа | Login Security Settings'
 
     def __str__(self):
         return ''

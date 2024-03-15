@@ -8,11 +8,16 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='garpix_user',
-    version='3.10.0-rc23',
+    version='3.10.0-rc24',
     description='',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/garpixcms/garpix_user',
+    project_urls={
+        'Documentation': 'https://docs.garpixcms.ru/packages/garpix_user/',
+        'GitHub': 'https://github.com/garpixcms/garpix_user/',
+        'Changelog': 'https://github.com/garpixcms/garpix_user/blob/master/CHANGELOG.md/',
+    },
     author='Garpix LTD',
     author_email='info@garpix.com',
     license='MIT',

@@ -1,0 +1,1 @@
+time = 2024-01-22T13:27:12+00:00 | id=200 | act="Вход в систему" | sbj="gri" | sbj_addr="127.0.0.1" | act_type="Идентификация и аутентификация субъекта доступа" | lvl="Информация" | obj="User" | obj_addr="/admin/login/" | result="Успешно" | msg="Пользователь gri вошел в систему." | host="0" | host_addr="0" | vendor="Garpix" | product="Garpix user"

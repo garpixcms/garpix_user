@@ -14,8 +14,8 @@ class AccessToken(models.Model):
     created = models.DateTimeField(_("Created"), auto_now_add=True)
 
     class Meta:
-        verbose_name = _("Access Token")
-        verbose_name_plural = _("Access Tokens")
+        verbose_name = _("Токен доступа | Access Token")
+        verbose_name_plural = _("Токены доступа | Access Tokens")
 
     def save(self, *args, **kwargs):
         if not self.key:

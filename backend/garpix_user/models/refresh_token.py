@@ -14,8 +14,8 @@ class RefreshToken(models.Model):
     created = models.DateTimeField(_("Created"), auto_now_add=True)
 
     class Meta:
-        verbose_name = _("Refresh Token")
-        verbose_name_plural = _("Refresh Tokens")
+        verbose_name = _("Токен обновления доступа | Refresh Token")
+        verbose_name_plural = _("Токены обновления доступа | Refresh Tokens")
 
     def save(self, *args, **kwargs):
         if not self.key:

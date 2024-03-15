@@ -131,8 +131,8 @@ class UserSession(RestorePasswordMixin, UserEmailConfirmMixin, UserPhoneConfirmM
         return cls.create_from_request(request, username, session)
 
     class Meta:
-        verbose_name = _('System user')
-        verbose_name_plural = _('System users')
+        verbose_name = 'Системный пользователь | System user'
+        verbose_name_plural = 'Системные пользователи | System users'
 
     def __str__(self):
         return _(

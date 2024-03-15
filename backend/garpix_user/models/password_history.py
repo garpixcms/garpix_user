@@ -9,5 +9,5 @@ class PasswordHistory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Date created'))
 
     class Meta:
-        verbose_name = _('Password history')
-        verbose_name_plural = _('Password history')
+        verbose_name = _('История паролей | Password history')
+        verbose_name_plural = _('История паролей | Password history')

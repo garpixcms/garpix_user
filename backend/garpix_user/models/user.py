@@ -35,8 +35,8 @@ class GarpixUser(DeleteMixin, UserEmailConfirmMixin, UserPhoneConfirmMixin, User
     active_objects = ActiveManager()
 
     class Meta:
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
+        verbose_name = 'Пользователь | User'
+        verbose_name_plural = 'Пользователи | Users'
         abstract = True
 
     def save(self, *args, **kwargs):

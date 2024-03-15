@@ -446,11 +446,11 @@ See `garpix_user/tests/test_api/*.py` for examples.
 
 # Changelog
 
-See [CHANGELOG.md](CHANGELOG.md).
+See [CHANGELOG.md](https://github.com/garpixcms/garpix_user/blob/master/CHANGELOG.md/).
 
 # Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/garpixcms/garpix_user/blob/master/CONTRIBUTING.md).
 
 # License
 
