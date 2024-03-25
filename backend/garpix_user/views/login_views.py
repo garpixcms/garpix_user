@@ -55,6 +55,7 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
         if not kwargs.get('data'):
             kwargs['data'] = json.loads(getattr(self.request, 'body') or b'{}')
         return kwargs
