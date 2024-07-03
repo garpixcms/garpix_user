@@ -1,5 +1,6 @@
 import jwt
 from django.db import IntegrityError
+from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -12,48 +13,56 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext as _
 
 
+User = get_user_model()
+
+
+def check_token_lifetime(token, ttl):
+    if ttl <= 0:
+        return
+
+    if token.created + timedelta(seconds=ttl) < timezone.now():
+        token.delete()
+        raise exceptions.AuthenticationFailed(_('Token expired.'))
+
+
+def get_user_by_token_query(**kwargs):
+    try:
+        return User.active_objects.get(is_blocked=False, **kwargs)
+    except User.DoesNotExist:
+        raise exceptions.AuthenticationFailed(_('User inactive or deleted.'))
+
+
 def get_user_by_token(token):
     from ..models.access_token import AccessToken as Token
     from oauth2_provider.models import AccessToken
-    User = get_user_model()
 
     access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
 
     # Refresh django rest token
     try:
         tok = Token.objects.get(key=token)
-        if access_token_ttl_seconds > 0:
-            if tok.created + timedelta(seconds=access_token_ttl_seconds) < timezone.now():
-                tok.delete()
-                raise Exception("Token expired.")
-        user = User.active_objects.get(id=tok.user_id)
-        return user
-    except:  # noqa
+        check_token_lifetime(tok, access_token_ttl_seconds)
+
+        return get_user_by_token_query(pk=tok.user_id)
+    except Token.DoesNotExist:
         pass
 
     # Refresh social auth token
     try:
         tok = AccessToken.objects.get(token=token)
-        if access_token_ttl_seconds > 0:
-            if tok.created + timedelta(seconds=access_token_ttl_seconds) < timezone.now():
-                tok.delete()
-        else:
-            user = tok.user
-            return user
-    except:  # noqa
+        check_token_lifetime(tok, access_token_ttl_seconds)
+
+        return get_user_by_token_query(pk=tok.user_id)
+    except AccessToken.DoesNotExist:
         pass
 
-    return AnonymousUser()
+    raise exceptions.AuthenticationFailed(_('Invalid token.'))
 
 
 def get_user_by_jwt_token(token):
-
     access_token_ttl_seconds = get_password_settings()['access_token_ttl_seconds']
 
-    User = get_user_model()
-
     jwt_secret_key = settings.GARPIX_USER.get('JWT_SECRET_KEY', None)
-
     if jwt_secret_key is None:
         raise IntegrityError(_('JWT_SECRET_KEY is not set'))
 
@@ -63,20 +72,17 @@ def get_user_by_jwt_token(token):
         if access_token_ttl_seconds > 0:
             if token_data['token_created_at'] + timedelta(
                     seconds=access_token_ttl_seconds) < timezone.now():
-                raise Exception("Token expired.")
-        return User.active_objects.get(username=token_data['username'], is_blockde=False)
-    except Exception as e:
-        print(str(e))
+                raise exceptions.AuthenticationFailed(_('Token expired.'))
 
-    return AnonymousUser()
+        return get_user_by_token_query(username=token_data['username'])
+    except jwt.DecodeError:
+        raise exceptions.AuthenticationFailed(_('Invalid token.'))
 
 
 class MainAuthentication(TokenAuthentication):
-
     keyword = 'Bearer'
 
     def authenticate(self, request):
-
         token = get_token_from_request(request, keyword=self.keyword)
         if token is None:
             return None
@@ -88,6 +94,4 @@ class MainAuthentication(TokenAuthentication):
         else:
             user = get_user_by_token(token)
 
-        if user is not None:
-            return user, None
         return user, None
