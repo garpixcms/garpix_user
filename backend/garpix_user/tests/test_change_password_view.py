@@ -18,7 +18,7 @@ class TestChangePasswordView:
         self.change_password_url = reverse('change-password')
         self.change_password_unauthorized_url = reverse('change-password-unauthorized')
 
-    def test_change_password_for_authenticated_user(self):
+    def test_change_password_for_authenticated_user(self):  #Проверяет, что аутентифицированный пользователь может успешно изменить свой пароль.
         self.client.force_authenticate(user=self.user)
         data = {'old_password': 'oldpassword', 'new_password': 'newpassword'}
         response = self.client.post(self.change_password_url, data, format='json')
@@ -27,13 +27,13 @@ class TestChangePasswordView:
         self.user.refresh_from_db()
         assert self.user.check_password('newpassword')
 
-    def test_change_password_for_unauthenticated_user(self):
+    def test_change_password_for_unauthenticated_user(self):  #Проверяет, что неаутентифицированный пользователь не может изменить пароль и получает ошибку 403 Forbidden.
         data = {'old_password': 'oldpassword', 'new_password': 'newpassword'}
         response = self.client.post(self.change_password_url, data, format='json')
         assert response.status_code == status.HTTP_403_FORBIDDEN
         assert isinstance(response.exception, NotAuthenticateException)
 
-    def test_change_password_for_keycloak_auth_only_user(self):
+    def test_change_password_for_keycloak_auth_only_user(self):  #Проверяет, что пользователь, аутентифицированный только через Keycloak, не может изменить свой пароль и получает соответствующее сообщение об ошибке.
         self.user.keycloak_auth_only = True
         self.user.save()
         self.client.force_authenticate(user=self.user)
@@ -42,7 +42,7 @@ class TestChangePasswordView:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data == {'new_password': ['You can not change your password. Please contact administrator']}
 
-    def test_change_password_for_unauthorized_user(self):
+    def test_change_password_for_unauthorized_user(self):  #Проверяет, что пользователь без аутентификации может изменить пароль другого пользователя через специальный URL-адрес
         data = {'username': 'testuser', 'new_password': 'newpassword'}
         response = self.client.post(self.change_password_unauthorized_url, data, format='json')
         assert response.status_code == status.HTTP_200_OK
@@ -50,7 +50,7 @@ class TestChangePasswordView:
         assert self.user.check_password('newpassword')
         assert not self.user.needs_password_update
 
-    def test_password_history_check(self, monkeypatch):
+    def test_password_history_check(self, monkeypatch):  #Проверяет, что пользователь не может использовать пароль, который уже был использован в прошлом
         monkeypatch.setattr(get_password_settings(), 'password_history', 2)
         self.client.force_authenticate(user=self.user)
         PasswordHistory.objects.create(user=self.user, password='oldpassword')

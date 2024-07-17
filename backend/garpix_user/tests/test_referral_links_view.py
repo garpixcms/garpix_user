@@ -7,7 +7,7 @@ from backend.app import settings
 
 
 @pytest.mark.django_db
-def test_referral_link_view_success(mocker):
+def test_referral_link_view_success(mocker):  #Проверяет, что при успешном использовании реферальной ссылки, пользователь будет перенаправлен на URL, определенный в настройке REFERRAL_REDIRECT_URL.
     factory = RequestFactory()
     request = factory.get(reverse('referral_link', kwargs={'hash': 'testhash'}))
     view = ReferralLinkView.as_view()
@@ -19,7 +19,7 @@ def test_referral_link_view_success(mocker):
 
 
 @pytest.mark.django_db
-def test_referral_link_view_error(mocker):
+def test_referral_link_view_error(mocker):  #Проверяет, что при ошибке обработки реферальной ссылки, пользователь будет перенаправлен на URL, определенный в настройке REFERRAL_REDIRECT_URL.
     factory = RequestFactory()
     request = factory.get(reverse('referral_link', kwargs={'hash': 'testhash'}))
     view = ReferralLinkView.as_view()

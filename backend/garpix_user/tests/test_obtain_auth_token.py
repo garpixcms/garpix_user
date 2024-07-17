@@ -9,13 +9,13 @@ User = get_user_model()
 
 
 @pytest.mark.django_db
-class TestObtainAuthToken:
+class TestObtainAuthToken:  
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword')
         self.url = reverse('obtain-auth-token')
 
-    def test_obtain_auth_token_with_valid_credentials(self):
+    def test_obtain_auth_token_with_valid_credentials(self):  #Проверяет, что пользователь может успешно получить токен аутентификации, предоставив правильные учетные данные
         data = {
             'username': 'testuser',
             'password': 'testpassword'
@@ -24,7 +24,7 @@ class TestObtainAuthToken:
         assert response.status_code == status.HTTP_200_OK
         assert 'token' in response.data
 
-    def test_obtain_auth_token_with_invalid_credentials(self):
+    def test_obtain_auth_token_with_invalid_credentials(self):  #Проверяет, что пользователь не может получить токен аутентификации, предоставив неправильный пароль.
         data = {
             'username': 'testuser',
             'password': 'wrongpassword'
@@ -33,7 +33,7 @@ class TestObtainAuthToken:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'non_field_errors' in response.data
 
-    def test_obtain_auth_token_with_jwt(self, mocker):
+    def test_obtain_auth_token_with_jwt(self, mocker):  #Проверяет, что если настройка RESTAUTHTOKENJWT включена, пользователь получает JWT-токен в ответе.
         GARPIX_USER['REST_AUTH_TOKEN_JWT'] = True
         mock_jwt_data = mocker.patch('garpix_user.views.ObtainAuthToken._get_jwt_data', return_value={'access_token': 'test_access_token'})
         data = {
@@ -45,7 +45,7 @@ class TestObtainAuthToken:
         assert 'access_token' in response.data
         mock_jwt_data.assert_called_with(self.user)
 
-    def test_obtain_auth_token_without_jwt(self, mocker):
+    def test_obtain_auth_token_without_jwt(self, mocker):  #Проверяет, что если настройка REST_AUTH_TOKEN_JWT выключена, пользователь получает обычный токен аутентификации в ответе.
         GARPIX_USER['REST_AUTH_TOKEN_JWT'] = False
         mock_access_token_data = mocker.patch('garpix_user.views.ObtainAuthToken._get_access_token_data', return_value={'token': 'test_token'})
 
@@ -58,7 +58,7 @@ class TestObtainAuthToken:
         assert 'token' in response.data
         mock_access_token_data.assert_called_with(self.user)
 
-    def test_obtain_auth_token_logs_user_login(self, mocker):
+    def test_obtain_auth_token_logs_user_login(self, mocker):  #Проверяет, что при успешном получении токена аутентификации, событие входа пользователя фиксируется в логах.
         mock_create_log = mocker.patch('garpix_user.logger.IbLogger.create_log')
         mock_write_string = mocker.patch('garpix_user.logger.IbLogger.write_string')
 

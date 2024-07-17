@@ -7,7 +7,7 @@ from garpix_user.views.user_session_view import UserSessionView
 
 
 @pytest.mark.django_db
-def test_create_user_session_success(mocker):
+def test_create_user_session_success(mocker):  #Проверяет, что при успешном создании пользовательской сессии, представление возвращает ожидаемый ответ с HTTP-кодом 200 OK и правильными данными.
     factory = APIRequestFactory()
     request = factory.post(reverse('usersession-create-user-session'), {}, format='json')
     view = UserSessionView.as_view({'post': 'create_user_session'})
@@ -19,7 +19,7 @@ def test_create_user_session_success(mocker):
 
 
 @pytest.mark.django_db
-def test_create_user_session_failure(mocker):
+def test_create_user_session_failure(mocker):  #Проверяет, что при возникновении ошибки при создании пользовательской сессии, представление возвращает ответ с HTTP-кодом 400 Bad Request.
     factory = APIRequestFactory()
     request = factory.post(reverse('usersession-create-user-session'), {}, format='json')
     view = UserSessionView.as_view({'post': 'create_user_session'})
