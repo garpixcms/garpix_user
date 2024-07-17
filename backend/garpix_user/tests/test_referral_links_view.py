@@ -1,9 +1,9 @@
 import pytest
 from django.urls import reverse
 from django.test import RequestFactory
-from app import settings
 from garpix_user.models import ReferralType
 from garpix_user.views.referral_links_view import ReferralLinkView
+from backend.app import settings
 
 
 @pytest.mark.django_db

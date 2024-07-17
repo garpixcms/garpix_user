@@ -3,8 +3,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from app.settings import GARPIX_USER
-
+from backend.app.settings import GARPIX_USER
 
 User = get_user_model()
 

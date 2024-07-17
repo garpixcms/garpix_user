@@ -4,8 +4,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from garpix_user.exceptions import NotAuthenticateException
-from garpix_user.models import PasswordHistory
-from garpix_user.utils.get_password_settings import get_password_settings
+from backend.garpix_user.models import PasswordHistory
+from backend.garpix_user.utils.get_password_settings import get_password_settings
 
 User = get_user_model()
 
