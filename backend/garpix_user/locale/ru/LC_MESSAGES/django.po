@@ -360,3 +360,6 @@ msgstr "Вы не можете сменить пароль. Пожалуйста
 
 msgid "Ensure this value is a positive integer or -1"
 msgstr "Убедитесь, что это значение - положительное число или равно -1"
+
+msgid "Enter a valid phone number"
+msgstr "Введите валидный номер телефона"
