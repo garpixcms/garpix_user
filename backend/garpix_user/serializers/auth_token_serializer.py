@@ -40,7 +40,7 @@ class AuthTokenSerializer(serializers.Serializer):
                 raise serializers.ValidationError(msg, code='authorization')
 
             if password_validity_period != -1 and not user.keycloak_auth_only and user.password_updated_date + timedelta(
-                    days=password_validity_period) <= set_current_date():
+                    days=password_validity_period) <= set_current_date() and not user.is_superuser:
                 msg = {
                     'non_field_errors': [
                         _('Your password has expired. Please change password')],

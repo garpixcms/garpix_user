@@ -44,7 +44,7 @@ class LoginForm(AuthenticationForm):
             if user and user.is_blocked:
                 raise forms.ValidationError(_("Your account is blocked. Please contact your administrator"))
             if user and password_validity_period != -1 and not user.keycloak_auth_only and user.password_updated_date + timedelta(
-                    days=password_validity_period) <= set_current_date():
+                    days=password_validity_period) <= set_current_date() and not user.is_superuser:
                 raise forms.ValidationError(_('Your password has expired. Please change password'))
 
             message = f'Пользователь {user.username} вошел в систему.'
