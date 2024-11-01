@@ -40,6 +40,13 @@ class ChangePasswordSerializer(PasswordSerializerMixin, serializers.Serializer):
             )
         return value
 
+    def validate(self, attrs):
+        if attrs.get('new_password') == attrs.get('password'):
+            raise serializers.ValidationError(
+                _('New password must be different from the old one')
+            )
+        return attrs
+
 
 class ChangePasswordUnauthorizedSerializer(PasswordSerializerMixin, serializers.Serializer):
     username = serializers.CharField(label=_("Username"), required=True, write_only=True)
