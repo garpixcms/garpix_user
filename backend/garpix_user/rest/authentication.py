@@ -64,7 +64,7 @@ def get_user_by_jwt_token(token):
             if token_data['token_created_at'] + timedelta(
                     seconds=access_token_ttl_seconds) < timezone.now():
                 raise Exception("Token expired.")
-        return User.active_objects.get(username=token_data['username'], is_blocked=False)
+        return User.active_objects.get(username=token_data['username'], is_blockde=False)
     except Exception as e:
         print(str(e))
 
