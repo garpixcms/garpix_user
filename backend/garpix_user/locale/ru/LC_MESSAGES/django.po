@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-15 04:01+0300\n"
+"POT-Creation-Date: 2024-11-01 14:25+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -360,3 +360,7 @@ msgstr "Вы не можете сменить пароль. Пожалуйста
 
 msgid "Ensure this value is a positive integer or -1"
 msgstr "Убедитесь, что это значение - положительное число или равно -1"
+
+#: serializers/password_serializer.py:46
+msgid "New password must be different from the old one"
+msgstr "Новый пароль должен отличаться от старого"
