@@ -26,8 +26,10 @@ drf-spectacular = "*"
 django-phonenumber-field-for-garpix-user = "==8.0.1"
 django-rest-framework-social-oauth2 = "==1.2.0"
 django-phonenumber-field = "*"
+typing-extensions = "==4.5.0"
+"jaraco.context" = "==5.1.0"
 
 [dev-packages]
 
 [requires]
-python_version = "3.8"
+python_version = ">=3.8"
