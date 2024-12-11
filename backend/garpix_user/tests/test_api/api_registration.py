@@ -5,7 +5,7 @@ from django.test import override_settings
 from garpix_user.models import UserSession
 from garpix_user.tests.utils.settings import GARPIX_USER_SETTINGS, GARPIX_USER_CONFIRMATION_SETTINGS
 from garpix_user.tests.utils.test_case_mixin import ApiTestMixin
-from django.utils.translation import gettext_lazy_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 BASE_GARPIX_USER_SETTINGS = getattr(settings, 'GARPIX_USER', dict())
 
