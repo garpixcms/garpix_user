@@ -1,2 +1,4 @@
-from .test_api import * # noqa
-from .test_views import LoginViewTest  # noqa
+from .utils import *
+from .api import *
+from .tasks import *
+from .rest import *

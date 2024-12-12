@@ -88,6 +88,4 @@ class MainAuthentication(TokenAuthentication):
         else:
             user = get_user_by_token(token)
 
-        if user is not None:
-            return user, None
         return user, None
