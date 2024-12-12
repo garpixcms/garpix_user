@@ -21,13 +21,13 @@ def password_validity_passed():
 
         password_validity_period = datetime.now() - timedelta(
             days=(_password_validity_period - _password_validity_inform_days))
+        
         inform_users = get_user_model().active_objects.filter(password_updated_date__lte=password_validity_period,
                                                               keycloak_auth_only=False)
 
         datenow = datetime.now()
         for user in inform_users:
-            expire_days = (
-                        user.password_updated_date + timedelta(days=_password_validity_period) - datenow).days
+            expire_days = (user.password_updated_date + timedelta(days=_password_validity_period) - datenow).days
 
             if expire_days > 0:
                 _msg = _(

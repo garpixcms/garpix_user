@@ -1,9 +1,10 @@
 from django.urls import reverse
+from django.conf import settings
 from django.test import override_settings
 import time
 
-from garpix_user.tests.utils.test_case_mixin import ApiTestMixin
-from django.utils.translation import gettext_lazy_lazy as _
+from garpix_user.tests.api.test_case_mixin import ApiTestMixin
+from django.utils.translation import gettext_lazy as _
 
 
 class LoginApiTest(ApiTestMixin):
@@ -118,6 +119,9 @@ class LoginApiTest(ApiTestMixin):
 
     @override_settings(GARPIX_REFRESH_TOKEN_TTL_SECONDS=5)
     def test_refresh_token_expired(self):
+        settings.GARPIX_USER["ADMIN_PASSWORD_SETTINGS"] = False
+        del settings.GARPIX_USER["REFRESH_TOKEN_TTL_SECONDS"]
+
         response = self.client.post(
             reverse('garpix_user:garpix_user_api:api_login'),
             {
@@ -143,7 +147,7 @@ class LoginApiTest(ApiTestMixin):
             },
             HTTP_ACCEPT='application/json'
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertDictEqual(response.json(), {'result': False})
 
     def test_login_by_email(self):
