@@ -11,6 +11,9 @@ class LoginApiTest(ApiTestMixin):
     def setUp(self):
         self.set_init_data()
 
+    def tearDown(self):
+        self.User.USERNAME_FIELDS = ('phone', 'email', 'username')
+
     def test_invalid_username_password(self):
         response = self.client.post(
             reverse('garpix_user:garpix_user_api:api_login'),

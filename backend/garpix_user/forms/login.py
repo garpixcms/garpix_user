@@ -20,10 +20,8 @@ class LoginForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     def clean(self):
-
         password_validity_period = get_password_settings()['password_validity_period']
 
-        super(LoginForm, self).clean()
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
         valid = False
@@ -58,5 +56,6 @@ class LoginForm(AuthenticationForm):
                                        msg=message)
 
             ib_logger.write_string(log)
-
+        
+        super(LoginForm, self).clean()
         return valid

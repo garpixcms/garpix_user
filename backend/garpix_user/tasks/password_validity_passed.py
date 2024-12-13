@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from celery.schedules import crontab
+from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.module_loading import import_string
@@ -25,7 +26,7 @@ def password_validity_passed():
         inform_users = get_user_model().active_objects.filter(password_updated_date__lte=password_validity_period,
                                                               keycloak_auth_only=False)
 
-        datenow = datetime.now()
+        datenow = timezone.now()
         for user in inform_users:
             expire_days = (user.password_updated_date + timedelta(days=_password_validity_period) - datenow).days
 

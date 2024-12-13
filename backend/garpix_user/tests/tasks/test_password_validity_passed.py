@@ -31,11 +31,12 @@ class PasswordValidityPassed(APITestCase):
 
         _msg = _('Your password has expired. Please change your password')
 
-        SystemNotify.send.assert_called_once_with(
-            self._get_return_message(_msg),
-            user,
-            event=settings.PASSWORD_INVALID_EVENT,
-            room_name=f'workflow-{user.pk}',
+        SystemNotify.send.assert_called_once_with({
+                "message": {
+                    "message": str(_msg),
+                },
+                "event": settings.PASSWORD_INVALID_EVENT,
+            }, user, event=settings.PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}',
         )
 
     def test_password_validity_passed(self) -> None:
@@ -46,18 +47,19 @@ class PasswordValidityPassed(APITestCase):
         SystemNotify.send = MagicMock()
         password_validity_passed()
 
-        expire_days = 2
+        expire_days=1
         _msg = _(
             'Your password will expire in {expire_days} {days}. Please change your password').format(
             expire_days=1 + expire_days,
             days=rupluralize(expire_days, _('day,days'))
         )
 
-        SystemNotify.send.assert_called_once_with(
-            self._get_return_message(_msg),
-            user,
-            event=settings.PASSWORD_INVALID_EVENT,
-            room_name=f'workflow-{user.pk}',
+        SystemNotify.send.assert_called_once_with({
+                "message": {
+                    "message": str(_msg),
+                },
+                "event": settings.PASSWORD_INVALID_EVENT,
+            }, user, event=settings.PASSWORD_INVALID_EVENT, room_name=f'workflow-{user.pk}',
         )
 
     def _create_user(self, password_update_days_old: int) -> User:
@@ -67,14 +69,6 @@ class PasswordValidityPassed(APITestCase):
             password_updated_date=datetime.now() - timedelta(days=password_update_days_old),
             keycloak_auth_only=False,
         )
-
-    def _get_return_message(self, _msg: str) -> dict[str, Any]:
-        return {
-                "message": {
-                    "message": str(_msg),
-                },
-                "event": settings.PASSWORD_INVALID_EVENT,
-            },
     
     def _delete_all_users(self) -> None:
         User.objects.all().delete()

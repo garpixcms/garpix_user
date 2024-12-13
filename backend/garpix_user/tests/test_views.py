@@ -11,9 +11,10 @@ BASE_GARPIX_USER_SETTINGS = getattr(settings, 'GARPIX_USER', dict())
 
 class LoginViewTest(TestCase):
     def setUp(self):
+        User.objects.all().delete()
         self.username = 'testuser1'
         self.password = '12345'
-        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.user = User.objects.create_user(username=self.username, password=self.password, is_active=True)
         self.user.save()
 
     def test_invalid_username_password(self):
