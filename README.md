@@ -455,6 +455,8 @@ GARPIX_USER = {
 
 See `garpix_user/tests/test_api/*.py` for examples.
 
+
+
 # For Frontend Developers
 
 UserSession - needed to associate an unauthorized user with other entities in our system.
