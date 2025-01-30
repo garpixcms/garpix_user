@@ -23,7 +23,7 @@ def delete_unconfirmed_users():
     if filters_data:
         User.objects.filter(filters_data).delete()
 
-if getattr(settings, "ENABLE_DELETE_UNCONFIRMED_USERS", False):
+if  GARPIX_USER_SETTINGS.get('ENABLE_DELETE_UNCONFIRMED_USERS', False):
     celery_app.conf.beat_schedule.update({
         'user_periodic_task': {
             'task': 'garpix_user.tasks.delete_unconfirmed_users.delete_unconfirmed_users',
