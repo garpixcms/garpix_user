@@ -455,6 +455,20 @@ GARPIX_USER = {
 
 See `garpix_user/tests/test_api/*.py` for examples.
 
+## Deletion unconfirmed users
+
+There is a task that automatically deletes unconfirmed users.
+
+It is disabled by default.
+
+To enable it, you need to add a setting
+
+```python
+
+ENABLE_DELETE_UNCONFIRMED_USERS = True
+
+```
+
 # For Frontend Developers
 
 UserSession - needed to associate an unauthorized user with other entities in our system.

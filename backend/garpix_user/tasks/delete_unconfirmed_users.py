@@ -23,11 +23,11 @@ def delete_unconfirmed_users():
     if filters_data:
         User.objects.filter(filters_data).delete()
 
-
-celery_app.conf.beat_schedule.update({
-    'user_periodic_task': {
-        'task': 'garpix_user.tasks.delete_unconfirmed_users.delete_unconfirmed_users',
-        'schedule': 3600,
-    }
-})
+if  GARPIX_USER_SETTINGS.get('ENABLE_DELETE_UNCONFIRMED_USERS', False):
+    celery_app.conf.beat_schedule.update({
+        'user_periodic_task': {
+            'task': 'garpix_user.tasks.delete_unconfirmed_users.delete_unconfirmed_users',
+            'schedule': 3600,
+        }
+    })
 celery_app.conf.timezone = 'UTC'
