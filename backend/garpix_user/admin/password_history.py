@@ -1,5 +1,5 @@
 from django.contrib import admin
-from garpix_utils.logs.mixins.log_admin import LogAdminMixin
+from garpix_utils.cef_logs.mixins.log_admin import LogAdminMixin
 
 from ..models import PasswordHistory
 

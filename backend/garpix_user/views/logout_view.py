@@ -1,7 +1,4 @@
-from django.contrib.auth import get_user_model
-from garpix_utils.logs.enums.get_enums import Action, ActionResult
-from garpix_utils.logs.loggers import ib_logger
-from garpix_utils.logs.services.logger_iso import LoggerIso
+from garpix_utils.cef_logs.event import LogoutEvent
 from rest_framework import parsers, renderers
 from garpix_user.models.access_token import AccessToken as Token
 from oauth2_provider.models import AccessToken
@@ -27,15 +24,7 @@ class LogoutView(APIView):
                 RefreshToken.objects.filter(key=token).delete()
 
                 message = f'Пользователь {request.user.username} вышел из системы.'
-                log = ib_logger.create_log(action=Action.user_logout.value,
-                                           obj=get_user_model().__name__,
-                                           obj_address=request.path,
-                                           result=ActionResult.success,
-                                           sbj=request.user.username,
-                                           sbj_address=LoggerIso.get_client_ip(request),
-                                           msg=message)
-
-                ib_logger.write_string(log)
+                LogoutEvent()(request=self.request, user=request.user, msg=message)
 
                 return Response({
                     'result': True,

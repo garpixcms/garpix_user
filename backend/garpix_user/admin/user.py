@@ -1,7 +1,5 @@
-from garpix_utils.logs.enums.get_enums import Action, ActionResult
-from garpix_utils.logs.loggers import ib_logger
-from garpix_utils.logs.mixins.create_log import CreateLogMixin
-from garpix_utils.logs.services.logger_iso import LoggerIso
+from garpix_utils.cef_logs.event import UserUpdateEvent
+from garpix_utils.cef_logs.mixins.create_log import CreateLogMixin
 from garpix_utils.models import AdminDeleteMixin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
@@ -36,19 +34,17 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
     readonly_fields = ['telegram_secret', 'get_telegram_connect_user_help'] + list(BaseUserAdmin.readonly_fields)
 
     def delete_model(self, request, obj):
-        action = Action.user_delete.value
-        log = self.log_delete(ib_logger, request, obj, action)
+        event, params = self.log_delete(request, obj)
         super().delete_model(request, obj)
-        ib_logger.write_string(log)
+        event(**params)
 
     def delete_queryset(self, request, queryset):
-        action = Action.user_delete.value
-        logs = []
+        events = []
         for obj in queryset:
-            logs.append(self.log_delete(ib_logger, request, obj, action))
+            events.append(self.log_delete(request, obj))
         super().delete_queryset(request, queryset)
-        for log in logs:
-            ib_logger.write_string(log)
+        for event, params in events:
+            event(**params)
 
     def save_model(self, request, obj, form, change):
         password_first_change = get_password_settings()['password_first_change']
@@ -56,10 +52,9 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
         if not change and password_first_change:
             obj.needs_password_update = True
 
-        log = self.log_change_or_create(ib_logger, request, obj, change,
-                                        action_change=Action.user_change.value,
-                                        action_create=Action.user_create.value)
-        ib_logger.write_string(log)
+        events = self.logs_change_or_create(request, obj, change)
+        for event, params in events:
+            event(**params)
         super().save_model(request, obj, form, change)
 
     def save_related(self, request, form, formsets, change):
@@ -68,11 +63,10 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
         if change:
             prev_groups = set([str(_obj) for _obj in obj.groups.all()])
             prev_permissions = set([str(_obj) for _obj in obj.user_permissions.all()])
-            log = self.log_change_m2m_field(ib_logger, request, super(), form, formsets, change,
-                                            action_change=Action.user_change.value,
-                                            exclude_fields=['groups', 'user_permissions'])
-            if log:
-                ib_logger.write_string(log)
+            events = self.logs_change_m2m_field(request, super(), form, formsets, change,
+                                                exclude_fields=['groups', 'user_permissions'])
+            for event, params in events:
+                event(**params)
 
         else:
             super().save_related(request, form, formsets, change)
@@ -86,27 +80,15 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
         new_old_permissions = permissions - prev_permissions
         old_new_permissions = prev_permissions - permissions
 
+        events = []
+
         if new_old_groups or old_new_groups:
             if new_old_groups:
                 msg = f'Пользователь {str(obj)}(id={obj.pk}) был добавлен в группы {new_old_groups}'
-                log = ib_logger.create_log(action=Action.group_add_user.value,
-                                           obj=obj.__class__.__name__,
-                                           obj_address=request.path,
-                                           result=ActionResult.success,
-                                           sbj=request.user.username,
-                                           sbj_address=LoggerIso.get_client_ip(request),
-                                           msg=msg)
-                ib_logger.write_string(log)
+                events.append((UserUpdateEvent(), msg))
             if old_new_groups:
                 msg = f'Пользователь {str(obj)}(id={obj.pk}) был удален из групп {old_new_groups}'
-                log = ib_logger.create_log(action=Action.group_delete_user.value,
-                                           obj=obj.__class__.__name__,
-                                           obj_address=request.path,
-                                           result=ActionResult.success,
-                                           sbj=request.user.username,
-                                           sbj_address=LoggerIso.get_client_ip(request),
-                                           msg=msg)
-                ib_logger.write_string(log)
+                events.append((UserUpdateEvent(), msg))
 
         msg = CreateLogMixin.log_msg_change if CreateLogMixin.log_msg_change else f'Привилегии пользователя {str(obj)}(id={obj.pk}) были изменены'
 
@@ -117,12 +99,7 @@ class UserAdmin(AdminDeleteMixin, BaseUserAdmin, CreateLogMixin):
             if old_new_permissions:
                 changed_fields += f'-удалены {old_new_permissions} '
 
-            log = ib_logger.create_log(action=Action.user_access.value,
-                                       obj=obj.__class__.__name__,
-                                       obj_address=request.path,
-                                       result=ActionResult.success,
-                                       sbj=request.user.username,
-                                       params=changed_fields,
-                                       sbj_address=LoggerIso.get_client_ip(request),
-                                       msg=msg)
-            ib_logger.write_string(log)
+            events.append((UserUpdateEvent(), msg))
+
+        for event, message in events:
+            event(request=request, user=request.user, msg=message)

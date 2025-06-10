@@ -1,9 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
-from garpix_utils.logs.enums.get_enums import Action
-from garpix_utils.logs.loggers import ib_logger
-from garpix_utils.logs.mixins.create_log import CreateLogMixin
+from garpix_utils.cef_logs.mixins.create_log import CreateLogMixin
 
 admin.site.unregister(Group)
 
@@ -12,31 +10,28 @@ admin.site.unregister(Group)
 class GarpixGroupAdmin(CreateLogMixin, GroupAdmin):
 
     def save_model(self, request, obj, form, change):
-        log = self.log_change_or_create(ib_logger, request, obj, change,
-                                        action_change=Action.group_change.value,
-                                        action_create=Action.group_create.value)
+        events = self.logs_change_or_create(request, obj, change)
         super().save_model(request, obj, form, change)
-        ib_logger.write_string(log)
+        for event, params in events:
+            event(**params)
 
     def save_related(self, request, form, formsets, change):
         if change:
-            log = self.log_change_m2m_field(ib_logger, request, super(), form, formsets, change,
-                                            action_change=Action.group_change.value,)
-            ib_logger.write_string(log)
+            events = self.logs_change_m2m_field(request, super(), form, formsets, change)
+            for event, params in events:
+                event(**params)
         else:
             super().save_related(request, form, formsets, change)
 
     def delete_model(self, request, obj):
-        action = Action.group_delete.value
-        log = self.log_delete(ib_logger, request, obj, action)
+        event, params = self.log_delete(request, obj)
         super().delete_model(request, obj)
-        ib_logger.write_string(log)
+        event(**params)
 
     def delete_queryset(self, request, queryset):
-        action = Action.group_delete.value
-        logs = []
+        events = []
         for obj in queryset:
-            logs.append(self.log_delete(ib_logger, request, obj, action))
+            events.append(self.log_delete(request, obj))
         super().delete_queryset(request, queryset)
-        for log in logs:
-            ib_logger.write_string(log)
+        for event, params in events:
+            event(**params)

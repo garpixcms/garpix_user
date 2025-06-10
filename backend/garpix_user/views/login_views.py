@@ -1,15 +1,13 @@
 import json
 
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView
 from django.views.generic import FormView
 from django.http import HttpResponse
-from garpix_utils.logs.enums.get_enums import Action, ActionResult
-from garpix_utils.logs.loggers import ib_logger
-from garpix_utils.logs.services.logger_iso import LoggerIso
+from garpix_utils.cef_logs.event import LogoutEvent
 
 from garpix_user.forms import LoginForm
 from django.utils.translation import gettext_lazy as _
@@ -20,18 +18,12 @@ class LogoutView(RedirectView):
     def get_redirect_url(self):
 
         request = self.request
+        user = self.request.user
         logout(request)
 
         message = f'Пользователь {request.user.username} вышел из системы.'
-        log = ib_logger.create_log(action=Action.user_logout.value,
-                                   obj=get_user_model().__name__,
-                                   obj_address=request.path,
-                                   result=ActionResult.success,
-                                   sbj=request.user.username,
-                                   sbj_address=LoggerIso.get_client_ip(request),
-                                   msg=message)
 
-        ib_logger.write_string(log)
+        LogoutEvent()(request=self.request, user=user, msg=message)
 
         return self.url
 
